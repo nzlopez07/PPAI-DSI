@@ -1,6 +1,6 @@
 class EventoSismico:
     def __init__(self, clasificacion, magnitud, origenGeneracion, alcanceSismo,  
-                 estadoActual, cambioEstado, serieActual,
+                 estadoActual, cambioEstado, serieTemporal,
                  fechaHoraOcurrencia, latitudEpicentro, latitudHipocentro, 
                  longitudEpicentro, longitudHipocentro, valorMagnitud, fechaHoraFin=None):
         
@@ -19,7 +19,7 @@ class EventoSismico:
         self.alcanceSismo = alcanceSismo
         self.estadoActual = estadoActual
         self.cambioEstado = cambioEstado
-        self.serieActual = serieActual
+        self.serieTemporal = serieTemporal
 
     # Métodos GET
     def getFechaHoraFin(self):
@@ -50,8 +50,8 @@ class EventoSismico:
         return self.estadoActual
     def getCambioEstado(self):
         return self.cambioEstado
-    def getSerieActual(self):
-        return self.serieActual
+    def getSerieTemporal(self):
+        return self.serieTemporal
 
     # Métodos SET
     def setFechaHoraFin(self, fechaHoraFin):
@@ -82,7 +82,7 @@ class EventoSismico:
         self.estadoActual = estadoActual
     def setCambioEstado(self, cambioEstado):
         self.cambioEstado = cambioEstado
-    def setSerieActual(self, serieActual):
-        self.serieActual = serieActual
+    def setSerieTemporal(self, serieTemporal):
+        self.serieTemporal = serieTemporal
 
     
