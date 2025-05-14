@@ -1,4 +1,12 @@
-import AlcanceSismo, CambioEstado, Estado, SerieTemporal # ClasificacionSismo, MagnitudRitcher, OrigenDeGeneracion,
+from entities.AlcanceSismo import AlcanceSismo
+from entities.CambioEstado import CambioEstado
+from entities.Estado import Estado
+from entities.SerieTemporal import SerieTemporal
+"""
+from entities.ClasificacionSismo import ClasificacionSismo
+from entities.MagnitudRitcher import MagnitudRitcher
+from entities.OrigenDeGeneracion import OrigenDeGeneracion
+"""
 
 class EventoSismico:
     def __init__(self, clasificacion, magnitud, origenGeneracion, alcanceSismo,  
@@ -18,10 +26,10 @@ class EventoSismico:
         self.clasificacion = clasificacion
         self.magnitud = magnitud
         self.origenGeneracion = origenGeneracion
-        self.alcanceSismo = alcanceSismo
-        self.estadoActual = estadoActual
-        self.cambioEstado = cambioEstado
-        self.serieTemporal = serieTemporal # Es una lista
+        self.alcanceSismo: AlcanceSismo = alcanceSismo
+        self.estadoActual: Estado = estadoActual
+        self.cambioEstado: CambioEstado = cambioEstado
+        self.serieTemporal: list[SerieTemporal] = serieTemporal # Es una lista
 
     # Métodos GET
     def getFechaHoraFin(self):
@@ -87,7 +95,8 @@ class EventoSismico:
     def setSerieTemporal(self, serieTemporal):
         self.serieTemporal = serieTemporal
 
-
-    # Métodos del diagrama de secuencia
-    def EstaAutoDetectado(self):
+    # Otros métodos
+    def estaAutoDetectado(self):
         return self.estadoActual.esAutoDetectado()
+
+    
