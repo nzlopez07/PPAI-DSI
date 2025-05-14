@@ -1,3 +1,5 @@
+import AlcanceSismo, CambioEstado, Estado, SerieTemporal # ClasificacionSismo, MagnitudRitcher, OrigenDeGeneracion,
+
 class EventoSismico:
     def __init__(self, clasificacion, magnitud, origenGeneracion, alcanceSismo,  
                  estadoActual, cambioEstado, serieTemporal,
@@ -12,14 +14,14 @@ class EventoSismico:
         self.longitudHipocentro = longitudHipocentro
         self.valorMagnitud = valorMagnitud
 
-        # atributos referenciales
+        # atributos referenciales (son objetos)
         self.clasificacion = clasificacion
         self.magnitud = magnitud
         self.origenGeneracion = origenGeneracion
         self.alcanceSismo = alcanceSismo
         self.estadoActual = estadoActual
         self.cambioEstado = cambioEstado
-        self.serieTemporal = serieTemporal
+        self.serieTemporal = serieTemporal # Es una lista
 
     # Métodos GET
     def getFechaHoraFin(self):
