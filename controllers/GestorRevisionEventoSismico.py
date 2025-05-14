@@ -2,9 +2,9 @@ from datetime import datetime
 from entities.EventoSismico import EventoSismico
 
 class GestorRevisionEventoSismico:
-    def __init__(self):
+    def __init__(self, eventos):
         self.horaFechaFinCambioEstado = None
-        self.eventosSismicos: list[EventoSismico] = [] # Colección de todos los eventos sísmicos
+        self.eventosSismicos: list[EventoSismico] = eventos # Colección de todos los eventos sísmicos
         self.eventosSismicosAutoDetectados: list[EventoSismico] = [] # Colección de todos los eventos sísmicos con estado actual "AutoDetectado"
 
     #Métodos get y set si corresponden
