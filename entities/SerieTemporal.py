@@ -1,4 +1,4 @@
-import MuestraSismica
+from entities.MuestraSismica import MuestraSismica
 
 class SerieTemporal:
     def __init__(self, condicionAlarma, fechaHoraInicioRegistroMuestras, fechaHoraRegistro, frecuenciaMuestreo, muestraSismica):

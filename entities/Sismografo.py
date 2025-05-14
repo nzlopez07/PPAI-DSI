@@ -1,3 +1,5 @@
+import entities.EstacionSismologica as EstacionSismologica
+
 class Sismografo:
     def __init__(self, fechaAdquisicion, identificadorSismografo, nroSerie, estacionSismologica):
         self.__fechaAdquisicion = fechaAdquisicion
@@ -24,3 +26,7 @@ class Sismografo:
         self.__nroSerie = nroSerie
     def setEstacionSismologica(self, estacionSismologica):
         self.__estacionSismologica = estacionSismologica
+
+    #Métodos realizacion CU
+    def obtenerEstacionSismologica(self):
+        return self.__estacionSismologica.getNombre()

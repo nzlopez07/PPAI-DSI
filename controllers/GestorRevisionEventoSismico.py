@@ -8,6 +8,10 @@ class GestorRevisionEventoSismico:
         self.eventosSismicosAutoDetectados: list[EventoSismico] = [] # Colección de todos los eventos sísmicos con estado actual "AutoDetectado"
 
     #Métodos get y set si corresponden
+    def getEventosSismicos(self):
+        return self.eventosSismicos
+    def getEventosSismicosAutoDetectados(self):
+        return self.eventosSismicosAutoDetectados
 
     # Lógica del CU
     def calcularFechaHoraFinCambioEstado(self):
@@ -15,6 +19,7 @@ class GestorRevisionEventoSismico:
         self.horaFechaFinCambioEstado = datetime.now()
     
     def buscarEventosAutoDetectados(self):
+        print("Entramos al método buscarEventosAutoDetectados de Gestor correctamente")
         # Recorre la colección de todos los eventos sísmicos y valida que tengan el estado "AutoDetectado"
         for evento in self.eventosSismicos:
             if evento.estaAutoDetectado():

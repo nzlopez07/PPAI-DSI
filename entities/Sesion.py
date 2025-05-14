@@ -1,3 +1,4 @@
+import entities.Usuario as Usuario
 class Sesion:
     def __init__(self, fechaInicio, fechaFin, usuarioActivo):
         self.__fechaInicio = fechaInicio
@@ -19,3 +20,8 @@ class Sesion:
         self.__fechaFin = fechaFin
     def setUsuarioActivo(self, usuarioActivo):
         self.__usuarioActivo = usuarioActivo
+
+    #Métodos realizacion CU
+    def obtenerEmpleado(self):
+        return self.__usuarioActivo.obtenerEmpleado()
+    

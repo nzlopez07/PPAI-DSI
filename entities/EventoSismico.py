@@ -97,6 +97,8 @@ class EventoSismico:
 
     # Otros métodos
     def estaAutoDetectado(self):
+        print("Entramos al método estaAutoDetectado de EventoSismico correctamente")
+        print("Estado actual: ", self.estadoActual.nombreEstado)
         return self.estadoActual.esAutoDetectado()
 
     

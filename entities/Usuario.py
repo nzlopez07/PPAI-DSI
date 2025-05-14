@@ -1,3 +1,4 @@
+import entities.Empleado as Empleado
 class Usuario:
     def __init__(self, contraseña, nombreUsuario, empleado):
         self.__contraseña = contraseña
@@ -19,3 +20,8 @@ class Usuario:
         self.__nombreUsuario = nombreUsuario
     def setEmpleado(self, empleado):
         self.__empleado = empleado
+
+
+    #Métodos realizacion CU
+    def obtenerEmpleado(self):
+        return self.getEmpleado

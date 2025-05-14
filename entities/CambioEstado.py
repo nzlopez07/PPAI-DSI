@@ -1,4 +1,4 @@
-import Estado
+from entities.Estado import Estado
 
 class CambioEstado:
     def __init__(self, fechaHoraInicio, estado,):
