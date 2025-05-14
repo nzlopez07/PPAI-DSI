@@ -16,3 +16,18 @@ class Estado:
 
     def setNombreEstado(self, nombreEstado):
         self.nombreEstado = nombreEstado
+
+    # Definición de otros métodos
+    def esAutoDetectado(self):
+        # Verificar que el estado sea "AutoDetectado"
+        autoDetectado = False
+        if self.nombreEstado == "AutoDetectado":
+            autoDetectado = True
+        return autoDetectado
+    
+    def esBloqueadoParaRevision(self):
+        # Verificar que el estado sea "BloqueadoParaRevision"
+        bloqueadoParaRevision = False
+        if self.nombreEstado == "BloqueadoParaRevision":
+            bloqueadoParaRevision = True
+        return bloqueadoParaRevision
