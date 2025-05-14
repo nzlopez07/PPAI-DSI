@@ -16,3 +16,8 @@ class Estado:
 
     def setNombreEstado(self, nombreEstado):
         self.nombreEstado = nombreEstado
+
+
+    # Métodos diagrama secuencia
+    def esAutoDetectado(self):
+        return self.nombreEstado == "AutoDetectado"

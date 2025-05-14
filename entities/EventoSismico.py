@@ -87,4 +87,7 @@ class EventoSismico:
     def setSerieTemporal(self, serieTemporal):
         self.serieTemporal = serieTemporal
 
-    
+
+    # Métodos del diagrama de secuencia
+    def EstaAutoDetectado(self):
+        return self.estadoActual.esAutoDetectado()

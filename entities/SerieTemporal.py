@@ -1,3 +1,5 @@
+import MuestraSismica
+
 class SerieTemporal:
     def __init__(self, condicionAlarma, fechaHoraInicioRegistroMuestras, fechaHoraRegistro, frecuenciaMuestreo, muestraSismica):
         self.__condicionAlarma = condicionAlarma
