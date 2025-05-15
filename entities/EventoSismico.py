@@ -2,11 +2,10 @@ from entities.AlcanceSismo import AlcanceSismo
 from entities.CambioEstado import CambioEstado
 from entities.Estado import Estado
 from entities.SerieTemporal import SerieTemporal
-"""
 from entities.ClasificacionSismo import ClasificacionSismo
-from entities.MagnitudRitcher import MagnitudRitcher
+from entities.MagnitudRichter import MagnitudRichter
 from entities.OrigenDeGeneracion import OrigenDeGeneracion
-"""
+
 
 class EventoSismico:
     def __init__(self, clasificacion, magnitud, origenGeneracion, alcanceSismo,  
