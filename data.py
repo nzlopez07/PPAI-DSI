@@ -3,13 +3,31 @@ from entities.Estado import Estado
 from entities.CambioEstado import CambioEstado
 from entities.AlcanceSismo import AlcanceSismo
 from entities.SerieTemporal import SerieTemporal
+from entities.ClasificacionSismo import ClasificacionSismo
+from entities.OrigenDeGeneracion import OrigenDeGeneracion
+from entities.Sismografo import Sismografo
 from datetime import datetime
 
 # Mocks simples para objetos referenciales
-clasificacion = None  # Reemplazar por un mock si es necesario
+clasificacion_mock = [
+    ClasificacionSismo(0, 70, "Superficial"),
+    ClasificacionSismo(71, 300, "Intermedio"),
+    ClasificacionSismo(301, 700, "Profundo")
+]
+
 magnitud = None       # Reemplazar por un mock si es necesario
-origen = None         # Reemplazar por un mock si es necesario
-alcance = AlcanceSismo("ASD", "Alcance")  # Completar según implementación
+
+origen_mock = [
+    OrigenDeGeneracion("Tectónico", "Causado por el movimiento de las placas tectónicas.."), 
+    OrigenDeGeneracion("Volcánico", "Originado por el ascenso de magma en zonas volcánicas."),
+    OrigenDeGeneracion("Inducido", "Causado por actividades humanas como minería o fracking.")
+]
+
+alcances_mock = [
+    AlcanceSismo("Local", "Percibido en un área geográfica limitada, cerca del epicentro."),
+    AlcanceSismo("Regional", "Percibido en una región más amplia, incluyendo varias ciudades o provincias."),
+    AlcanceSismo("Lejano", "Percibido a grandes distancias, incluso cientos de kilómetros del epicentro.")
+]
 
 # Lista de estados
 estados_mock = [
@@ -34,10 +52,10 @@ serie = SerieTemporal(
 
 #Lista de eventos sismicos
 eventos_mock = [EventoSismico(
-    clasificacion=clasificacion,
+    clasificacion=clasificacion_mock[0],
     magnitud=magnitud,
-    origenGeneracion=origen,
-    alcanceSismo=alcance,
+    origenGeneracion=origen_mock[1],
+    alcanceSismo=alcances_mock[1],
     estadoActual=estados_mock[1],
     cambioEstado=cambios_estado_mock[1],
     serieTemporal=[serie],
@@ -48,10 +66,10 @@ eventos_mock = [EventoSismico(
     longitudHipocentro=-64.1840,
     valorMagnitud=3.9
 ), EventoSismico(
-    clasificacion=clasificacion,
+    clasificacion=clasificacion_mock[1],
     magnitud=magnitud,
-    origenGeneracion=origen,
-    alcanceSismo=alcance,
+    origenGeneracion=origen_mock[0],
+    alcanceSismo=alcances_mock[0],
     estadoActual=estados_mock[0],
     cambioEstado=cambios_estado_mock[0],
     serieTemporal=[serie],
@@ -61,3 +79,11 @@ eventos_mock = [EventoSismico(
     longitudEpicentro=-64.1833,
     longitudHipocentro=-64.1840,
     valorMagnitud=3.7)]
+
+sismografos_mock = [
+    Sismografo(datetime(2025, 5, 14, 10, 0), "SISMO-001", "SN12345"),
+    Sismografo(datetime(2024, 11, 2, 9, 30), "SISMO-002", "SN12346"),
+    Sismografo(datetime(2023, 8, 20, 14, 15), "SISMO-003", "SN12347"),
+    Sismografo(datetime(2022, 3, 5, 8, 45), "SISMO-004", "SN12348"),
+    Sismografo(datetime(2021, 12, 1, 16, 0), "SISMO-005", "SN12349")
+]

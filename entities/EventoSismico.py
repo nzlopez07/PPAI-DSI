@@ -22,9 +22,9 @@ class EventoSismico:
         self.valorMagnitud = valorMagnitud
 
         # atributos referenciales (son objetos)
-        self.clasificacion = clasificacion
-        self.magnitud = magnitud
-        self.origenGeneracion = origenGeneracion
+        self.clasificacion: ClasificacionSismo = clasificacion
+        self.magnitud: MagnitudRichter = magnitud
+        self.origenGeneracion: OrigenDeGeneracion = origenGeneracion
         self.alcanceSismo: AlcanceSismo = alcanceSismo
         self.estadoActual: Estado = estadoActual
         self.cambiosEstado: list[CambioEstado] = [cambiosEstado]
@@ -115,3 +115,10 @@ class EventoSismico:
         cambioEstado.setFechaHoraFin(fechaHora)
         nuevoCambioEstado = CambioEstado(fechaHora, estado)
         self.cambiosEstado.append(nuevoCambioEstado)
+
+    # Nombres a chequear
+    def obtenerDatos(self):
+        alcance = self.getAlcanceSismo().getNombre()
+        origen = self.getOrigenGeneracion().getNombre()
+        clasificacion = self.getClasificacion().getNombre()
+        

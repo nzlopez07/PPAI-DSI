@@ -5,7 +5,7 @@ class Sismografo:
         self.__fechaAdquisicion = fechaAdquisicion
         self.__identificadorSismografo = identificadorSismografo
         self.__nroSerie = nroSerie
-        self.__estacionSismologica = estacionSismologica
+        self.__estacionSismologica: EstacionSismologica = estacionSismologica
     
     #Getters
     def getFechaAdquisicion(self):

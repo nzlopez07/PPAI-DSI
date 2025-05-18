@@ -3,6 +3,7 @@ from controllers.GestorRevisionEventoSismico import GestorRevisionEventoSismico
 class PantallaRevisionEventoSismico:
     def __init__(self):
         self.gestorRevision:GestorRevisionEventoSismico = GestorRevisionEventoSismico()
+        self.eventoSeleccionado = None
         
     def opcRegistrarResultadoRevisionManual(self):
         return self.habilitarPantalla()
@@ -14,6 +15,6 @@ class PantallaRevisionEventoSismico:
         self.tomarSeleccionEvento()
 
     def tomarSeleccionEvento(self):
-        pass
+        self.gestorRevision.tomarSeleccionEvento()
         
     

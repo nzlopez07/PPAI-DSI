@@ -1,5 +1,5 @@
 class AlcanceSismo:
-    def __init__(self, descripcion, nombre):
+    def __init__(self, nombre, descripcion):
         self.descripcion = descripcion
         self.nombre = nombre
 

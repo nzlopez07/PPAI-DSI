@@ -12,6 +12,9 @@ class GestorRevisionEventoSismico:
         self.estadoBloqueadoEnRevision: Estado = None
         self.cambioEstadoActual: CambioEstado = None
         self.fechaHoraActualBloqueadoEnRevision = None
+        self.nombreAlcance = None
+        self.nombreOrigen = None
+        self.nombreClasificacion = None
 
     #Métodos get y set si corresponden
     def getEventosSismicosAutoDetectados(self):
@@ -46,7 +49,7 @@ class GestorRevisionEventoSismico:
     
     # Seleccionar un evento
     def tomarSeleccionEvento(self):
-        pass
+        self.bloquearEventoSismico
             
     def bloquearEventoSismico(self):
         # Buscar por estado y ambito el estado BloqueadoEnRevision
@@ -64,7 +67,9 @@ class GestorRevisionEventoSismico:
         self.eventoSismicoSeleccionado.setEstadoActual(self.estadoBloqueadoEnRevision)
         self.eventoSismicoSeleccionado.bloquearEnRevision(self.estadoBloqueadoEnRevision, self.cambioEstadoActual, self.fechaHoraActualBloqueadoEnRevision)
         
-
+    def buscarDatosSismicos(self):
+        self.eventoSismicoSeleccionado.obtenerDatos()
+    
     def obtenerEstacionesSismográficas():
         pass
 
