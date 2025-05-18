@@ -19,7 +19,7 @@ def home():
 
 @app.route('/eventos')
 def eventos():
-    eventos = pantalla.opcionRegistrarRevisionManual()
+    eventos = pantalla.opcRegistrarResultadoRevisionManual()
     return render_template('seleccionar_evento.html', eventos=eventos)
 
 """

@@ -4,10 +4,10 @@ class PantallaRevisionEventoSismico:
     def __init__(self):
         self.gestorRevision:GestorRevisionEventoSismico = GestorRevisionEventoSismico()
         
-    def opcionRegistrarRevisionManual(self):
+    def opcRegistrarResultadoRevisionManual(self):
         return self.habilitarPantalla()
 
     def habilitarPantalla(self):
-        return self.gestorRevision.opcionRevisionRegistrarResultadoManual()
+        return self.gestorRevision.opcRegistrarResultadoRevisionManual()
         
     

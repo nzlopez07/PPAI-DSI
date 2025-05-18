@@ -7,7 +7,9 @@ from datetime import datetime
 
 # Mocks simples para objetos referenciales
 estado_auto_detectado = Estado(ambito="Evento", nombreEstado="AutoDetectado")
+estado_pendiente_revision = Estado(ambito="Evento", nombreEstado="PendienteDeRevision")
 cambio_estado = CambioEstado(datetime.now,estado_auto_detectado)  # Completar según tu implementación
+cambio_estado2 = CambioEstado(datetime.now,estado_pendiente_revision)
 clasificacion = None  # Reemplazar por un mock si es necesario
 magnitud = None       # Reemplazar por un mock si es necesario
 origen = None         # Reemplazar por un mock si es necesario
@@ -27,10 +29,10 @@ eventos_mock = [EventoSismico(
     magnitud=magnitud,
     origenGeneracion=origen,
     alcanceSismo=alcance,
-    estadoActual=estado_auto_detectado,
-    cambioEstado=cambio_estado,
+    estadoActual=estado_pendiente_revision,
+    cambioEstado=cambio_estado2,
     serieTemporal=[serie],
-    fechaHoraOcurrencia=datetime(2025, 5, 14, 10, 0),
+    fechaHoraOcurrencia=datetime(2025, 5, 14, 13, 0),
     latitudEpicentro=-31.4167,
     latitudHipocentro=-31.4175,
     longitudEpicentro=-64.1833,

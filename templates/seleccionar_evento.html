@@ -20,20 +20,20 @@
 <body class="container mt-5">
     <div class = "mb-4 border-bottom pb-2">
     <h2 class = "fw-bold">
-        <i class="bi bi-activity text-danger me-2"></i>
-        🌋 Seleccionar evento sísmico
+        Seleccionar evento sísmico
     </h2>
 
-    <p class = "text-muted">Seleccione un evento autodectado para continuar...</p>
+    
 
     <div>
     <form method="POST" action="/evento">
         {% for evento in eventos %}
         <div class="card mb-3 shadow-sm">
 
-            <div><strong>📅 Fecha y hora:</strong> {{ evento.getFechaHoraOcurrencia().strftime('%d/%m/%Y %H:%M') }}</div>
-            <div><strong>🌍 Magnitud:</strong> {{ evento.getValorMagnitud() }}</div>
-            <div><strong>📌 Ubicación:</strong> Lat: {{ evento.getLatitudEpicentro() }}, Long: {{ evento.getLongitudEpicentro() }}</div>
+            <div><strong> Fecha y hora:</strong> {{ evento.getFechaHoraOcurrencia().strftime('%d/%m/%Y %H:%M') }}</div>
+            <div><strong> Magnitud:</strong> {{ evento.getValorMagnitud() }}</div>
+            <div><strong> Epicentro:</strong> Latitud: {{ evento.getLatitudEpicentro() }}, Longitud: {{ evento.getLongitudEpicentro() }}</div>
+            <div><strong> Hipocentro:</strong> Latitud: {{ evento.getLatitudHipocentro() }}, Longitud: {{ evento.getLongitudHipocentro() }}</div>
 
             <button type="submit" name="evento_id" value="{{ evento.id }}" class="btn btn-light border mb-2 w-100 text-start">Seleccionar
             </button>

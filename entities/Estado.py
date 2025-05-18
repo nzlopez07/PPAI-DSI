@@ -20,16 +20,13 @@ class Estado:
     # Definición de otros métodos
     def esAutoDetectado(self):
         print("Entramos al método esAutoDetectado de Estado correctamente")
-        # Verificar que el estado sea "AutoDetectado"
-        autoDetectado = False
-        if self.nombreEstado == "AutoDetectado":
-            autoDetectado = True
-        return autoDetectado
-    ##Acá podemos hacer simplemente (return self.nombreEstado == "AutoDetectado)"
+        return self.nombreEstado == "AutoDetectado"
+   
     
     def esBloqueadoParaRevision(self):
         # Verificar que el estado sea "BloqueadoParaRevision"
-        bloqueadoParaRevision = False
-        if self.nombreEstado == "BloqueadoParaRevision":
-            bloqueadoParaRevision = True
-        return bloqueadoParaRevision
+        return self.nombreEstado == "BloqueadoParaRevision"
+    
+    def esPendienteDeRevision(self):
+        return self.nombreEstado == "PendienteDeRevision"
+            

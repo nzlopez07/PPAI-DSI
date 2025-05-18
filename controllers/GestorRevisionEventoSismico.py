@@ -15,7 +15,7 @@ class GestorRevisionEventoSismico:
         return self.eventosSismicosAutoDetectados
 
     # Lógica del CU
-    def opcionRevisionRegistrarResultadoManual(self):
+    def opcRegistrarResultadoRevisionManual(self):
         return self.buscarEventosAutoDetectados()
 
     def calcularFechaHoraFinCambioEstado(self):
@@ -27,12 +27,22 @@ class GestorRevisionEventoSismico:
         # Recorre la colección de todos los eventos sísmicos y valida que tengan el estado "AutoDetectado"
         self.eventosSismicosAutoDetectados = []
         for evento in self.eventosSismicos:
-            if evento.estaAutoDetectado():
+            if (evento.estaAutoDetectado()) or (evento.estaPendienteDeRevision()):
                 self.eventosSismicosAutoDetectados.append(evento)
-        return self.eventosSismicosAutoDetectados
+        self.ordenarPorFechaYHora(self.eventosSismicosAutoDetectados)
+        #return self.eventosSismicosAutoDetectados
 
-    def ordenarPorFechaYHora():
-        pass
+    
+    def ordenarPorFechaYHora(self, eventosSismicos:list[EventoSismico]):
+        n = len(eventosSismicos)
+        
+        for i in range(n - 1):
+            for j in range(i + 1, n):
+                if eventosSismicos[i].getFechaHoraOcurrencia() > eventosSismicos[j].getFechaHoraOcurrencia():
+                    eventosSismicos[i], eventosSismicos[j] = eventosSismicos[j], eventosSismicos[i]
+        
+        return eventosSismicos
+            
 
     def obtenerEstacionesSismográficas():
         pass

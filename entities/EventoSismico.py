@@ -99,5 +99,10 @@ class EventoSismico:
         print("Entramos al método estaAutoDetectado de EventoSismico correctamente")
         print("Estado actual: ", self.estadoActual.nombreEstado)
         return self.estadoActual.esAutoDetectado()
+    
+    def estaPendienteDeRevision(self):
+        print("Entramos al método estaPendienteDeRevision de EventoSismico correctamente")
+        print("Estado actual: ", self.estadoActual.nombreEstado)
+        return self.estadoActual.esPendienteDeRevision()
 
     
