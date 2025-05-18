@@ -9,5 +9,11 @@ class PantallaRevisionEventoSismico:
 
     def habilitarPantalla(self):
         return self.gestorRevision.opcRegistrarResultadoRevisionManual()
+    
+    def mostrarYSolicitarSeleccionEvento(self):
+        self.tomarSeleccionEvento()
+
+    def tomarSeleccionEvento(self):
+        pass
         
     

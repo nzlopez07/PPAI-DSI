@@ -9,7 +9,7 @@ from entities.OrigenDeGeneracion import OrigenDeGeneracion
 
 class EventoSismico:
     def __init__(self, clasificacion, magnitud, origenGeneracion, alcanceSismo,  
-                 estadoActual, cambioEstado, serieTemporal,
+                 estadoActual, cambiosEstado, serieTemporal,
                  fechaHoraOcurrencia, latitudEpicentro, latitudHipocentro, 
                  longitudEpicentro, longitudHipocentro, valorMagnitud, fechaHoraFin=None):
         
@@ -27,7 +27,7 @@ class EventoSismico:
         self.origenGeneracion = origenGeneracion
         self.alcanceSismo: AlcanceSismo = alcanceSismo
         self.estadoActual: Estado = estadoActual
-        self.cambioEstado: CambioEstado = cambioEstado
+        self.cambiosEstado: list[CambioEstado] = [cambiosEstado]
         self.serieTemporal: list[SerieTemporal] = serieTemporal # Es una lista
 
     # Métodos GET
@@ -90,7 +90,7 @@ class EventoSismico:
     def setEstadoActual(self, estadoActual):
         self.estadoActual = estadoActual
     def setCambioEstado(self, cambioEstado):
-        self.cambioEstado = cambioEstado
+        self.cambiosEstado = cambioEstado
     def setSerieTemporal(self, serieTemporal):
         self.serieTemporal = serieTemporal
 
@@ -105,4 +105,11 @@ class EventoSismico:
         print("Estado actual: ", self.estadoActual.nombreEstado)
         return self.estadoActual.esPendienteDeRevision()
 
-    
+    def esEstadoActual(self):
+        for cambioEstado in self.cambiosEstado:
+            if cambioEstado.esEstadoActual():
+                return cambioEstado
+
+    # Método que corresponedría a la maquina de estados
+    def bloquearEnRevision(self, estado: Estado, cambioEstado: CambioEstado):
+        cambioEstado.setEstado()

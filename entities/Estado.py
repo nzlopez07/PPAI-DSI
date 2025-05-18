@@ -23,10 +23,15 @@ class Estado:
         return self.nombreEstado == "AutoDetectado"
    
     
-    def esBloqueadoParaRevision(self):
-        # Verificar que el estado sea "BloqueadoParaRevision"
-        return self.nombreEstado == "BloqueadoParaRevision"
+    def esBloqueadoEnRevision(self):
+        # Verificar que el estado sea "BloqueadoEnRevision"
+        return self.nombreEstado == "BloqueadoEnRevision"
     
     def esPendienteDeRevision(self):
         return self.nombreEstado == "PendienteDeRevision"
             
+    def esAmbitoEventoSismico(self):
+        return self.ambito == "EventoSismico"
+    
+    def esAmbitoSerieTemporal(self):
+        return self.ambito == "SerieTemporal"

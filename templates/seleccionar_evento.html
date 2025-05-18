@@ -35,8 +35,7 @@
             <div><strong> Epicentro:</strong> Latitud: {{ evento.getLatitudEpicentro() }}, Longitud: {{ evento.getLongitudEpicentro() }}</div>
             <div><strong> Hipocentro:</strong> Latitud: {{ evento.getLatitudHipocentro() }}, Longitud: {{ evento.getLongitudHipocentro() }}</div>
 
-            <button type="submit" name="evento_id" value="{{ evento.id }}" class="btn btn-light border mb-2 w-100 text-start">Seleccionar
-            </button>
+            <a href="/eventos/evento" class="btn btn-primary">Seleccionar</a>
         </div>
 
         {% endfor %}

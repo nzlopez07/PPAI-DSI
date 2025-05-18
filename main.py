@@ -23,6 +23,13 @@ def eventos():
     return render_template('seleccionar_evento.html', eventos=eventos)
 
 """
+@app.route('/eventos/evento')
+def eventos():
+    evento = pantalla.mostrarYSolicitarSeleccionEvento()
+    return render_template('detalle_evento.html', eventos=eventos)
+"""
+
+"""
 @app.route('/evento', methods=['POST'])
 def evento():
     evento_id = int(request.form['evento_id'])

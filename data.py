@@ -6,14 +6,22 @@ from entities.SerieTemporal import SerieTemporal
 from datetime import datetime
 
 # Mocks simples para objetos referenciales
-estado_auto_detectado = Estado(ambito="Evento", nombreEstado="AutoDetectado")
-estado_pendiente_revision = Estado(ambito="Evento", nombreEstado="PendienteDeRevision")
-cambio_estado = CambioEstado(datetime.now,estado_auto_detectado)  # Completar según tu implementación
-cambio_estado2 = CambioEstado(datetime.now,estado_pendiente_revision)
 clasificacion = None  # Reemplazar por un mock si es necesario
 magnitud = None       # Reemplazar por un mock si es necesario
 origen = None         # Reemplazar por un mock si es necesario
 alcance = AlcanceSismo("ASD", "Alcance")  # Completar según implementación
+
+# Lista de estados
+estados_mock = [
+    Estado(ambito="EventoSismico", nombreEstado="AutoDetectado"),
+    Estado(ambito="EventoSismico", nombreEstado="PendienteDeRevision"),
+    Estado(ambito="EventoSismico", nombreEstado="BloqueadoEnRevision")
+]
+
+cambios_estado_mock = [
+    CambioEstado(datetime.now, estados_mock[0]),
+    CambioEstado(datetime.now,estados_mock[1])
+]
 
 # Muestra mínima de una serie temporal
 serie = SerieTemporal(
@@ -24,13 +32,14 @@ serie = SerieTemporal(
     muestraSismica=[]  # Podés simular con mocks también
 )
 
+#Lista de eventos sismicos
 eventos_mock = [EventoSismico(
     clasificacion=clasificacion,
     magnitud=magnitud,
     origenGeneracion=origen,
     alcanceSismo=alcance,
-    estadoActual=estado_pendiente_revision,
-    cambioEstado=cambio_estado2,
+    estadoActual=estados_mock[1],
+    cambioEstado=cambios_estado_mock[1],
     serieTemporal=[serie],
     fechaHoraOcurrencia=datetime(2025, 5, 20, 13, 0),
     latitudEpicentro=-31.4167,
@@ -43,8 +52,8 @@ eventos_mock = [EventoSismico(
     magnitud=magnitud,
     origenGeneracion=origen,
     alcanceSismo=alcance,
-    estadoActual=estado_auto_detectado,
-    cambioEstado=cambio_estado,
+    estadoActual=estados_mock[0],
+    cambioEstado=cambios_estado_mock[0],
     serieTemporal=[serie],
     fechaHoraOcurrencia=datetime(2025, 5, 14, 10, 0),
     latitudEpicentro=-31.4167,
