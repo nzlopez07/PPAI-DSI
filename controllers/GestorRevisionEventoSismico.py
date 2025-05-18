@@ -30,7 +30,7 @@ class GestorRevisionEventoSismico:
             if (evento.estaAutoDetectado()) or (evento.estaPendienteDeRevision()):
                 self.eventosSismicosAutoDetectados.append(evento)
         self.ordenarPorFechaYHora(self.eventosSismicosAutoDetectados)
-        #return self.eventosSismicosAutoDetectados
+        return self.eventosSismicosAutoDetectados
 
     
     def ordenarPorFechaYHora(self, eventosSismicos:list[EventoSismico]):
@@ -38,10 +38,9 @@ class GestorRevisionEventoSismico:
         
         for i in range(n - 1):
             for j in range(i + 1, n):
-                if eventosSismicos[i].getFechaHoraOcurrencia() > eventosSismicos[j].getFechaHoraOcurrencia():
+                if (eventosSismicos[i].getFechaHoraOcurrencia()) > (eventosSismicos[j].getFechaHoraOcurrencia()):
                     eventosSismicos[i], eventosSismicos[j] = eventosSismicos[j], eventosSismicos[i]
-        
-        return eventosSismicos
+                    
             
 
     def obtenerEstacionesSismográficas():
