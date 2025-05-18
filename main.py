@@ -1,50 +1,65 @@
-from entities.EventoSismico import EventoSismico
-from entities.Estado import Estado
-from entities.CambioEstado import CambioEstado
-from entities.AlcanceSismo import AlcanceSismo
-from entities.SerieTemporal import SerieTemporal
-from datetime import datetime
+
 from controllers.GestorRevisionEventoSismico import GestorRevisionEventoSismico as Gestor
+from flask import Flask, render_template, request, redirect
+from interface.PantallaRevisionEventoSismico import PantallaRevisionEventoSismico
 
-# Mocks simples para objetos referenciales
-estado_auto_detectado = Estado(ambito="Evento", nombreEstado="AutoDetectado")
-cambio_estado = CambioEstado(datetime.now,estado_auto_detectado)  # Completar según tu implementación
-clasificacion = None  # Reemplazar por un mock si es necesario
-magnitud = None       # Reemplazar por un mock si es necesario
-origen = None         # Reemplazar por un mock si es necesario
-alcance = AlcanceSismo("ASD", "Alcance")  # Completar según implementación
 
-# Muestra mínima de una serie temporal
-serie = SerieTemporal(
-    condicionAlarma=False,
-    fechaHoraInicioRegistroMuestras=datetime(2025, 5, 14, 10, 0),
-    fechaHoraRegistro=datetime(2025, 5, 14, 10, 1),
-    frecuenciaMuestreo=50,
-    muestraSismica=[]  # Podés simular con mocks también
-)
-
-evento_mock = EventoSismico(
-    clasificacion=clasificacion,
-    magnitud=magnitud,
-    origenGeneracion=origen,
-    alcanceSismo=alcance,
-    estadoActual=estado_auto_detectado,
-    cambioEstado=cambio_estado,
-    serieTemporal=[serie],
-    fechaHoraOcurrencia=datetime(2025, 5, 14, 10, 0),
-    latitudEpicentro=-31.4167,
-    latitudHipocentro=-31.4175,
-    longitudEpicentro=-64.1833,
-    longitudHipocentro=-64.1840,
-    valorMagnitud=3.9
-)
 
 
 #Iniciar Gestor
-gestor = Gestor(eventos=[evento_mock])
+#gestor = Gestor()
+
+
+app = Flask(__name__)
+pantalla = PantallaRevisionEventoSismico()
+
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+@app.route('/eventos')
+def eventos():
+    eventos = pantalla.opcionRegistrarRevisionManual()
+    return render_template('seleccionar_evento.html', eventos=eventos)
+
+"""
+@app.route('/evento', methods=['POST'])
+def evento():
+    evento_id = int(request.form['evento_id'])
+    evento = pantalla.obtener_evento_por_id(evento_id)
+    return render_template('detalle_evento.html', evento=evento)
+
+@app.route('/editar/<int:id>')
+def editar(id):
+    evento = pantalla.obtener_evento_por_id(id)
+    return render_template('editar_evento.html', evento=evento)
+
+@app.route('/guardar_edicion/<int:id>', methods=['POST'])
+def guardar_edicion(id):
+    datos = {
+        'magnitud': request.form['magnitud'],
+        'alcance': request.form['alcance'],
+        'origen': request.form['origen']
+    }
+    pantalla.actualizar_evento(id, datos)
+    return redirect(f'/confirmar/{id}')
+
+@app.route('/confirmar/<int:id>')
+def confirmar(id):
+    evento = pantalla.obtener_evento_por_id(id)
+    return render_template('confirmar_evento.html', evento=evento)
+
+@app.route('/resultado_final/<int:id>', methods=['POST'])
+def resultado_final(id):
+    accion = request.form['accion']
+    resultado = pantalla.finalizar_evento(id, accion)
+    return render_template('resultado_final.html', resultado=resultado)
+"""
 
 
 if __name__ == "__main__":
     # Llamar al método para buscar eventos auto detectados
-    gestor.buscarEventosAutoDetectados()
-    print("Cantidad de Eventos AutoDetectados cargados: ", len(gestor.getEventosSismicosAutoDetectados()))
+    app.run(debug=True)
+    eventos = pantalla.opcionRegistrarRevisionManual()
+    print (eventos)
+    

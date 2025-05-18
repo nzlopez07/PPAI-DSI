@@ -1,3 +1,13 @@
+from controllers.GestorRevisionEventoSismico import GestorRevisionEventoSismico
+
 class PantallaRevisionEventoSismico:
     def __init__(self):
-        pass
+        self.gestorRevision:GestorRevisionEventoSismico = GestorRevisionEventoSismico()
+        
+    def opcionRegistrarRevisionManual(self):
+        return self.habilitarPantalla()
+
+    def habilitarPantalla(self):
+        return self.gestorRevision.opcionRevisionRegistrarResultadoManual()
+        
+    
