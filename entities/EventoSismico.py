@@ -111,5 +111,7 @@ class EventoSismico:
                 return cambioEstado
 
     # Método que corresponedría a la maquina de estados
-    def bloquearEnRevision(self, estado: Estado, cambioEstado: CambioEstado):
-        cambioEstado.setEstado()
+    def bloquearEnRevision(self, estado: Estado, cambioEstado: CambioEstado, fechaHora):
+        cambioEstado.setFechaHoraFin(fechaHora)
+        nuevoCambioEstado = CambioEstado(fechaHora, estado)
+        self.cambiosEstado.append(nuevoCambioEstado)

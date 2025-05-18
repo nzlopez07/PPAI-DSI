@@ -49,13 +49,20 @@ class GestorRevisionEventoSismico:
         pass
             
     def bloquearEventoSismico(self):
-        # Buscar por estado y ambito
+        # Buscar por estado y ambito el estado BloqueadoEnRevision
         for estado in estados_mock:
             if (estado.esAmbitoEventoSismico) and (estado.esBloqueadoEnRevision):
                 self.estadoBloqueadoEnRevision = estado
                 break
-        # Setear el estadoActual
+        # Buscar el cambio de estado actual
         self.cambioEstadoActual = self.eventoSismicoSeleccionado.esEstadoActual()
+
+        #Calcular fecha y hora actual
+        self.horaFechaFinCambioEstado = self.calcularFechaHoraActual()
+
+        #Realizar el cambio de estado
+        self.eventoSismicoSeleccionado.setEstadoActual(self.estadoBloqueadoEnRevision)
+        self.eventoSismicoSeleccionado.bloquearEnRevision(self.estadoBloqueadoEnRevision, self.cambioEstadoActual, self.fechaHoraActualBloqueadoEnRevision)
         
 
     def obtenerEstacionesSismográficas():
