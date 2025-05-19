@@ -1,4 +1,4 @@
-import entities.Empleado as Empleado
+from entities.Empleado import Empleado
 class Usuario:
     def __init__(self, contraseña, nombreUsuario, empleado):
         self.__contraseña = contraseña

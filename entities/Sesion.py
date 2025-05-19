@@ -1,4 +1,4 @@
-import entities.Usuario as Usuario
+from entities.Usuario import Usuario
 class Sesion:
     def __init__(self, fechaInicio, fechaFin, usuarioActivo):
         self.__fechaInicio = fechaInicio

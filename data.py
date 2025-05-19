@@ -1,5 +1,5 @@
 from datetime import datetime
-from collections import defaultdict
+#from collections import defaultdict
 
 from entities.ClasificacionSismo import ClasificacionSismo
 from entities.OrigenDeGeneracion import OrigenDeGeneracion
@@ -181,33 +181,3 @@ sismografos_mock = [
     #Sismografo(datetime(2022, 3, 5, 8, 45), "SISMO-004", "SN12348"),
     #Sismografo(datetime(2021, 12, 1, 16, 0), "SISMO-005", "SN12349")
 ]
-
-
-datosPorEstacion = defaultdict(list)
-for serie in eventos_mock[0].getSerieTemporal():
-    nombreEstacion = serie.obtenerNombreEstacion()
-    for muestra in serie.getMuestraSismica():
-        fechaHoraMuestra = muestra.getFechaHoraMuestra()
-        for detalle in muestra.getDetalleMuestraSismica():
-            frecuencia = detalle.getFrecuenciaOnda()
-            longitud = detalle.getLongitudOnda()
-            velocidad = detalle.getVelocidadOnda()
-
-            # Guardar valores
-            datosPorEstacion[nombreEstacion].append({
-                "fechaHoraMuestra": fechaHoraMuestra,
-                "frecuenciaOnda": frecuencia,
-                "longitudOnda":longitud,
-                "velocidadOnda":velocidad
-            })
-
-print("\n📡 Datos por Estación Sismográfica:\n" + "="*40)
-for nombre_estacion, muestras in datosPorEstacion.items():
-    print(f"\n🔸 Estación: {nombre_estacion}\n" + "-"*40)
-    for i, muestra in enumerate(muestras, start=1):
-        print(f"Muestra #{i}:")
-        print(f"\tFecha y Hora: {muestra['fechaHoraMuestra']}")
-        print(f"\tFrecuencia de Onda: {muestra['frecuenciaOnda']} Hz")
-        print(f"\tLongitud de Onda:   {muestra['longitudOnda']} m")
-        print(f"\tVelocidad de Onda:  {muestra['velocidadOnda']} m/s")
-    print("-"*40)

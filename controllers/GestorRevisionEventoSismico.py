@@ -3,7 +3,7 @@ from entities.EventoSismico import EventoSismico
 from entities.Estado import Estado
 from entities.CambioEstado import CambioEstado
 #from interface.PantallaRevisionEventoSismico import PantallaRevisionEventoSismico
-from data import eventos_mock, estados_mock
+from data import eventos_mock, estados_mock, sismografos_mock
 from collections import defaultdict
 
 #lista_estados_mock = [Estado(**data) for data in estados_mock]
@@ -102,7 +102,7 @@ class GestorRevisionEventoSismico:
         # Se crea un diccionario que arma una lista por clave
         self.datosEventoPorEstacion = defaultdict(list)
         for serie in self.eventoSismicoSeleccionado.getSerieTemporal():
-            nombreEstacion = serie.obtenerNombreEstacion()
+            nombreEstacion = serie.obtenerNombreEstacion(sismografos_mock)
             for muestra in serie.getMuestraSismica():
                 fechaHoraMuestra = muestra.getFechaHoraMuestra()
                 for detalle in muestra.getDetalleMuestraSismica():
