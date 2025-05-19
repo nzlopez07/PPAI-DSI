@@ -27,7 +27,7 @@ class EventoSismico:
         self.origenGeneracion: OrigenDeGeneracion = origenGeneracion
         self.alcanceSismo: AlcanceSismo = alcanceSismo
         self.estadoActual: Estado = estadoActual
-        self.cambiosEstado: list[CambioEstado] = [cambiosEstado]
+        self.cambioEstado: list[CambioEstado] = cambiosEstado
         self.serieTemporal: list[SerieTemporal] = serieTemporal # Es una lista
 
     # Métodos GET
@@ -90,7 +90,7 @@ class EventoSismico:
     def setEstadoActual(self, estadoActual):
         self.estadoActual = estadoActual
     def setCambioEstado(self, cambioEstado):
-        self.cambiosEstado = cambioEstado
+        self.cambioEstado = cambioEstado
     def setSerieTemporal(self, serieTemporal):
         self.serieTemporal = serieTemporal
 
@@ -106,7 +106,9 @@ class EventoSismico:
         return self.estadoActual.esPendienteDeRevision()
 
     def esEstadoActual(self):
-        for cambioEstado in self.cambiosEstado:
+        # Si el cambio de estado es el estado actual devuelve el cambio de estado
+        # Sino devuelve None (En caso de no encontrar nada)
+        for cambioEstado in self.cambioEstado:
             if cambioEstado.esEstadoActual():
                 return cambioEstado
 
@@ -114,7 +116,7 @@ class EventoSismico:
     def bloquearEnRevision(self, estado: Estado, cambioEstado: CambioEstado, fechaHora):
         cambioEstado.setFechaHoraFin(fechaHora)
         nuevoCambioEstado = CambioEstado(fechaHora, estado)
-        self.cambiosEstado.append(nuevoCambioEstado)
+        self.cambioEstado.append(nuevoCambioEstado)
 
     # Nombres a chequear
     def obtenerDatosEvento(self):

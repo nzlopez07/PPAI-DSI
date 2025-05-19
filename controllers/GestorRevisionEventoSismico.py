@@ -33,9 +33,10 @@ class GestorRevisionEventoSismico:
     
     # Buscar eventos autodetectados o pendientes de revision para mostrar al inicio
     def buscarEventosAutoDetectados(self):
-        print("Entramos al método buscarEventosAutoDetectados de Gestor correctamente")
+        print("------Entramos al método buscarEventosAutoDetectados de Gestor correctamente\n")
         # Recorre la colección de todos los eventos sísmicos y valida que tengan el estado "AutoDetectado"
         self.eventosSismicosAutoDetectados = []
+        # Busca por estado actual, no por el cambio de estado
         for evento in eventos_mock:
             if (evento.estaAutoDetectado()) or (evento.estaPendienteDeRevision()):
                 self.eventosSismicosAutoDetectados.append(evento)

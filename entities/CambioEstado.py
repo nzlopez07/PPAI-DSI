@@ -1,10 +1,10 @@
 from entities.Estado import Estado
 
 class CambioEstado:
-    def __init__(self, fechaHoraInicio, estado,):
+    def __init__(self, fechaHoraInicio, estado, fechaHoraFin=None):
         self.fechaHoraInicio = fechaHoraInicio
         self.estado: Estado = estado #Objeto del tipo Estado
-        self.fechaHoraFin = None # Cuando se crea el cambio de estado no tiene fecha de fin
+        self.fechaHoraFin = fechaHoraFin # Cuando se crea el cambio de estado no tiene fecha de fin
         self.responsableInspeccion = None # Cuando se crea el cambio de estado a "AutoDetectado", todavía nadie hizo la revisión
 
     # Métodos GET
