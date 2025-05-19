@@ -1,41 +1,84 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <title>Seleccionar Evento Sísmico</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <meta charset="UTF-8" />
+  <title>Seleccionar Evento Sísmico</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    body {
+      background-color: #f2f4f8;
+      font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-    <style>
-        .btn-light{
-            background-color: #f9f9f9;
-            border-radius: 8px;
-            padding: 12px;
-        }
-        
-        .btn-light-light:hover{
-            background-color: #e9ecef;
-        }
-    </style>
+    .page-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #0d6efd;
+    }
+
+    .card-evento {
+      background-color: #ffffff;
+      border-radius: 1rem;
+      padding: 1.5rem 2rem;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card-evento:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .card-evento div {
+      margin-bottom: 0.5rem;
+      font-size: 1.05rem;
+    }
+
+    .card-evento strong {
+      color: #6c757d;
+      min-width: 120px;
+      display: inline-block;
+    }
+
+    .btn-select {
+      padding: 0.6rem 1.5rem;
+      border-radius: 2rem;
+      font-weight: 500;
+      font-size: 1rem;
+      box-shadow: 0 2px 6px rgba(13, 110, 253, 0.2);
+    }
+
+    .btn-select:hover {
+      transform: scale(1.02);
+    }
+
+    .form-wrapper {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+  </style>
 </head>
-<body class="container mt-5">
-    <div class="mb-4 border-bottom pb-2">
-        <h2 class="fw-bold">
-            Seleccionar evento sísmico
-        </h2>
+<body class="py-5">
+
+  <div class="form-wrapper">
+    <div class="mb-4 border-bottom pb-3">
+      <h2 class="page-title"> Seleccionar evento sísmico</h2>
     </div>
 
     {% for evento in eventos %}
-    <div class="card mb-3 shadow-sm">
-        <form method="POST" action="/eventos/evento">
-            <div><strong>Fecha y hora:</strong> {{ evento.getFechaHoraOcurrencia().strftime('%d/%m/%Y %H:%M') }}</div>
-            <div><strong>Magnitud:</strong> {{ evento.getValorMagnitud() }}</div>
-            <div><strong>Epicentro:</strong> Latitud: {{ evento.getLatitudEpicentro() }}, Longitud: {{ evento.getLongitudEpicentro() }}</div>
-            <div><strong>Hipocentro:</strong> Latitud: {{ evento.getLatitudHipocentro() }}, Longitud: {{ evento.getLongitudHipocentro() }}</div>
+    <div class="card-evento mb-4">
+      <form method="POST" action="/eventos/evento">
+        <div><strong>Fecha y hora:</strong> {{ evento.getFechaHoraOcurrencia().strftime('%d/%m/%Y %H:%M') }}</div>
+        <div><strong>Magnitud:</strong> {{ evento.getValorMagnitud() }}</div>
+        <div><strong>Epicentro:</strong> Latitud: {{ evento.getLatitudEpicentro() }}, Longitud: {{ evento.getLongitudEpicentro() }}</div>
+        <div><strong>Hipocentro:</strong> Latitud: {{ evento.getLatitudHipocentro() }}, Longitud: {{ evento.getLongitudHipocentro() }}</div>
 
-            <input type="hidden" name="eventoSeleccionado" value="{{ loop.index0 }}">
-            <button type="submit" class="btn btn-primary mt-2">Seleccionar</button>
-        </form>
+        <input type="hidden" name="eventoSeleccionado" value="{{ loop.index0 }}">
+        <button type="submit" class="btn btn-primary btn-select mt-3">Seleccionar</button>
+      </form>
     </div>
     {% endfor %}
+  </div>
+
 </body>
 </html>
