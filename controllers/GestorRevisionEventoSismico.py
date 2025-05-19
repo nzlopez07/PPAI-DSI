@@ -2,13 +2,15 @@ from datetime import datetime
 from entities.EventoSismico import EventoSismico
 from entities.Estado import Estado
 from entities.CambioEstado import CambioEstado
+#from interface.PantallaRevisionEventoSismico import PantallaRevisionEventoSismico
 from data import eventos_mock, estados_mock
 
 #lista_estados_mock = [Estado(**data) for data in estados_mock]
 #lista_eventos_mock = [EventoSismico(**data) for data in eventos_mock]
 
 class GestorRevisionEventoSismico:
-    def __init__(self):
+    def __init__(self, pantalla):
+        self.pantallaRevision = pantalla
         self.horaFechaFinCambioEstado = None
         self.eventosSismicosAutoDetectados: list[EventoSismico] = [] # Colección de todos los eventos sísmicos con estado actual "AutoDetectado"
         self.eventoSismicoSeleccionado: EventoSismico = None
@@ -40,8 +42,12 @@ class GestorRevisionEventoSismico:
         for evento in eventos_mock:
             if (evento.estaAutoDetectado()) or (evento.estaPendienteDeRevision()):
                 self.eventosSismicosAutoDetectados.append(evento)
+        
+        #Ordena los eventos sismicos a mostrar
         self.ordenarPorFechaYHora(self.eventosSismicosAutoDetectados)
-        return self.eventosSismicosAutoDetectados
+        # Los manda
+        self.pantallaRevision.mostrarYSolicitarSeleccionEvento(self.eventosSismicosAutoDetectados)
+        #return self.eventosSismicosAutoDetectados
 
     def ordenarPorFechaYHora(self, eventosSismicos:list[EventoSismico]):
         n = len(eventosSismicos)
@@ -53,7 +59,8 @@ class GestorRevisionEventoSismico:
     
     # Seleccionar un evento
     def tomarSeleccionEvento(self):
-        self.bloquearEventoSismico
+        self.bloquearEventoSismico()
+        self.buscarDatosSismicos()
             
     def bloquearEventoSismico(self):
         # Buscar por estado y ambito el estado BloqueadoEnRevision
@@ -62,7 +69,7 @@ class GestorRevisionEventoSismico:
                 self.estadoBloqueadoEnRevision = estado
                 break
         # Buscar el cambio de estado actual
-        self.cambioEstadoActual = self.eventoSismicoSeleccionado.esEstadoActual()
+        self.cambioEstadoActual = self.eventoSismicoSeleccionado.obtenerEstadoActual()
 
         #Calcular fecha y hora actual
         self.horaFechaFinCambioEstado = self.calcularFechaHoraActual()
@@ -70,10 +77,14 @@ class GestorRevisionEventoSismico:
         #Realizar el cambio de estado
         self.eventoSismicoSeleccionado.setEstadoActual(self.estadoBloqueadoEnRevision)
         self.eventoSismicoSeleccionado.bloquearEnRevision(self.estadoBloqueadoEnRevision, self.cambioEstadoActual, self.fechaHoraActualBloqueadoEnRevision)
-        
+        print("Estado actual es: ", self.eventoSismicoSeleccionado.estadoActual.getNombreEstado())
+    
+    
     def buscarDatosSismicos(self):
         self.nombreAlcance, self.nombreOrigen, self.nombreClasificacion = self.eventoSismicoSeleccionado.obtenerDatosEvento()
-    
+
+
+
     def obtenerEstacionesSismográficas():
         pass
 

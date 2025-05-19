@@ -7,21 +7,23 @@ from interface.PantallaRevisionEventoSismico import PantallaRevisionEventoSismic
 app = Flask(__name__)
 pantalla = PantallaRevisionEventoSismico()
 
+# Ruta de inicio
 @app.route('/')
 def home():
     return render_template('index.html')
 
+# Ruta donde se muestran todos los eventos AutoDetectados y PendientesDeRevision
 @app.route('/eventos')
 def eventos():
     eventos = pantalla.opcRegistrarResultadoRevisionManual()
     return render_template('seleccionar_evento.html', eventos=eventos)
 
-"""
+# Ruta donde se muestran los datos del evento seleccionado
 @app.route('/eventos/evento')
-def eventos():
-    evento = pantalla.mostrarYSolicitarSeleccionEvento()
-    return render_template('detalle_evento.html', eventos=eventos)
-"""
+def eventoSeleccionado():
+    alcance, origen, clasificacion = pantalla.tomarSeleccionEvento()
+    return render_template('detalle_evento.html', alcance=alcance, origen=origen, clasificacion=clasificacion)
+
 
 """
 @app.route('/evento', methods=['POST'])

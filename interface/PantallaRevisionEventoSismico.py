@@ -2,19 +2,31 @@ from controllers.GestorRevisionEventoSismico import GestorRevisionEventoSismico
 
 class PantallaRevisionEventoSismico:
     def __init__(self):
-        self.gestorRevision:GestorRevisionEventoSismico = GestorRevisionEventoSismico()
+        self.gestorRevision:GestorRevisionEventoSismico = GestorRevisionEventoSismico(self)
+        self.eventosAutoDetectadosYPendientesDeRevision = None
         self.eventoSeleccionado = None
+        self.nombreOrigen = None
+        self.nombreAlcance = None
+        self.nombreClasificacion = None
         
     def opcRegistrarResultadoRevisionManual(self):
-        return self.habilitarPantalla()
+        self.habilitarPantalla()
+        return self.eventosAutoDetectadosYPendientesDeRevision
 
     def habilitarPantalla(self):
-        return self.gestorRevision.opcRegistrarResultadoRevisionManual()
+        self.gestorRevision.opcRegistrarResultadoRevisionManual()
     
-    def mostrarYSolicitarSeleccionEvento(self):
-        self.tomarSeleccionEvento()
+    def mostrarYSolicitarSeleccionEvento(self, eventos):
+        #self.tomarSeleccionEvento()
+        self.eventosAutoDetectadosYPendientesDeRevision = eventos
 
     def tomarSeleccionEvento(self):
         self.gestorRevision.tomarSeleccionEvento()
+        return self.nombreAlcance, self.nombreOrigen, self.nombreClasificacion
+
+    def mostrarDatosEventosSismicos(self, nombreAlcance, nombreOrigen, nombreClasificacion):
+        self.nombreOrigen = nombreOrigen
+        self.nombreAlcance = nombreAlcance
+        self.nombreClasificacion = nombreClasificacion
         
     

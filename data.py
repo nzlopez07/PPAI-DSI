@@ -74,7 +74,8 @@ eventos_mock = [
         longitudEpicentro=-64.1833,
         longitudHipocentro=-64.1840,
         valorMagnitud=1
-    ), 
+    )]
+"""
     EventoSismico(
         clasificacion=clasificacion_mock,
         magnitud=None,
@@ -104,8 +105,8 @@ eventos_mock = [
         longitudEpicentro=-64.1833,
         longitudHipocentro=-64.1840,
         valorMagnitud=3
-    )
-]
+    )"""
+#]
 
 sismografos_mock = [
     Sismografo(datetime(2025, 5, 14, 10, 0), "SISMO-001", "SN12345"),

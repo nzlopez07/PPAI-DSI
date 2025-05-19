@@ -105,7 +105,7 @@ class EventoSismico:
         print("Estado actual: ", self.estadoActual.nombreEstado)
         return self.estadoActual.esPendienteDeRevision()
 
-    def esEstadoActual(self):
+    def obtenerEstadoActual(self):
         # Si el cambio de estado es el estado actual devuelve el cambio de estado
         # Sino devuelve None (En caso de no encontrar nada)
         for cambioEstado in self.cambioEstado:

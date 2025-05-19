@@ -37,10 +37,11 @@ class CambioEstado:
 
     def esEstadoActual(self):
         # Verificar que el objeto CambioEstado es del estado actual
-        esEstadoActual = False
+        aux = False
         if self.fechaHoraFin == None:
-            esEstadoActual = True
-        return esEstadoActual
+            aux = True
+        return aux
+        #return self.fechaHoraFin == None
     
     def esEstadoAutoDetectado(self):
         # Verificar que el estado al que apunta el cambio de estado sea "AutoDetectado"
