@@ -18,27 +18,24 @@
     </style>
 </head>
 <body class="container mt-5">
-    <div class = "mb-4 border-bottom pb-2">
-    <h2 class = "fw-bold">
-        Seleccionar evento sísmico
-    </h2>
+    <div class="mb-4 border-bottom pb-2">
+        <h2 class="fw-bold">
+            Seleccionar evento sísmico
+        </h2>
+    </div>
 
-    
+    {% for evento in eventos %}
+    <div class="card mb-3 shadow-sm">
+        <form method="POST" action="/eventos/evento">
+            <div><strong>Fecha y hora:</strong> {{ evento.getFechaHoraOcurrencia().strftime('%d/%m/%Y %H:%M') }}</div>
+            <div><strong>Magnitud:</strong> {{ evento.getValorMagnitud() }}</div>
+            <div><strong>Epicentro:</strong> Latitud: {{ evento.getLatitudEpicentro() }}, Longitud: {{ evento.getLongitudEpicentro() }}</div>
+            <div><strong>Hipocentro:</strong> Latitud: {{ evento.getLatitudHipocentro() }}, Longitud: {{ evento.getLongitudHipocentro() }}</div>
 
-    <div>
-    <form method="POST" action="/evento">
-        {% for evento in eventos %}
-        <div class="card mb-3 shadow-sm">
-
-            <div><strong> Fecha y hora:</strong> {{ evento.getFechaHoraOcurrencia().strftime('%d/%m/%Y %H:%M') }}</div>
-            <div><strong> Magnitud:</strong> {{ evento.getValorMagnitud() }}</div>
-            <div><strong> Epicentro:</strong> Latitud: {{ evento.getLatitudEpicentro() }}, Longitud: {{ evento.getLongitudEpicentro() }}</div>
-            <div><strong> Hipocentro:</strong> Latitud: {{ evento.getLatitudHipocentro() }}, Longitud: {{ evento.getLongitudHipocentro() }}</div>
-
-            <a href="/eventos/evento" class="btn btn-primary">Seleccionar</a>
-        </div>
-
-        {% endfor %}
-    </form>
+            <input type="hidden" name="eventoSeleccionado" value="{{ loop.index0 }}">
+            <button type="submit" class="btn btn-primary mt-2">Seleccionar</button>
+        </form>
+    </div>
+    {% endfor %}
 </body>
 </html>

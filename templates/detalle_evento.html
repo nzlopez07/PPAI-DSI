@@ -8,11 +8,9 @@
 <body class="container mt-5">
     <h3>Detalles del Evento Seleccionado</h3>
     <ul class="list-group mb-3">
-        <li class="list-group-item"><strong>Magnitud:</strong> {{ evento.magnitud }}</li>
-        <li class="list-group-item"><strong>Alcance:</strong> {{ evento.alcance }}</li>
-        <li class="list-group-item"><strong>Origen:</strong> {{ evento.origen }}</li>
+        <li class="list-group-item"><strong>Clasificación:</strong> {{ clasificacion }}</li>
+        <li class="list-group-item"><strong>Alcance:</strong> {{ alcance }}</li>
+        <li class="list-group-item"><strong>Origen:</strong> {{ origen }}</li>
     </ul>
-    <a href="/editar/{{ evento.id }}" class="btn btn-warning me-2">Editar datos del evento</a>
-    <a href="/confirmar/{{ evento.id }}" class="btn btn-primary">Continuar</a>
 </body>
 </html>

@@ -120,7 +120,12 @@ class EventoSismico:
 
     # Nombres a chequear
     def obtenerDatosEvento(self):
+        print("\n\nObtenemos datos del evento")
         alcance = self.getAlcanceSismo().getNombre()
         origen = self.getOrigenGeneracion().getNombre()
         clasificacion = self.getClasificacion().getNombre()
+        print("Nombre origen: ", origen)
+        print("Nombre alcance: ", alcance)
+        print("Nombre clasificacion: ", clasificacion)
+        print("\n")
         return alcance, origen, clasificacion

@@ -63,8 +63,8 @@ eventos_mock = [
     EventoSismico(
         clasificacion=clasificacion_mock[0],
         magnitud=None,
-        origenGeneracion=origen_mock[1],
-        alcanceSismo=alcances_mock[1],
+        origenGeneracion=origen_mock[0],
+        alcanceSismo=alcances_mock[0],
         estadoActual=estados_mock[0],
         cambiosEstado=cambios_estado_mock_AutoDet,
         serieTemporal=series_mock,
@@ -74,13 +74,12 @@ eventos_mock = [
         longitudEpicentro=-64.1833,
         longitudHipocentro=-64.1840,
         valorMagnitud=1
-    )]
-"""
+    ),
     EventoSismico(
-        clasificacion=clasificacion_mock,
+        clasificacion=clasificacion_mock[1],
         magnitud=None,
-        origenGeneracion=origen_mock[0],
-        alcanceSismo=alcances_mock[0],
+        origenGeneracion=origen_mock[1],
+        alcanceSismo=alcances_mock[1],
         estadoActual=estados_mock[1],
         cambiosEstado=cambios_estado_mock_PteRev,
         serieTemporal=series_mock,
@@ -92,10 +91,10 @@ eventos_mock = [
         valorMagnitud=2
     ), 
     EventoSismico(
-        clasificacion=clasificacion_mock,
+        clasificacion=clasificacion_mock[2],
         magnitud=None,
-        origenGeneracion=origen_mock[0],
-        alcanceSismo=alcances_mock[0],
+        origenGeneracion=origen_mock[2],
+        alcanceSismo=alcances_mock[2],
         estadoActual=estados_mock[3],
         cambiosEstado=cambios_estado_mock_Rechazado,
         serieTemporal=series_mock,
@@ -105,8 +104,8 @@ eventos_mock = [
         longitudEpicentro=-64.1833,
         longitudHipocentro=-64.1840,
         valorMagnitud=3
-    )"""
-#]
+    )
+]
 
 sismografos_mock = [
     Sismografo(datetime(2025, 5, 14, 10, 0), "SISMO-001", "SN12345"),

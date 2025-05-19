@@ -58,9 +58,11 @@ class GestorRevisionEventoSismico:
                     eventosSismicos[i], eventosSismicos[j] = eventosSismicos[j], eventosSismicos[i]
     
     # Seleccionar un evento
-    def tomarSeleccionEvento(self):
+    def tomarSeleccionEvento(self, evento):
+        self.eventoSismicoSeleccionado = evento
         self.bloquearEventoSismico()
         self.buscarDatosSismicos()
+        self.pantallaRevision.mostrarDatosEventosSismicos(self.nombreAlcance, self.nombreOrigen,self.nombreClasificacion)
             
     def bloquearEventoSismico(self):
         # Buscar por estado y ambito el estado BloqueadoEnRevision
@@ -82,7 +84,6 @@ class GestorRevisionEventoSismico:
     
     def buscarDatosSismicos(self):
         self.nombreAlcance, self.nombreOrigen, self.nombreClasificacion = self.eventoSismicoSeleccionado.obtenerDatosEvento()
-
 
 
     def obtenerEstacionesSismográficas():

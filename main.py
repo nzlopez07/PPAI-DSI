@@ -19,9 +19,10 @@ def eventos():
     return render_template('seleccionar_evento.html', eventos=eventos)
 
 # Ruta donde se muestran los datos del evento seleccionado
-@app.route('/eventos/evento')
+@app.route('/eventos/evento', methods=['POST'])
 def eventoSeleccionado():
-    alcance, origen, clasificacion = pantalla.tomarSeleccionEvento()
+    indice = int(request.form['eventoSeleccionado'])   
+    alcance, origen, clasificacion = pantalla.tomarSeleccionEvento(indice)
     return render_template('detalle_evento.html', alcance=alcance, origen=origen, clasificacion=clasificacion)
 
 

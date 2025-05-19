@@ -20,8 +20,11 @@ class PantallaRevisionEventoSismico:
         #self.tomarSeleccionEvento()
         self.eventosAutoDetectadosYPendientesDeRevision = eventos
 
-    def tomarSeleccionEvento(self):
-        self.gestorRevision.tomarSeleccionEvento()
+    def tomarSeleccionEvento(self, indice):
+        # Asigna el evento sismico selecionado a la pantalla
+        self.eventoSeleccionado = self.eventosAutoDetectadosYPendientesDeRevision[indice]
+        
+        self.gestorRevision.tomarSeleccionEvento(self.eventoSeleccionado)
         return self.nombreAlcance, self.nombreOrigen, self.nombreClasificacion
 
     def mostrarDatosEventosSismicos(self, nombreAlcance, nombreOrigen, nombreClasificacion):
