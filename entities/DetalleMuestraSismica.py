@@ -6,17 +6,17 @@ class DetalleMuestraSismica:
         self.frecuenciaOnda = frecOnda
         self.longitudOnda = longOnda
     
-    def getVelocidad(self):
+    def getVelocidadOnda(self):
         return self.velocidadOnda
-    def getFrecuencia(self):
+    def getFrecuenciaOnda(self):
         return self.frecuenciaOnda
-    def getLongitud(self):
+    def getLongitudOnda(self):
         return self.longitudOnda
     
-    def setVelocidad(self, velocidad):
+    def setVelocidadOnda(self, velocidad):
         self.velocidadOnda = velocidad
-    def setFrecuencia(self, frecuencia):
+    def setFrecuenciaOnda(self, frecuencia):
         self.frecuenciaOnda = frecuencia
-    def setLongitud(self, longitud):
+    def setLongitudOnda(self, longitud):
         self.longitudOnda = longitud
 

@@ -1,15 +1,16 @@
 from entities.EstacionSismologica import EstacionSismologica
-from entities.SerieTemporal import SerieTemporal
 #from data import series_mock
 
 
 class Sismografo:
-    def __init__(self, fechaAdquisicion, identificadorSismografo, nroSerie):
+    def __init__(self, fechaAdquisicion, identificadorSismografo, nroSerie, estacionSismologica, seriesTemporales):
         self.__fechaAdquisicion = fechaAdquisicion
         self.__identificadorSismografo = identificadorSismografo
         self.__nroSerie = nroSerie
-        #self.__estacionSismologica: EstacionSismologica = estacionSismologica
-        self.seriesSismologicas: list[SerieTemporal] = None
+        
+        #Atributos referenciales
+        self.seriesSismologicas = seriesTemporales
+        self.__estacionSismologica: EstacionSismologica = estacionSismologica
     
     #Getters
     def getFechaAdquisicion(self):
@@ -32,3 +33,8 @@ class Sismografo:
         self.__estacionSismologica = estacionSismologica
 
     #Métodos realizacion CU
+    def esTuSerie(self, serieTemporal):
+        for serie in self.seriesSismologicas:
+            if serie == serieTemporal:
+                return True
+        return False

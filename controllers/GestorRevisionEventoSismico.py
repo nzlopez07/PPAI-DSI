@@ -4,6 +4,7 @@ from entities.Estado import Estado
 from entities.CambioEstado import CambioEstado
 #from interface.PantallaRevisionEventoSismico import PantallaRevisionEventoSismico
 from data import eventos_mock, estados_mock
+from collections import defaultdict
 
 #lista_estados_mock = [Estado(**data) for data in estados_mock]
 #lista_eventos_mock = [EventoSismico(**data) for data in eventos_mock]
@@ -20,6 +21,7 @@ class GestorRevisionEventoSismico:
         self.nombreAlcance = None
         self.nombreOrigen = None
         self.nombreClasificacion = None
+        self.datosEventoPorEstacion = None
 
     #Métodos get y set si corresponden
     def getEventosSismicosAutoDetectados(self):
@@ -59,10 +61,20 @@ class GestorRevisionEventoSismico:
     
     # Seleccionar un evento
     def tomarSeleccionEvento(self, evento):
+        # Asigna el evento sismico seleccionado al gestor
         self.eventoSismicoSeleccionado = evento
+
+        # Cambio de estado del evento sismico
         self.bloquearEventoSismico()
-        self.buscarDatosSismicos()
+
+        # Busca nombre de origen, alcance y clasifiacion
+        self.buscarDatosEventoSismico()
+
+        # Envia esos datos a la pantalla para mostrar
         self.pantallaRevision.mostrarDatosEventosSismicos(self.nombreAlcance, self.nombreOrigen,self.nombreClasificacion)
+
+        # Arma diccionario para clasificar por estacion todos los datos de los detalles muestra de cada muestra de cada serie
+        self.buscarDatosSeriesPorEstacion()
             
     def bloquearEventoSismico(self):
         # Buscar por estado y ambito el estado BloqueadoEnRevision
@@ -82,15 +94,40 @@ class GestorRevisionEventoSismico:
         print("Estado actual es: ", self.eventoSismicoSeleccionado.estadoActual.getNombreEstado())
     
     
-    def buscarDatosSismicos(self):
+    def buscarDatosEventoSismico(self):
         self.nombreAlcance, self.nombreOrigen, self.nombreClasificacion = self.eventoSismicoSeleccionado.obtenerDatosEvento()
 
 
-    def obtenerEstacionesSismográficas():
-        pass
+    def buscarDatosSeriesPorEstacion(self):
+        # Se crea un diccionario que arma una lista por clave
+        self.datosEventoPorEstacion = defaultdict(list)
+        for serie in self.eventoSismicoSeleccionado.getSerieTemporal():
+            nombreEstacion = serie.obtenerNombreEstacion()
+            for muestra in serie.getMuestraSismica():
+                fechaHoraMuestra = muestra.getFechaHoraMuestra()
+                for detalle in muestra.getDetalleMuestraSismica():
+                    frecuencia = detalle.getFrecuenciaOnda()
+                    longitud = detalle.getLongitudOnda()
+                    velocidad = detalle.getVelocidadOnda()
 
-    def clasificarMuestrasPorEstaciones():
-        pass
+                    # Guardar valores
+                    self.datosEventoPorEstacion[nombreEstacion].append({
+                        "fechaHoraMuestra": fechaHoraMuestra,
+                        "frecuenciaOnda": frecuencia,
+                        "longitudOnda":longitud,
+                        "velocidadOnda":velocidad
+                    })
+
+        print("\nDatos por Estación Sismográfica:\n" + "="*40)
+        for nombre_estacion, muestras in self.datosEventoPorEstacion.items():
+            print(f"\nEstación: {nombre_estacion}\n" + "-"*40)
+            for i, muestra in enumerate(muestras, start=1):
+                print(f"Muestra #{i}:")
+                print(f"\tFecha y Hora: {muestra['fechaHoraMuestra']}")
+                print(f"\tFrecuencia de Onda: {muestra['frecuenciaOnda']} Hz")
+                print(f"\tLongitud de Onda:   {muestra['longitudOnda']} m")
+                print(f"\tVelocidad de Onda:  {muestra['velocidadOnda']} m/s")
+            print("-"*40)
 
     def llamarCU18():
         pass

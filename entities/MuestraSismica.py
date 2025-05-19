@@ -1,22 +1,21 @@
 from entities.DetalleMuestraSismica import DetalleMuestraSismica
 
 class MuestraSismica:
-    def __init__(self, fechaHoraMuestra,DetalleMuestraSismica):
-        self.__fechaHoraMuestra = fechaHoraMuestra
-        self.__DetalleMuestraSismica = DetalleMuestraSismica
+    def __init__(self, fechaHoraMuestra,detalleMuestraSismica):
+        self.fechaHoraMuestra = fechaHoraMuestra
+        self.detalleMuestraSismica: list[DetalleMuestraSismica] = detalleMuestraSismica
 
     #Getters
     def getFechaHoraMuestra(self):
-        return self.__fechaHoraMuestra
+        return self.fechaHoraMuestra
     def getDetalleMuestraSismica(self):
-        return self.__DetalleMuestraSismica
+        return self.detalleMuestraSismica
     
     #Setters
     def setFechaHoraMuestra(self, fechaHoraMuestra):
-        self.__fechaHoraMuestra = fechaHoraMuestra
+        self.fechaHoraMuestra = fechaHoraMuestra
     def setDetalleMuestraSismica(self, DetalleMuestraSismica):
-        self.__DetalleMuestraSismica = DetalleMuestraSismica
+        self.detalleMuestraSismica = DetalleMuestraSismica
 
     #Métodos realizacion CU
-    def getDatos(self):
-        return self.__DetalleMuestraSismica.getDatos()
+    

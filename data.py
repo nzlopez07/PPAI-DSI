@@ -1,4 +1,6 @@
 from datetime import datetime
+from collections import defaultdict
+
 from entities.ClasificacionSismo import ClasificacionSismo
 from entities.OrigenDeGeneracion import OrigenDeGeneracion
 from entities.AlcanceSismo import AlcanceSismo
@@ -8,8 +10,44 @@ from entities.SerieTemporal import SerieTemporal
 from entities.EventoSismico import EventoSismico
 from entities.Sismografo import Sismografo
 from entities.EstacionSismologica import EstacionSismologica
+from entities.DetalleMuestraSismica import DetalleMuestraSismica
+from entities.MuestraSismica import MuestraSismica
 
 # Mocks simples para objetos referenciales
+
+# Crear detalles individuales
+detalle_muestras_mock_0 = [
+    DetalleMuestraSismica(longOnda=12.5, velOnda=3.2, frecOnda=1.8),
+    DetalleMuestraSismica(longOnda=14.3, velOnda=2.9, frecOnda=2.0),
+]
+detalle_muestras_mock_1 =[
+    DetalleMuestraSismica(longOnda=11.8, velOnda=3.5, frecOnda=1.5),
+    DetalleMuestraSismica(longOnda=13.0, velOnda=3.0, frecOnda=1.7),
+]
+
+muestras_mock_0 = [
+MuestraSismica(
+    fechaHoraMuestra=datetime(2025, 5, 19, 10, 15),
+    detalleMuestraSismica=detalle_muestras_mock_0
+),
+MuestraSismica(
+    fechaHoraMuestra=datetime(2025, 5, 19, 10, 30),
+    detalleMuestraSismica=detalle_muestras_mock_1
+)
+]
+
+muestras_mock_1 = [
+MuestraSismica(
+    fechaHoraMuestra=datetime(2025, 6, 19, 11, 30),
+    detalleMuestraSismica=detalle_muestras_mock_0
+),
+MuestraSismica(
+    fechaHoraMuestra=datetime(2025, 6, 19, 11, 45),
+    detalleMuestraSismica=detalle_muestras_mock_1
+)
+]
+
+
 clasificacion_mock = [
     ClasificacionSismo(0, 70, "Superficial"),
     ClasificacionSismo(71, 300, "Intermedio"),
@@ -55,7 +93,28 @@ series_mock = [
         fechaHoraInicioRegistroMuestras=datetime(2025, 5, 14, 10, 0),
         fechaHoraRegistro=datetime(2025, 6, 14, 10, 1),
         frecuenciaMuestreo=50,
-        muestraSismica=[]  # Podés simular con mocks también
+        muestraSismica=muestras_mock_0  # Podés simular con mocks también
+    ),
+    SerieTemporal(
+        condicionAlarma=False,
+        fechaHoraInicioRegistroMuestras=datetime(2025, 5, 14, 10, 0),
+        fechaHoraRegistro=datetime(2025, 6, 14, 10, 1),
+        frecuenciaMuestreo=50,
+        muestraSismica=muestras_mock_1  # Podés simular con mocks también
+    ),
+    SerieTemporal(
+        condicionAlarma=False,
+        fechaHoraInicioRegistroMuestras=datetime(2025, 5, 14, 10, 0),
+        fechaHoraRegistro=datetime(2025, 6, 14, 10, 1),
+        frecuenciaMuestreo=50,
+        muestraSismica=muestras_mock_0  # Podés simular con mocks también
+    ),
+    SerieTemporal(
+        condicionAlarma=False,
+        fechaHoraInicioRegistroMuestras=datetime(2025, 5, 14, 10, 0),
+        fechaHoraRegistro=datetime(2025, 6, 14, 10, 1),
+        frecuenciaMuestreo=50,
+        muestraSismica=muestras_mock_1  # Podés simular con mocks también
     ),
 ]
 
@@ -107,18 +166,48 @@ eventos_mock = [
     )
 ]
 
-sismografos_mock = [
-    Sismografo(datetime(2025, 5, 14, 10, 0), "SISMO-001", "SN12345"),
-    Sismografo(datetime(2024, 11, 2, 9, 30), "SISMO-002", "SN12346"),
-    Sismografo(datetime(2023, 8, 20, 14, 15), "SISMO-003", "SN12347"),
-    Sismografo(datetime(2022, 3, 5, 8, 45), "SISMO-004", "SN12348"),
-    Sismografo(datetime(2021, 12, 1, 16, 0), "SISMO-005", "SN12349")
-]
-
 estaciones_mock = [
     EstacionSismologica("ST001", None, None, 0.0, 0.0, "Estación Central - Córdoba", None),
     EstacionSismologica("ST002", None, None, 0.0, 0.0, "Estación Norte - Salta", None),
-    EstacionSismologica("ST003", None, None, 0.0, 0.0, "Estación Sur - Neuquén", None),
-    EstacionSismologica("ST004", None, None, 0.0, 0.0, "Estación Andina - Mendoza", None),
-    EstacionSismologica("ST005", None, None, 0.0, 0.0, "Estación Costera - Mar del Plata", None)
+    #EstacionSismologica("ST003", None, None, 0.0, 0.0, "Estación Sur - Neuquén", None),
+    #EstacionSismologica("ST004", None, None, 0.0, 0.0, "Estación Andina - Mendoza", None),
+    #EstacionSismologica("ST005", None, None, 0.0, 0.0, "Estación Costera - Mar del Plata", None)
 ]
+
+sismografos_mock = [
+    Sismografo(datetime(2025, 5, 14, 10, 0), "SISMO-001", "SN12345", estacionSismologica=estaciones_mock[0], seriesTemporales=series_mock),
+    Sismografo(datetime(2024, 11, 2, 9, 30), "SISMO-002", "SN12346", estacionSismologica=estaciones_mock[1], seriesTemporales=series_mock),
+    #Sismografo(datetime(2023, 8, 20, 14, 15), "SISMO-003", "SN12347"),
+    #Sismografo(datetime(2022, 3, 5, 8, 45), "SISMO-004", "SN12348"),
+    #Sismografo(datetime(2021, 12, 1, 16, 0), "SISMO-005", "SN12349")
+]
+
+
+datosPorEstacion = defaultdict(list)
+for serie in eventos_mock[0].getSerieTemporal():
+    nombreEstacion = serie.obtenerNombreEstacion()
+    for muestra in serie.getMuestraSismica():
+        fechaHoraMuestra = muestra.getFechaHoraMuestra()
+        for detalle in muestra.getDetalleMuestraSismica():
+            frecuencia = detalle.getFrecuenciaOnda()
+            longitud = detalle.getLongitudOnda()
+            velocidad = detalle.getVelocidadOnda()
+
+            # Guardar valores
+            datosPorEstacion[nombreEstacion].append({
+                "fechaHoraMuestra": fechaHoraMuestra,
+                "frecuenciaOnda": frecuencia,
+                "longitudOnda":longitud,
+                "velocidadOnda":velocidad
+            })
+
+print("\n📡 Datos por Estación Sismográfica:\n" + "="*40)
+for nombre_estacion, muestras in datosPorEstacion.items():
+    print(f"\n🔸 Estación: {nombre_estacion}\n" + "-"*40)
+    for i, muestra in enumerate(muestras, start=1):
+        print(f"Muestra #{i}:")
+        print(f"\tFecha y Hora: {muestra['fechaHoraMuestra']}")
+        print(f"\tFrecuencia de Onda: {muestra['frecuenciaOnda']} Hz")
+        print(f"\tLongitud de Onda:   {muestra['longitudOnda']} m")
+        print(f"\tVelocidad de Onda:  {muestra['velocidadOnda']} m/s")
+    print("-"*40)

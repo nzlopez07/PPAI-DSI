@@ -39,3 +39,4 @@ class EstacionSismologica:
         self.__nombre = nombre
     def setNroCertificacionAquision(self, nroCertificacionAquision):
         self.__nroCertificacionAquision = nroCertificacionAquision
+
