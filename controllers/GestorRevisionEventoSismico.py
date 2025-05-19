@@ -4,6 +4,9 @@ from entities.Estado import Estado
 from entities.CambioEstado import CambioEstado
 from data import eventos_mock, estados_mock
 
+#lista_estados_mock = [Estado(**data) for data in estados_mock]
+#lista_eventos_mock = [EventoSismico(**data) for data in eventos_mock]
+
 class GestorRevisionEventoSismico:
     def __init__(self):
         self.horaFechaFinCambioEstado = None
@@ -68,7 +71,7 @@ class GestorRevisionEventoSismico:
         self.eventoSismicoSeleccionado.bloquearEnRevision(self.estadoBloqueadoEnRevision, self.cambioEstadoActual, self.fechaHoraActualBloqueadoEnRevision)
         
     def buscarDatosSismicos(self):
-        self.eventoSismicoSeleccionado.obtenerDatos()
+        self.nombreAlcance, self.nombreOrigen, self.nombreClasificacion = self.eventoSismicoSeleccionado.obtenerDatosEvento()
     
     def obtenerEstacionesSismográficas():
         pass

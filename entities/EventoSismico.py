@@ -121,9 +121,4 @@ class EventoSismico:
         alcance = self.getAlcanceSismo().getNombre()
         origen = self.getOrigenGeneracion().getNombre()
         clasificacion = self.getClasificacion().getNombre()
-
-        datos = []
-
-        for serie in self.serieTemporal:
-            #if serie.tenesSerieTemporal(serie):
-            serie.getFechaHoraRegistro()
+        return alcance, origen, clasificacion

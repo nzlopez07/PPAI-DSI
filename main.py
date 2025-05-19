@@ -1,11 +1,5 @@
-
-from controllers.GestorRevisionEventoSismico import GestorRevisionEventoSismico as Gestor
 from flask import Flask, render_template, request, redirect
 from interface.PantallaRevisionEventoSismico import PantallaRevisionEventoSismico
-
-
-
-
 #Iniciar Gestor
 #gestor = Gestor()
 
