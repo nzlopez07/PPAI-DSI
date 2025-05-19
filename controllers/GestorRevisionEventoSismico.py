@@ -90,7 +90,9 @@ class GestorRevisionEventoSismico:
 
         #Realizar el cambio de estado
         self.eventoSismicoSeleccionado.setEstadoActual(self.estadoBloqueadoEnRevision)
-        self.eventoSismicoSeleccionado.bloquearEnRevision(self.estadoBloqueadoEnRevision, self.cambioEstadoActual, self.fechaHoraActualBloqueadoEnRevision)
+        self.eventoSismicoSeleccionado.bloquearEnRevision(self.estadoBloqueadoEnRevision, 
+                                                          self.cambioEstadoActual, 
+                                                          self.fechaHoraActualBloqueadoEnRevision)
         print("Estado actual es: ", self.eventoSismicoSeleccionado.estadoActual.getNombreEstado())
     
     
@@ -102,7 +104,7 @@ class GestorRevisionEventoSismico:
         # Se crea un diccionario que arma una lista por clave
         self.datosEventoPorEstacion = defaultdict(list)
         for serie in self.eventoSismicoSeleccionado.getSerieTemporal():
-            nombreEstacion = serie.obtenerNombreEstacion(sismografos_mock)
+            nombreEstacion = serie.obtenerNombreEstacion(sismografos_mock) # Los pasamos por parametros a todos los sismografos porque saltaba error importacion circular
             for muestra in serie.getMuestraSismica():
                 fechaHoraMuestra = muestra.getFechaHoraMuestra()
                 for detalle in muestra.getDetalleMuestraSismica():
@@ -117,7 +119,7 @@ class GestorRevisionEventoSismico:
                         "longitudOnda":longitud,
                         "velocidadOnda":velocidad
                     })
-
+        # Mostramos por consola los datos de cada serie temporal
         print("\nDatos por Estación Sismográfica:\n" + "="*40)
         for nombre_estacion, muestras in self.datosEventoPorEstacion.items():
             print(f"\nEstación: {nombre_estacion}\n" + "-"*40)
