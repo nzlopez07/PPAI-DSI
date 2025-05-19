@@ -6,6 +6,7 @@ from entities.SerieTemporal import SerieTemporal
 from entities.ClasificacionSismo import ClasificacionSismo
 from entities.OrigenDeGeneracion import OrigenDeGeneracion
 from entities.Sismografo import Sismografo
+from entities.EstacionSismologica import EstacionSismologica
 from datetime import datetime
 
 # Mocks simples para objetos referenciales
@@ -42,13 +43,29 @@ cambios_estado_mock = [
 ]
 
 # Muestra mínima de una serie temporal
-serie = SerieTemporal(
-    condicionAlarma=False,
-    fechaHoraInicioRegistroMuestras=datetime(2025, 5, 14, 10, 0),
-    fechaHoraRegistro=datetime(2025, 5, 14, 10, 1),
-    frecuenciaMuestreo=50,
-    muestraSismica=[]  # Podés simular con mocks también
-)
+series_mock =[
+    SerieTemporal(
+        condicionAlarma=False,
+        fechaHoraInicioRegistroMuestras=datetime(2025, 5, 14, 10, 0),
+        fechaHoraRegistro=datetime(2025, 5, 14, 10, 1),
+        frecuenciaMuestreo=49,
+        muestraSismica=[]  # Podés simular con mocks también
+    ),
+    SerieTemporal(
+        condicionAlarma=False,
+        fechaHoraInicioRegistroMuestras=datetime(2025, 5, 14, 10, 0),
+        fechaHoraRegistro=datetime(2025, 6, 14, 10, 1),
+        frecuenciaMuestreo=50,
+        muestraSismica=[]  # Podés simular con mocks también
+    ),
+    SerieTemporal(
+        condicionAlarma=False,
+        fechaHoraInicioRegistroMuestras=datetime(2025, 5, 14, 10, 0),
+        fechaHoraRegistro=datetime(2025, 4, 14, 10, 1),
+        frecuenciaMuestreo=30,
+        muestraSismica=[]  # Podés simular con mocks también
+    ),
+] 
 
 #Lista de eventos sismicos
 eventos_mock = [EventoSismico(
@@ -58,7 +75,7 @@ eventos_mock = [EventoSismico(
     alcanceSismo=alcances_mock[1],
     estadoActual=estados_mock[1],
     cambioEstado=cambios_estado_mock[1],
-    serieTemporal=[serie],
+    serieTemporal=series_mock,
     fechaHoraOcurrencia=datetime(2025, 5, 20, 13, 0),
     latitudEpicentro=-31.4167,
     latitudHipocentro=-31.4175,
@@ -72,7 +89,7 @@ eventos_mock = [EventoSismico(
     alcanceSismo=alcances_mock[0],
     estadoActual=estados_mock[0],
     cambioEstado=cambios_estado_mock[0],
-    serieTemporal=[serie],
+    serieTemporal=series_mock,
     fechaHoraOcurrencia=datetime(2025, 5, 14, 10, 0),
     latitudEpicentro=-31.4167,
     latitudHipocentro=-35.6175,
@@ -86,4 +103,12 @@ sismografos_mock = [
     Sismografo(datetime(2023, 8, 20, 14, 15), "SISMO-003", "SN12347"),
     Sismografo(datetime(2022, 3, 5, 8, 45), "SISMO-004", "SN12348"),
     Sismografo(datetime(2021, 12, 1, 16, 0), "SISMO-005", "SN12349")
+]
+
+estaciones_mock = [
+    EstacionSismologica("ST001", None, None, 0.0, 0.0, "Estación Central - Córdoba", None),
+    EstacionSismologica("ST002", None, None, 0.0, 0.0, "Estación Norte - Salta", None),
+    EstacionSismologica("ST003", None, None, 0.0, 0.0, "Estación Sur - Neuquén", None),
+    EstacionSismologica("ST004", None, None, 0.0, 0.0, "Estación Andina - Mendoza", None),
+    EstacionSismologica("ST005", None, None, 0.0, 0.0, "Estación Costera - Mar del Plata", None)
 ]

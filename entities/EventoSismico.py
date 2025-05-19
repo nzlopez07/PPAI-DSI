@@ -117,8 +117,13 @@ class EventoSismico:
         self.cambiosEstado.append(nuevoCambioEstado)
 
     # Nombres a chequear
-    def obtenerDatos(self):
+    def obtenerDatosEvento(self):
         alcance = self.getAlcanceSismo().getNombre()
         origen = self.getOrigenGeneracion().getNombre()
         clasificacion = self.getClasificacion().getNombre()
-        
+
+        datos = []
+
+        for serie in self.serieTemporal:
+            #if serie.tenesSerieTemporal(serie):
+            serie.getFechaHoraRegistro()

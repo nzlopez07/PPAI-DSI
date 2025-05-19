@@ -1,4 +1,6 @@
 from entities.MuestraSismica import MuestraSismica
+from entities.Sismografo import Sismografo
+from data import sismografos_mock
 
 class SerieTemporal:
     def __init__(self, condicionAlarma, fechaHoraInicioRegistroMuestras, fechaHoraRegistro, frecuenciaMuestreo, muestraSismica):
@@ -32,3 +34,6 @@ class SerieTemporal:
     def setMuestraSismica(self, muestraSismica):
         self.__muestraSismica = muestraSismica
         
+    def tenesSerieTemporal(self):
+        for sismografo in sismografos_mock:
+            sismografo.obtenerNombreEstacion(self)
