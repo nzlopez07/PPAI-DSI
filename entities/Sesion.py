@@ -1,8 +1,8 @@
 from entities.Usuario import Usuario
 class Sesion:
-    def __init__(self, fechaInicio, fechaFin, usuarioActivo):
+    def __init__(self, fechaInicio, usuarioActivo):
         self.__fechaInicio = fechaInicio
-        self.__fechaFin = fechaFin
+        self.__fechaFin = None
         self.__usuarioActivo = usuarioActivo
     
     #Getters

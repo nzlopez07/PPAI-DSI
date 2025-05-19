@@ -8,6 +8,7 @@ class PantallaRevisionEventoSismico:
         self.nombreOrigen = None
         self.nombreAlcance = None
         self.nombreClasificacion = None
+        self.datosEventoPorEstacion = None
         
     def opcRegistrarResultadoRevisionManual(self):
         self.habilitarPantalla()
@@ -25,11 +26,11 @@ class PantallaRevisionEventoSismico:
         self.eventoSeleccionado = self.eventosAutoDetectadosYPendientesDeRevision[indice]
         
         self.gestorRevision.tomarSeleccionEvento(self.eventoSeleccionado)
-        return self.nombreAlcance, self.nombreOrigen, self.nombreClasificacion
+        return self.nombreAlcance, self.nombreOrigen, self.nombreClasificacion, self.datosEventoPorEstacion
 
-    def mostrarDatosEventosSismicos(self, nombreAlcance, nombreOrigen, nombreClasificacion):
+    def mostrarDatosEventosSismicos(self, nombreAlcance, nombreOrigen, nombreClasificacion, datosEventoPorEstacion):
         self.nombreOrigen = nombreOrigen
         self.nombreAlcance = nombreAlcance
         self.nombreClasificacion = nombreClasificacion
-        
+        self.datosEventoPorEstacion = datosEventoPorEstacion
     

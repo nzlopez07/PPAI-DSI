@@ -19,7 +19,6 @@ class Estado:
 
     # Definición de otros métodos
     def esAutoDetectado(self):
-        print("Entramos al método esAutoDetectado de Estado correctamente")
         return self.nombreEstado == "AutoDetectado"
    
     
@@ -35,3 +34,6 @@ class Estado:
     
     def esAmbitoSerieTemporal(self):
         return self.ambito == "SerieTemporal"
+    
+    def esRechazado(self):
+        return self.nombreEstado == "Rechazado"

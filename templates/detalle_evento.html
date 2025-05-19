@@ -90,13 +90,16 @@
     </ul>
 
     <section class="mb-5">
-      <h5 class="section-title"> Generar Sismograma</h5>
+      <h5 class="section-title"> Sismograma por estación </h5>
+      {% for nombreEstacion in estaciones %}
       <div id="sismogramaContainer" class="mt-3 d-none text-center">
+        <h6 class="mb-3">Estación: {{ nombreEstacion }}</h6>
         <a id="sismogramaLink" target="_blank" class="d-inline-block">
           <img id="sismogramaImagen" src="" alt="Sismograma generado" class="img-fluid" />
         </a>
         <div class="form-text mt-3">Haz clic en la imagen para verla en tamaño completo.</div>
       </div>
+      {% endfor %}
     </section>
 
     <section class="mb-5">

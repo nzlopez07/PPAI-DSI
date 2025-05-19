@@ -96,13 +96,9 @@ class EventoSismico:
 
     # Otros métodos
     def estaAutoDetectado(self):
-        print("Entramos al método estaAutoDetectado de EventoSismico correctamente")
-        print("Estado actual: ", self.estadoActual.nombreEstado)
         return self.estadoActual.esAutoDetectado()
     
     def estaPendienteDeRevision(self):
-        print("Entramos al método estaPendienteDeRevision de EventoSismico correctamente")
-        print("Estado actual: ", self.estadoActual.nombreEstado)
         return self.estadoActual.esPendienteDeRevision()
 
     def obtenerEstadoActual(self):
@@ -113,9 +109,16 @@ class EventoSismico:
                 return cambioEstado
 
     # Método que corresponedría a la maquina de estados
-    def bloquearEnRevision(self, estado: Estado, cambioEstado: CambioEstado, fechaHora):
+    def bloquearEnRevision(self, estado: Estado, cambioEstado: CambioEstado, fechaHora, usuario):
         cambioEstado.setFechaHoraFin(fechaHora)
-        nuevoCambioEstado = CambioEstado(fechaHora, estado)
+        cambioEstado.setResponsableInspeccion(usuario)
+        nuevoCambioEstado = CambioEstado(fechaHora, estado, usuario)
+        self.cambioEstado.append(nuevoCambioEstado)
+
+    def rechazar(self, estado: Estado, cambioEstado: CambioEstado, fechaHora, usuario):
+        cambioEstado.setFechaHoraFin(fechaHora)
+        cambioEstado.setResponsableInspeccion(usuario)
+        nuevoCambioEstado = CambioEstado(fechaHora, estado, usuario)
         self.cambioEstado.append(nuevoCambioEstado)
 
     # Nombres a chequear
@@ -129,3 +132,9 @@ class EventoSismico:
         print("Nombre clasificacion: ", clasificacion)
         print("\n")
         return alcance, origen, clasificacion
+    
+    def validarDatos(self):
+        if(self.valorMagnitud == None) or (self.alcanceSismo == None) or (self.origenGeneracion == None):
+            return False
+        else:
+            return True
