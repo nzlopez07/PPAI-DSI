@@ -33,4 +33,7 @@ class PantallaRevisionEventoSismico:
         self.nombreAlcance = nombreAlcance
         self.nombreClasificacion = nombreClasificacion
         self.datosEventoPorEstacion = datosEventoPorEstacion
+
+    def opRechazarEvento(self):
+        self.gestorRevision.opRechazarEvento()
     

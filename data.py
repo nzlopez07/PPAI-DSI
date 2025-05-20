@@ -153,6 +153,37 @@ series_mock_2 = [
     ),
 ]
 
+series_mock_3 = [
+    SerieTemporal(
+        condicionAlarma=False,
+        fechaHoraInicioRegistroMuestras=datetime(2025, 5, 14, 10, 0),
+        fechaHoraRegistro=datetime(2025, 6, 14, 10, 1),
+        frecuenciaMuestreo=50,
+        muestraSismica=muestras_mock_0  # Podés simular con mocks también
+    ),
+    SerieTemporal(
+        condicionAlarma=False,
+        fechaHoraInicioRegistroMuestras=datetime(2025, 5, 14, 10, 0),
+        fechaHoraRegistro=datetime(2025, 6, 14, 10, 1),
+        frecuenciaMuestreo=50,
+        muestraSismica=muestras_mock_1  # Podés simular con mocks también
+    ),
+    SerieTemporal(
+        condicionAlarma=False,
+        fechaHoraInicioRegistroMuestras=datetime(2025, 5, 14, 10, 0),
+        fechaHoraRegistro=datetime(2025, 6, 14, 10, 1),
+        frecuenciaMuestreo=50,
+        muestraSismica=muestras_mock_0  # Podés simular con mocks también
+    ),
+    SerieTemporal(
+        condicionAlarma=False,
+        fechaHoraInicioRegistroMuestras=datetime(2025, 5, 14, 10, 0),
+        fechaHoraRegistro=datetime(2025, 6, 14, 10, 1),
+        frecuenciaMuestreo=50,
+        muestraSismica=muestras_mock_1  # Podés simular con mocks también
+    ),
+]
+
 eventos_mock = [
     EventoSismico(
         clasificacion=clasificacion_mock[0],
@@ -161,7 +192,7 @@ eventos_mock = [
         alcanceSismo=alcances_mock[0],
         estadoActual=estados_mock[0],
         cambiosEstado=cambios_estado_mock_AutoDet,
-        serieTemporal=series_mock + series_mock_2,
+        serieTemporal=series_mock + series_mock_2 + series_mock_3,
         fechaHoraOcurrencia=datetime(2025, 5, 20, 13, 0),
         latitudEpicentro=-31.4167,
         latitudHipocentro=-31.4175,
@@ -189,9 +220,9 @@ eventos_mock = [
         magnitud=None,
         origenGeneracion=origen_mock[2],
         alcanceSismo=alcances_mock[2],
-        estadoActual=estados_mock[3],
-        cambiosEstado=cambios_estado_mock_Rechazado,
-        serieTemporal=series_mock + series_mock_2,
+        estadoActual=estados_mock[0],
+        cambiosEstado=cambios_estado_mock_AutoDet,
+        serieTemporal=series_mock,
         fechaHoraOcurrencia=datetime(2025, 5, 14, 10, 0),
         latitudEpicentro=-31.4167,
         latitudHipocentro=-35.6175,
@@ -229,7 +260,7 @@ estaciones_mock = [
 ]
 
 sismografos_mock = [
-    Sismografo(datetime(2025, 5, 14, 10, 0), "SISMO-001", "SN12345", estacionSismologica=estaciones_mock[0], seriesTemporales=series_mock_2),
+    Sismografo(datetime(2025, 5, 14, 10, 0), "SISMO-001", "SN12345", estacionSismologica=estaciones_mock[0], seriesTemporales=series_mock_3),
     Sismografo(datetime(2025, 5, 15, 11, 30), "SISMO-002", "SN12346", estacionSismologica=estaciones_mock[1], seriesTemporales=series_mock),
     Sismografo(datetime(2025, 5, 16, 9, 45), "SISMO-003", "SN12347", estacionSismologica=estaciones_mock[2], seriesTemporales=series_mock_2),
     Sismografo(datetime(2025, 5, 17, 14, 20), "SISMO-004", "SN12348", estacionSismologica=estaciones_mock[3], seriesTemporales=series_mock),

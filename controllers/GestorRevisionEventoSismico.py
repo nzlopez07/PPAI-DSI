@@ -82,8 +82,6 @@ class GestorRevisionEventoSismico:
         # Envia esos datos a la pantalla para mostrar
         self.pantallaRevision.mostrarDatosEventosSismicos(self.nombreAlcance, self.nombreOrigen,self.nombreClasificacion, self.datosEventoPorEstacion)
 
-        # Inicio de paso para rechazar un evento, empezando a validar datos
-        self.rechazarEvento()
             
     def bloquearEventoSismico(self):
         # Buscar por estado y ambito el estado BloqueadoEnRevision
@@ -149,14 +147,19 @@ class GestorRevisionEventoSismico:
     def llamarCU18():
         print("ESTO ES UN SISMOGRAMA")
 
-    def rechazarEvento(self):
+    def opRechazarEvento(self):
+        print(self.eventoSismicoSeleccionado.getMagnitud())
         self.accionSeleccionada = "Rechazar evento"
-        if(self.accionSeleccionada in ["Rechazar evento", "Confirmar evento", "Solicitar Revision a experto"]):
+        if(self.validarAccionSeleccionada(self.accionSeleccionada)):
             if(self.eventoSismicoSeleccionado.validarDatos()):
                 print("Datos válidos")
                 self.rechazarEventoSismico()
             else:
                 print("Datos inválidos")
+
+    def validarAccionSeleccionada(self, opcion):
+        if (opcion in ["Rechazar evento", "Confirmar evento", "Solicitar Revision a experto"]):
+            return True
 
     def obtenerUsuarioLogueado(self):
         self.usuarioActivo = self.sesionActiva.getUsuarioActivo().getEmpleado()

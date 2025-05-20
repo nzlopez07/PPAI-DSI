@@ -27,6 +27,10 @@ def eventoSeleccionado():
         print("Nombre estacion: ", estacion) 
     return render_template('detalle_evento.html', alcance=alcance, origen=origen, clasificacion=clasificacion, estaciones=estaciones)
 
+@app.route('/eventos/evento/rechazar', methods=['GET'])
+def rechazarEvento():
+    pantalla.opRechazarEvento()
+    return render_template('resultado_final.html')
 
 """
 @app.route('/evento', methods=['POST'])

@@ -88,17 +88,17 @@
         <strong>Origen:</strong> <span>{{ origen }}</span>
       </li>
     </ul>
-
+    
     <section class="mb-5">
       <h5 class="section-title"> Sismograma por estación </h5>
       {% for nombreEstacion in estaciones %}
-      <div id="sismogramaContainer" class="mt-3 d-none text-center">
-        <h6 class="mb-3">Estación: {{ nombreEstacion }}</h6>
-        <a id="sismogramaLink" target="_blank" class="d-inline-block">
-          <img id="sismogramaImagen" src="" alt="Sismograma generado" class="img-fluid" />
-        </a>
-        <div class="form-text mt-3">Haz clic en la imagen para verla en tamaño completo.</div>
-      </div>
+        <div class="mt-3 text-center">
+          <h6 class="mb-3">Estación: {{ nombreEstacion }}</h6>
+          <a target="_blank" class="d-inline-block">
+            <img src="https://www.meteorologiaenred.com/wp-content/uploads/2020/04/sismograma-1024x576.png" alt="Sismograma generado" class="img-fluid" />
+          </a>
+          <div class="form-text mt-3">Haz clic en la imagen para verla en tamaño completo.</div>
+        </div>
       {% endfor %}
     </section>
 
@@ -122,31 +122,14 @@
         <button type="button" class="btn btn-success btn-custom">
           Confirmar Evento
         </button>
-        <button type="button" class="btn btn-danger btn-custom">
+        <a type="button" class="btn btn-danger btn-custom" href="/eventos/evento/rechazar">
           Rechazar Evento
-        </button>
+        </a>
         <button type="button" class="btn btn-primary btn-custom">
           Solicitar Revisión a Experto
         </button>
       </div>
     </section>
   </div>
-
-  <script>
-    function mostrarSismograma() {
-      const imagenURL = "https://www.meteorologiaenred.com/wp-content/uploads/2020/04/sismograma-1024x576.png";
-      const contenedor = document.getElementById("sismogramaContainer");
-      const img = document.getElementById("sismogramaImagen");
-      const link = document.getElementById("sismogramaLink");
-
-      img.src = imagenURL;
-      link.href = imagenURL;
-      contenedor.classList.remove("d-none");
-    }
-
-    window.addEventListener("DOMContentLoaded", function () {
-      setTimeout(mostrarSismograma, 3000);
-    });
-  </script>
 </body>
 </html>
