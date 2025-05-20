@@ -81,7 +81,7 @@ class GestorRevisionEventoSismico:
 
         # Envia esos datos a la pantalla para mostrar
         self.pantallaRevision.mostrarDatosEventosSismicos(self.nombreAlcance, self.nombreOrigen,self.nombreClasificacion, self.datosEventoPorEstacion)
-
+        print("Datos enviados a la pantalla")
             
     def bloquearEventoSismico(self):
         # Buscar por estado y ambito el estado BloqueadoEnRevision
@@ -98,6 +98,7 @@ class GestorRevisionEventoSismico:
         #Realizar el cambio de estado
         print("Estado antes del cambio: ", self.eventoSismicoSeleccionado.estadoActual.getNombreEstado())
         self.eventoSismicoSeleccionado.setEstadoActual(self.estadoBloqueadoEnRevision)
+        print("Lista de cambios de estados previos: ")
         for cambioEstado in self.eventoSismicoSeleccionado.cambioEstado:
             print("Cambio de estado:", cambioEstado.getEstado().getNombreEstado())
         print("-----")  
@@ -107,6 +108,8 @@ class GestorRevisionEventoSismico:
                                                           self.horaFechaFinCambioEstado, self.usuarioActivo)
         for cambioEstado in self.eventoSismicoSeleccionado.cambioEstado:
             print("Cambio de estado:", cambioEstado.getEstado().getNombreEstado())
+            print("Empleado responsable: ", cambioEstado.getResponsableInspeccion().getNombre())
+            print("Fecha y hora de cambio de estado: ", cambioEstado.getFechaHoraFin())
         print("-----")   
     
     def buscarDatosEventoSismico(self):
