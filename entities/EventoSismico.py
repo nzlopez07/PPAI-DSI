@@ -121,6 +121,18 @@ class EventoSismico:
         nuevoCambioEstado = CambioEstado(fechaHora, estado, usuario)
         self.cambioEstado.append(nuevoCambioEstado)
 
+    def confirmar(self, estado: Estado, cambioEstado: CambioEstado, fechaHora, usuario):
+        cambioEstado.setFechaHoraFin(fechaHora)
+        cambioEstado.setResponsableInspeccion(usuario)
+        nuevoCambioEstado = CambioEstado(fechaHora, estado, usuario)
+        self.cambioEstado.append(nuevoCambioEstado)
+
+    def solicitarRevisionExperto(self, estado: Estado, cambioEstado: CambioEstado, fechaHora, usuario):
+        cambioEstado.setFechaHoraFin(fechaHora)
+        cambioEstado.setResponsableInspeccion(usuario)
+        nuevoCambioEstado = CambioEstado(fechaHora, estado, usuario)
+        self.cambioEstado.append(nuevoCambioEstado)
+
     # Nombres a chequear
     def obtenerDatosEvento(self):
         print("\n\nObtenemos datos del evento")

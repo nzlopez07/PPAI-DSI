@@ -37,3 +37,9 @@ class Estado:
     
     def esRechazado(self):
         return self.nombreEstado == "Rechazado"
+    
+    def esConfirmado(self):
+        return self.nombreEstado == "Confirmado"
+    
+    def esSolicitadoRevisionExperto(self):
+        return self.nombreEstado == "SolicitadoRevisionExperto"

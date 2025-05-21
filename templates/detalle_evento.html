@@ -70,6 +70,18 @@
       font-size: 0.9rem;
       color: #6c757d;
     }
+
+    #btn-cancelar-fijo {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      z-index: 1050;
+      font-size: 1.3rem;
+      padding: 1rem 2.5rem;
+      border-radius: 2rem;
+      font-weight: bold;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+    }
   </style>
 </head>
 <body class="py-5">
@@ -104,32 +116,103 @@
 
     <section class="mb-5">
       <h5 class="section-title"> Visualizar Mapa</h5>
-      <button type="button" class="btn btn-outline-secondary btn-custom">
+      <button type="button" class="btn btn-outline-secondary btn-custom" onclick="window.open('/static/mapa_sismo.jpg','_blank', 'width=800,height=600')">
         Visualizar Evento en el Mapa
       </button>
-    </section>
-
-    <section class="mb-5">
-      <h5 class="section-title"> Modificar Datos del Evento</h5>
-      <button type="button" class="btn btn-outline-warning text-dark btn-custom">
-        Modificar Magnitud, Alcance y Origen
+      <button type="button" class="btn btn-outline-danger btn-custom" id="btn-no-mapa">
+        No Visualizar Mapa
       </button>
     </section>
 
-    <section class="mb-3">
-      <h5 class="section-title"> Seleccione una Acción</h5>
-      <div class="d-flex flex-wrap gap-3">
-        <button type="button" class="btn btn-success btn-custom">
-          Confirmar Evento
+    <section class="mb-5" id="modificar-datos-evento" style="display: none;">
+      <!-- Contenedor para alinear los botones en fila -->
+      <div class="d-flex gap-3 mb-3">
+        <button type="button" class="btn btn-outline-warning text-dark btn-custom" id="btn-modificar-datos">
+          Modificar Magnitud, Alcance y Origen
         </button>
+        <button type="button" class="btn btn-outline-danger btn-custom" id="btn-no-modificar-datos">
+          No Modificar Datos
+        </button>
+      </div>
+
+      <!-- Formulario oculto -->
+      <form id="form-modificar-datos" style="display:none;" class="mt-2">
+        <div class="mb-3">
+          <label for="inputMagnitud" class="form-label">Magnitud</label>
+          <input type="number" step="any" class="form-control" id="inputMagnitud" name="magnitud" required>
+        </div>
+        <div class="mb-3">
+          <label for="inputAlcance" class="form-label">Alcance</label>
+          <input type="text" class="form-control" id="inputAlcance" name="alcance" required>
+        </div>
+        <div class="mb-3">
+          <label for="inputOrigen" class="form-label">Origen</label>
+          <input type="text" class="form-control" id="inputOrigen" name="origen" required>
+        </div>
+        <button type="submit" class="btn btn-success">Enviar</button>
+      </form>
+    </section>
+
+    <section class="mb-3" id="acciones-evento" style="display:none;">
+      <h5 class="section-title">Seleccione una Acción</h5>
+      <div class="d-flex flex-wrap gap-3">
+        <a href="/eventos/evento/confirmar" class="btn btn-success btn-custom">
+          Confirmar Evento
+        </a>
         <a type="button" class="btn btn-danger btn-custom" href="/eventos/evento/rechazar">
           Rechazar Evento
         </a>
-        <button type="button" class="btn btn-primary btn-custom">
+        <a href="/eventos/evento/solicitar_experto" class="btn btn-primary btn-custom">
           Solicitar Revisión a Experto
-        </button>
+        </a>
       </div>
     </section>
   </div>
+  <!-- Botón Cancelar general -->
+  <div class="text-center mt-4">
+    <a href="/eventos/evento/cancelar" id="btn-cancelar-fijo" class="btn btn-danger btn-lg">
+      Cancelar
+    </a>
+  </div>
+
+  <script>
+    document.getElementById('btn-no-mapa').addEventListener('click', function() {
+      document.getElementById('modificar-datos-evento').style.display = 'block';
+    });
+
+    // Mostrar el formulario al hacer clic en "Modificar Magnitud, Alcance y Origen"
+    document.getElementById('btn-modificar-datos').addEventListener('click', function() {
+      document.getElementById('form-modificar-datos').style.display = 'block';
+      this.style.display = 'none';
+    });
+
+
+    // Al enviar el formulario, ocultar el form y mostrar el botón de modificar y las acciones
+    document.getElementById('form-modificar-datos').addEventListener('submit', function(e) {
+      e.preventDefault();
+      this.style.display = 'none';
+      document.getElementById('btn-modificar-datos').style.display = 'block';
+      document.getElementById('acciones-evento').style.display = 'block';
+    });
+
+    // Mostrar las acciones y restablecer botones si se hace clic en "No Modificar Datos"
+    document.getElementById('btn-no-modificar-datos').addEventListener('click', function() {
+      document.getElementById('acciones-evento').style.display = 'block';
+      document.getElementById('form-modificar-datos').style.display = 'none';
+      document.getElementById('btn-modificar-datos').style.display = 'block';
+    });
+
+    // Ocultar la sección de acciones al inicio
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelector('section#acciones-evento').style.display = 'none';
+    });
+
+    
+    document.getElementById('btn-solicitar-experto').addEventListener('click', function() {
+    alert('Solicitud elevada a un experto');
+    window.location.href = '/';
+    });
+
+  </script>
 </body>
 </html>

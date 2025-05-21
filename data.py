@@ -74,7 +74,9 @@ estados_mock = [
     Estado(ambito="EventoSismico", nombreEstado="AutoDetectado"), #0
     Estado(ambito="EventoSismico", nombreEstado="PendienteDeRevision"), #1
     Estado(ambito="EventoSismico", nombreEstado="BloqueadoEnRevision"), #2
-    Estado(ambito="EventoSismico", nombreEstado="Rechazado"), #3)
+    Estado(ambito="EventoSismico", nombreEstado="Rechazado"),
+    Estado(ambito="EventoSismico", nombreEstado="Confirmado"),
+    Estado(ambito="EventoSismico", nombreEstado="SolicitadoRevisionExperto")
 ]
 
 

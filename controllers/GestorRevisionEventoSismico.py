@@ -18,7 +18,9 @@ class GestorRevisionEventoSismico:
         self.eventosSismicosAutoDetectados: list[EventoSismico] = [] # Colección de todos los eventos sísmicos con estado actual "AutoDetectado"
         self.eventoSismicoSeleccionado: EventoSismico = None
         self.estadoBloqueadoEnRevision: Estado = None
-        self.estadoRechazado: Estado = None 
+        self.estadoRechazado: Estado = None
+        self.estadoConfirmado: Estado = None
+        self.estadoRevisionExperto: Estado = None
         self.cambioEstadoActual: CambioEstado = None
         self.nombreAlcance = None
         self.nombreOrigen = None
@@ -55,7 +57,7 @@ class GestorRevisionEventoSismico:
         self.ordenarPorFechaYHora(self.eventosSismicosAutoDetectados)
         # Los manda
         self.pantallaRevision.mostrarYSolicitarSeleccionEvento(self.eventosSismicosAutoDetectados)
-        #return self.eventosSismicosAutoDetectados
+
 
     def ordenarPorFechaYHora(self, eventosSismicos:list[EventoSismico]):
         n = len(eventosSismicos)
@@ -82,7 +84,7 @@ class GestorRevisionEventoSismico:
         # Envia esos datos a la pantalla para mostrar
         self.pantallaRevision.mostrarDatosEventosSismicos(self.nombreAlcance, self.nombreOrigen,self.nombreClasificacion, self.datosEventoPorEstacion)
         print("Datos enviados a la pantalla")
-            
+        
     def bloquearEventoSismico(self):
         # Buscar por estado y ambito el estado BloqueadoEnRevision
         for estado in estados_mock:
@@ -150,12 +152,10 @@ class GestorRevisionEventoSismico:
     def llamarCU18():
         print("ESTO ES UN SISMOGRAMA")
 
-    def opRechazarEvento(self):
-        print(self.eventoSismicoSeleccionado.getMagnitud())
-        self.accionSeleccionada = "Rechazar evento"
+    def opRechazarEvento(self,accionSeleccionada):
+        self.accionSeleccionada = accionSeleccionada
         if(self.validarAccionSeleccionada(self.accionSeleccionada)):
             if(self.eventoSismicoSeleccionado.validarDatos()):
-                print("Datos válidos")
                 self.rechazarEventoSismico()
             else:
                 print("Datos inválidos")
@@ -180,14 +180,132 @@ class GestorRevisionEventoSismico:
         self.horaFechaFinCambioEstado = self.calcularFechaHoraActual()
 
         #Realizar el cambio de estado
-        print("ESTE ES DEL RECHAZADO")
+        print("----ESTE ES DEL RECHAZADO----")
         print("Estado antes del cambio: ", self.eventoSismicoSeleccionado.estadoActual.getNombreEstado())
         self.eventoSismicoSeleccionado.setEstadoActual(self.estadoRechazado)
+        iterador = 0
         for cambioEstado in self.eventoSismicoSeleccionado.cambioEstado:
+            print(f"Iteración:{iterador} ----------")
             print("Cambio de estado:", cambioEstado.getEstado().getNombreEstado())
             print("Empleado responsable: ", cambioEstado.getResponsableInspeccion().getNombre())
-        print("-----")  
+            iterador += 1
+        print("----------")
         print("Estado luego del cambio: ", self.eventoSismicoSeleccionado.estadoActual.getNombreEstado())
         self.eventoSismicoSeleccionado.rechazar(self.estadoRechazado, 
                                                           self.cambioEstadoActual, 
                                                           self.horaFechaFinCambioEstado, self.usuarioActivo)
+
+
+    def cancelarRevisionEventoSismico(self):
+        #Revertir el estado del evento sísmico seleccionado al anterior.
+        if not self.eventoSismicoSeleccionado:
+            print("No hay evento sísmico seleccionado.")
+            return
+        
+        cambio_actual = self.eventoSismicoSeleccionado.obtenerEstadoActual()
+        if cambio_actual.getEstado().esBloqueadoEnRevision():
+            cambio_actual.setFechaHoraFin(self.calcularFechaHoraActual())
+
+
+        cambio_anterior = None
+        print("Cambios de estado previos:")
+        for cambio in reversed(self.eventoSismicoSeleccionado.getCambioEstado()):
+            print("Cambio de estado:", cambio.getEstado().getNombreEstado())
+            estado = cambio.getEstado()
+            if cambio != cambio_actual and not estado.esBloqueadoEnRevision():
+                cambio_anterior_valido = cambio
+                break
+        
+        if cambio_anterior_valido:
+            self.eventoSismicoSeleccionado.setEstadoActual(cambio_anterior_valido.getEstado())
+            cambio_anterior_valido.setFechaHoraFin(None)
+            print("Estado revertido a:", cambio_anterior_valido.getEstado().getNombreEstado())
+        else:
+            print("No se encontró un cambio de estado anterior válido para revertir.")
+            pass
+
+
+    def finCU(self):
+        # Fin del caso de uso
+        print("Fin del caso de uso")
+        self.eventoSismicoSeleccionado = None
+        self.estadoBloqueadoEnRevision = None
+        self.estadoRechazado = None 
+        self.cambioEstadoActual = None
+        self.nombreAlcance = None
+        self.nombreOrigen = None
+        self.nombreClasificacion = None
+        self.datosEventoPorEstacion = None
+
+
+    def opConfirmarEvento(self, accionSeleccionada):
+        self.accionSeleccionada = accionSeleccionada
+        if(self.validarAccionSeleccionada(self.accionSeleccionada)):
+            if(self.eventoSismicoSeleccionado.validarDatos()):
+                self.confirmarEventoSismico()
+            else:
+                print("Datos inválidos")
+    
+    def confirmarEventoSismico(self):
+        # Buscar por estado y ambito el estado BloqueadoEnRevision
+        for estado in estados_mock:
+            if (estado.esAmbitoEventoSismico()) and (estado.esConfirmado()):
+                self.estadoConfirmado = estado
+                break
+        # Buscar el cambio de estado actual
+        self.cambioEstadoActual = self.eventoSismicoSeleccionado.obtenerEstadoActual()
+
+        #Calcular fecha y hora actual
+        self.horaFechaFinCambioEstado = self.calcularFechaHoraActual()
+
+        #Realizar el cambio de estado
+        print("----ESTE ES DEL CONFIRMADO----")
+        print("Estado antes del cambio: ", self.eventoSismicoSeleccionado.estadoActual.getNombreEstado())
+        self.eventoSismicoSeleccionado.setEstadoActual(self.estadoConfirmado)
+        iterador = 0
+        for cambioEstado in self.eventoSismicoSeleccionado.cambioEstado:
+            print(f"Iteración:{iterador} ----------")
+            print("Cambio de estado:", cambioEstado.getEstado().getNombreEstado())
+            print("Empleado responsable: ", cambioEstado.getResponsableInspeccion().getNombre())
+            iterador += 1
+        print("----------")  
+        print("Estado luego del cambio: ", self.eventoSismicoSeleccionado.estadoActual.getNombreEstado())
+        self.eventoSismicoSeleccionado.solicitarRevisionExperto(self.estadoConfirmado, 
+                                                self.cambioEstadoActual, 
+                                                self.horaFechaFinCambioEstado, self.usuarioActivo)
+        
+    def opSolicitarRevisionExperto(self, accionSeleccionada):
+        self.accionSeleccionada = accionSeleccionada
+        if(self.validarAccionSeleccionada(self.accionSeleccionada)):
+            if(self.eventoSismicoSeleccionado.validarDatos()):
+                self.solicitarRevisionExperto()
+            else:
+                print("Datos inválidos")
+
+    def solicitarRevisionExperto(self):
+        # Buscar por estado y ambito el estado BloqueadoEnRevision
+        for estado in estados_mock:
+            if (estado.esAmbitoEventoSismico()) and (estado.esSolicitadoRevisionExperto()):
+                self.estadoRevisionExperto = estado
+                break
+        # Buscar el cambio de estado actual
+        self.cambioEstadoActual = self.eventoSismicoSeleccionado.obtenerEstadoActual()
+
+        #Calcular fecha y hora actual
+        self.horaFechaFinCambioEstado = self.calcularFechaHoraActual()
+
+        #Realizar el cambio de estado
+        print("----ESTE ES DEL SOLICITADO REVISIÓN EXPERTO----")
+        print("Estado antes del cambio: ", self.eventoSismicoSeleccionado.estadoActual.getNombreEstado())
+        self.eventoSismicoSeleccionado.setEstadoActual(self.estadoRevisionExperto)
+        iterador = 0
+        for cambioEstado in self.eventoSismicoSeleccionado.cambioEstado:
+            print(f"Iteración:{iterador} ----------")
+            print("Cambio de estado:", cambioEstado.getEstado().getNombreEstado())
+            print("Empleado responsable: ", cambioEstado.getResponsableInspeccion().getNombre())
+            iterador += 1
+        print("----------")  
+        print("Estado luego del cambio: ", self.eventoSismicoSeleccionado.estadoActual.getNombreEstado())
+        self.eventoSismicoSeleccionado.solicitarRevisionExperto(self.estadoConfirmado, 
+                                                self.cambioEstadoActual, 
+                                                self.horaFechaFinCambioEstado, self.usuarioActivo)

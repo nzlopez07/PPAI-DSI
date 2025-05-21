@@ -32,6 +32,23 @@ def rechazarEvento():
     pantalla.opRechazarEvento()
     return render_template('resultado_final.html')
 
+@app.route('/eventos/evento/cancelar', methods=['GET'])
+def cancelarEvento():
+    pantalla.cancelarRevisionEvento()
+    return redirect('/')
+
+
+@app.route('/eventos/evento/confirmar', methods=['GET'])
+def confirmarEvento():
+    pantalla.opConfirmarEvento()
+    return render_template('resultado_final.html', mensaje="El evento fue CONFIRMADO exitosamente.")
+
+@app.route('/eventos/evento/solicitar_experto', methods=['GET'])
+def solicitarRevisionExperto():
+    pantalla.opSolicitarRevisionExperto()
+    return render_template('resultado_final.html', mensaje="La revisión fue solicitada a un experto exitosamente.")
+
+
 """
 @app.route('/evento', methods=['POST'])
 def evento():
@@ -72,4 +89,3 @@ if __name__ == "__main__":
     app.run(debug=True)
     eventos = pantalla.opcionRegistrarRevisionManual()
     print (eventos)
-    

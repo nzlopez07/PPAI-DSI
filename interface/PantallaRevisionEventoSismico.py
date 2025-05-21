@@ -9,6 +9,7 @@ class PantallaRevisionEventoSismico:
         self.nombreAlcance = None
         self.nombreClasificacion = None
         self.datosEventoPorEstacion = None
+        self.accionSeleccionada = None
         
     def opcRegistrarResultadoRevisionManual(self):
         self.habilitarPantalla()
@@ -18,7 +19,6 @@ class PantallaRevisionEventoSismico:
         self.gestorRevision.opcRegistrarResultadoRevisionManual()
     
     def mostrarYSolicitarSeleccionEvento(self, eventos):
-        #self.tomarSeleccionEvento()
         self.eventosAutoDetectadosYPendientesDeRevision = eventos
 
     def tomarSeleccionEvento(self, indice):
@@ -26,7 +26,9 @@ class PantallaRevisionEventoSismico:
         self.eventoSeleccionado = self.eventosAutoDetectadosYPendientesDeRevision[indice]
         
         self.gestorRevision.tomarSeleccionEvento(self.eventoSeleccionado)
-        return self.nombreAlcance, self.nombreOrigen, self.nombreClasificacion, self.datosEventoPorEstacion
+
+        return self.mostrarDatosEventosSismicos(self.nombreAlcance, self.nombreOrigen, self.nombreClasificacion, self.datosEventoPorEstacion)
+
 
     def mostrarDatosEventosSismicos(self, nombreAlcance, nombreOrigen, nombreClasificacion, datosEventoPorEstacion):
         print("ENTRÉ AL MÉTODO MOSTRAR DATOS EVENTOS SISMICOS DE PANTALLA")
@@ -34,9 +36,19 @@ class PantallaRevisionEventoSismico:
         self.nombreAlcance = nombreAlcance
         self.nombreClasificacion = nombreClasificacion
         self.datosEventoPorEstacion = datosEventoPorEstacion
-        ##Este método tengo entendido que no instancia la carga en la pantalla,
-        ##Se hace una asignación de valores que desconozco el por qué.
+        return self.nombreAlcance, self.nombreOrigen, self.nombreClasificacion, self.datosEventoPorEstacion
 
     def opRechazarEvento(self):
-        self.gestorRevision.opRechazarEvento()
+        self.accionSeleccionada = "Rechazar evento"
+        self.gestorRevision.opRechazarEvento(self.accionSeleccionada)
     
+    def cancelarRevisionEvento(self):
+        self.gestorRevision.cancelarRevisionEventoSismico()
+
+    def opConfirmarEvento(self):
+        self.accionSeleccionada = "Confirmar evento"
+        self.gestorRevision.opConfirmarEvento(self.accionSeleccionada)
+
+    def opSolicitarRevisionExperto(self):
+        self.accionSeleccionada = "Solicitar Revision a experto"
+        self.gestorRevision.opSolicitarRevisionExperto(self.accionSeleccionada)
