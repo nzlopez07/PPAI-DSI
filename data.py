@@ -81,16 +81,16 @@ estados_mock = [
 
 
 cambios_estado_mock_Rechazado = [
-    CambioEstado(fechaHoraInicio=datetime.now, estado=estados_mock[0], fechaHoraFin=datetime.now, responsable=usuario_mock.getEmpleado()),
-    CambioEstado(fechaHoraInicio=datetime.now,estado=estados_mock[1], fechaHoraFin=datetime.now, responsable=usuario_mock.getEmpleado()),
-    CambioEstado(fechaHoraInicio=datetime.now,estado=estados_mock[3], responsable=usuario_mock.getEmpleado()),
+    CambioEstado(fechaHoraInicio=datetime.now(), estado=estados_mock[0], fechaHoraFin=datetime.now(), responsable=usuario_mock.getEmpleado()),
+    CambioEstado(fechaHoraInicio=datetime.now(),estado=estados_mock[1], fechaHoraFin=datetime.now(), responsable=usuario_mock.getEmpleado()),
+    CambioEstado(fechaHoraInicio=datetime.now(),estado=estados_mock[3], responsable=usuario_mock.getEmpleado()),
 ]
 cambios_estado_mock_PteRev = [
-    CambioEstado(fechaHoraInicio=datetime.now, estado=estados_mock[0], fechaHoraFin=datetime.now, responsable=usuario_mock.getEmpleado()),
-    CambioEstado(fechaHoraInicio=datetime.now,estado=estados_mock[1], responsable=usuario_mock.getEmpleado()),
+    CambioEstado(fechaHoraInicio=datetime.now(), estado=estados_mock[0], fechaHoraFin=datetime.now, responsable=usuario_mock.getEmpleado()),
+    CambioEstado(fechaHoraInicio=datetime.now(),estado=estados_mock[1], responsable=usuario_mock.getEmpleado()),
 ]
 cambios_estado_mock_AutoDet = [
-    CambioEstado(fechaHoraInicio=datetime.now, estado=estados_mock[0], responsable=usuario_mock.getEmpleado()),
+    CambioEstado(fechaHoraInicio=datetime.now(), estado=estados_mock[0], responsable=usuario_mock.getEmpleado()),
 ]
 
 series_mock = [
