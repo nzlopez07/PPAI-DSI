@@ -27,9 +27,7 @@ class PantallaRevisionEventoSismico:
     def tomarSeleccionEvento(self, indice):
         # Asigna el evento sismico selecionado a la pantalla
         self.eventoSeleccionado = self.eventosAutoDetectadosYPendientesDeRevision[indice]
-        
         self.gestorRevision.tomarSeleccionEvento(self.eventoSeleccionado)
-
         return self.mostrarDatosEventosSismicos(self.nombreAlcance, self.nombreOrigen, self.nombreClasificacion, self.datosEventoPorEstacion)
 
 
@@ -38,7 +36,6 @@ class PantallaRevisionEventoSismico:
         self.nombreAlcance = nombreAlcance
         self.nombreClasificacion = nombreClasificacion
         self.datosEventoPorEstacion = datosEventoPorEstacion
-
         return self.nombreAlcance, self.nombreOrigen, self.nombreClasificacion, self.datosEventoPorEstacion
 
     def opRechazarEvento(self):
@@ -56,8 +53,6 @@ class PantallaRevisionEventoSismico:
         self.accionSeleccionada = "Solicitar Revision a experto"
         self.gestorRevision.opSolicitarRevisionExperto(self.accionSeleccionada)
 
-    def mostrarOpcionVisualizarMapa(self):
-        print("GENERADOS BOTONES DE VISUALIZACION DE MAPA")
     
     def tomarSeleccionMapa(self, seleccionMapa):
         self.seleccionMapa = seleccionMapa

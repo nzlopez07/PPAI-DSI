@@ -63,40 +63,6 @@ def tomarSeleccionModificar():
     print("SELECCION MODIFICAR", pantalla.seleccionModificar)
     return ('', 204)
 
-"""
-@app.route('/evento', methods=['POST'])
-def evento():
-    evento_id = int(request.form['evento_id'])
-    evento = pantalla.obtener_evento_por_id(evento_id)
-    return render_template('detalle_evento.html', evento=evento)
-
-@app.route('/editar/<int:id>')
-def editar(id):
-    evento = pantalla.obtener_evento_por_id(id)
-    return render_template('editar_evento.html', evento=evento)
-
-@app.route('/guardar_edicion/<int:id>', methods=['POST'])
-def guardar_edicion(id):
-    datos = {
-        'magnitud': request.form['magnitud'],
-        'alcance': request.form['alcance'],
-        'origen': request.form['origen']
-    }
-    pantalla.actualizar_evento(id, datos)
-    return redirect(f'/confirmar/{id}')
-
-@app.route('/confirmar/<int:id>')
-def confirmar(id):
-    evento = pantalla.obtener_evento_por_id(id)
-    return render_template('confirmar_evento.html', evento=evento)
-
-@app.route('/resultado_final/<int:id>', methods=['POST'])
-def resultado_final(id):
-    accion = request.form['accion']
-    resultado = pantalla.finalizar_evento(id, accion)
-    return render_template('resultado_final.html', resultado=resultado)
-"""
-
 
 if __name__ == "__main__":
     # Llamar al método para buscar eventos auto detectados
