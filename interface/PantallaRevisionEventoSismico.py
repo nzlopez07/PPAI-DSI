@@ -10,7 +10,8 @@ class PantallaRevisionEventoSismico:
         self.nombreClasificacion = None
         self.datosEventoPorEstacion = None
         self.accionSeleccionada = None
-
+        self.seleccionMapa = False
+        self.seleccionModificar = False
 
     def opcRegistrarResultadoRevisionManual(self):
         self.habilitarPantalla()
@@ -58,3 +59,21 @@ class PantallaRevisionEventoSismico:
     def mostrarOpcionVisualizarMapa(self):
         print("GENERADOS BOTONES DE VISUALIZACION DE MAPA")
     
+    def tomarSeleccionMapa(self, seleccionMapa):
+        self.seleccionMapa = seleccionMapa
+
+    def tomarSeleccionModificar(self, seleccionModificar):
+        self.seleccionModificar = seleccionModificar
+
+
+    def finCU(self):
+        print("Fin de caso de uso PANTALLA")
+        self.eventosAutoDetectadosYPendientesDeRevision = None
+        self.eventoSeleccionado = None
+        self.nombreOrigen = None
+        self.nombreAlcance = None
+        self.nombreClasificacion = None
+        self.datosEventoPorEstacion = None
+        self.accionSeleccionada = None
+        self.seleccionMapa = False
+        self.seleccionModificar = False

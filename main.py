@@ -49,6 +49,20 @@ def solicitarRevisionExperto():
     return render_template('resultado_final.html', mensaje="La revisión fue solicitada a un experto exitosamente.")
 
 
+@app.route('/eventos/evento/seleccion_mapa', methods=['POST'])
+def tomarSeleccionMapa():
+    print("SELECCION MAPA", pantalla.seleccionMapa)
+    pantalla.tomarSeleccionMapa(True)
+    print("SELECCION MAPA", pantalla.seleccionMapa)
+    return ('', 204)
+
+@app.route('/eventos/evento/seleccion_modificar', methods=['POST'])
+def tomarSeleccionModificar():
+    print("SELECCION MODIFICAR", pantalla.seleccionModificar)
+    pantalla.tomarSeleccionModificar(True)
+    print("SELECCION MODIFICAR", pantalla.seleccionModificar)
+    return ('', 204)
+
 """
 @app.route('/evento', methods=['POST'])
 def evento():

@@ -177,14 +177,17 @@
 
   <script>
     document.getElementById('btn-mapa').addEventListener('click', function() {
+      fetch('/eventos/evento/seleccion_mapa', {method: 'POST'});
       document.getElementById('modificar-datos-evento').style.display = 'block';
     });
+
     document.getElementById('btn-no-mapa').addEventListener('click', function() {
       document.getElementById('modificar-datos-evento').style.display = 'block';
     });
 
     // Mostrar el formulario al hacer clic en "Modificar Magnitud, Alcance y Origen"
     document.getElementById('btn-modificar-datos').addEventListener('click', function() {
+      fetch('/eventos/evento/seleccion_modificar', {method: 'POST'});
       document.getElementById('form-modificar-datos').style.display = 'block';
       this.style.display = 'none';
     });

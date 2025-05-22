@@ -244,7 +244,7 @@ class GestorRevisionEventoSismico:
         self.nombreOrigen = None
         self.nombreClasificacion = None
         self.datosEventoPorEstacion = None
-
+        self.pantallaRevision.finCU()
 
     def opConfirmarEvento(self, accionSeleccionada):
         self.accionSeleccionada = accionSeleccionada
@@ -321,3 +321,4 @@ class GestorRevisionEventoSismico:
             print("Fecha y hora FIN de cambio de estado: ", cambioEstado.getFechaHoraFin())
             iterador += 1
         self.finCU()
+        
