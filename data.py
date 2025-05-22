@@ -12,6 +12,7 @@ from entities.Sismografo import Sismografo
 from entities.EstacionSismologica import EstacionSismologica
 from entities.DetalleMuestraSismica import DetalleMuestraSismica
 from entities.MuestraSismica import MuestraSismica
+from entities.DetalleMuestraSismica import TipoDeDato
 from entities.Empleado import Empleado
 from entities.Usuario import Usuario
 
@@ -20,13 +21,22 @@ empleado_mock = Empleado("Gomez", "asd123@gmail.com", "Juan", "123456789")
 
 usuario_mock = Usuario("pwdSegura123", "JuanGomezUSER", empleado_mock)
 # Crear detalles individuales
-detalle_muestras_mock_0 = [
-    DetalleMuestraSismica(longOnda=12.5, velOnda=3.2, frecOnda=1.8),
-    DetalleMuestraSismica(longOnda=14.3, velOnda=2.9, frecOnda=2.0),
+
+mock_tipo_dato =[
+    TipoDeDato(denominacion="Longitud de onda", nombreUnidadMedida="km/ciclo", valorUmbral=1 ),
+    TipoDeDato(denominacion="Frecuencia de onda", nombreUnidadMedida="Hz", valorUmbral=15 ),
+    TipoDeDato(denominacion="Velocidad de onda", nombreUnidadMedida="km/seg", valorUmbral=10 )
 ]
-detalle_muestras_mock_1 =[
-    DetalleMuestraSismica(longOnda=11.8, velOnda=3.5, frecOnda=1.5),
-    DetalleMuestraSismica(longOnda=13.0, velOnda=3.0, frecOnda=1.7),
+
+detalle_muestras_mock_0 = [
+    DetalleMuestraSismica(valor=7, tipoDato=mock_tipo_dato[2]),
+    DetalleMuestraSismica(valor=0.7, tipoDato=mock_tipo_dato[0]),
+    DetalleMuestraSismica(valor=10, tipoDato=mock_tipo_dato[1])
+]
+detalle_muestras_mock_1 = [
+    DetalleMuestraSismica(valor=7.02, tipoDato=mock_tipo_dato[2]),
+    DetalleMuestraSismica(valor=0.69, tipoDato=mock_tipo_dato[0]),
+    DetalleMuestraSismica(valor=10.01, tipoDato=mock_tipo_dato[1])
 ]
 
 muestras_mock_0 = [
