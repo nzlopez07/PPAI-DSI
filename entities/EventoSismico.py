@@ -3,7 +3,6 @@ from entities.CambioEstado import CambioEstado
 from entities.Estado import Estado
 from entities.SerieTemporal import SerieTemporal
 from entities.ClasificacionSismo import ClasificacionSismo
-from entities.MagnitudRichter import MagnitudRichter
 from entities.OrigenDeGeneracion import OrigenDeGeneracion
 
 
@@ -23,7 +22,7 @@ class EventoSismico:
 
         # atributos referenciales (son objetos)
         self.clasificacion: ClasificacionSismo = clasificacion
-        self.magnitud: MagnitudRichter = magnitud
+        self.magnitud = magnitud
         self.origenGeneracion: OrigenDeGeneracion = origenGeneracion
         self.alcanceSismo: AlcanceSismo = alcanceSismo
         self.estadoActual: Estado = estadoActual

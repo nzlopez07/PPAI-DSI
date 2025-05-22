@@ -30,7 +30,7 @@ def eventoSeleccionado():
 @app.route('/eventos/evento/rechazar', methods=['GET'])
 def rechazarEvento():
     pantalla.opRechazarEvento()
-    return render_template('resultado_final.html')
+    return render_template('rechazar.html')
 
 @app.route('/eventos/evento/cancelar', methods=['GET'])
 def cancelarEvento():
@@ -41,7 +41,7 @@ def cancelarEvento():
 @app.route('/eventos/evento/confirmar', methods=['GET'])
 def confirmarEvento():
     pantalla.opConfirmarEvento()
-    return render_template('resultado_final.html', mensaje="El evento fue CONFIRMADO exitosamente.")
+    return render_template('confirmar.html', mensaje="El evento fue CONFIRMADO exitosamente.")
 
 @app.route('/eventos/evento/solicitar_experto', methods=['GET'])
 def solicitarRevisionExperto():
