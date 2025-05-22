@@ -2,7 +2,7 @@ from controllers.GestorRevisionEventoSismico import GestorRevisionEventoSismico
 
 class PantallaRevisionEventoSismico:
     def __init__(self):
-        self.gestorRevision:GestorRevisionEventoSismico = GestorRevisionEventoSismico(self)
+        self.gestorRevision:GestorRevisionEventoSismico = None
         self.eventosAutoDetectadosYPendientesDeRevision = None
         self.eventoSeleccionado = None
         self.nombreOrigen = None
@@ -17,6 +17,7 @@ class PantallaRevisionEventoSismico:
         return self.eventosAutoDetectadosYPendientesDeRevision
 
     def habilitarPantalla(self):
+        self.gestorRevision = GestorRevisionEventoSismico(self)
         self.gestorRevision.opcRegistrarResultadoRevisionManual()
     
     def mostrarYSolicitarSeleccionEvento(self, eventos):
@@ -32,11 +33,11 @@ class PantallaRevisionEventoSismico:
 
 
     def mostrarDatosEventosSismicos(self, nombreAlcance, nombreOrigen, nombreClasificacion, datosEventoPorEstacion):
-        print("ENTRÉ AL MÉTODO MOSTRAR DATOS EVENTOS SISMICOS DE PANTALLA")
         self.nombreOrigen = nombreOrigen
         self.nombreAlcance = nombreAlcance
         self.nombreClasificacion = nombreClasificacion
         self.datosEventoPorEstacion = datosEventoPorEstacion
+
         return self.nombreAlcance, self.nombreOrigen, self.nombreClasificacion, self.datosEventoPorEstacion
 
     def opRechazarEvento(self):
@@ -53,3 +54,7 @@ class PantallaRevisionEventoSismico:
     def opSolicitarRevisionExperto(self):
         self.accionSeleccionada = "Solicitar Revision a experto"
         self.gestorRevision.opSolicitarRevisionExperto(self.accionSeleccionada)
+
+    def mostrarOpcionVisualizarMapa(self):
+        print("GENERADOS BOTONES DE VISUALIZACION DE MAPA")
+    

@@ -116,7 +116,7 @@
 
     <section class="mb-5">
       <h5 class="section-title"> Visualizar Mapa</h5>
-      <button type="button" class="btn btn-outline-secondary btn-custom" onclick="window.open('/static/mapa_sismo.jpg','_blank', 'width=800,height=600')">
+      <button type="button" class="btn btn-outline-secondary btn-custom" id="btn-mapa" onclick="window.open('/static/mapa_sismo.jpg','_blank', 'width=800,height=600')">
         Visualizar Evento en el Mapa
       </button>
       <button type="button" class="btn btn-outline-danger btn-custom" id="btn-no-mapa">
@@ -176,6 +176,9 @@
   </div>
 
   <script>
+    document.getElementById('btn-mapa').addEventListener('click', function() {
+      document.getElementById('modificar-datos-evento').style.display = 'block';
+    });
     document.getElementById('btn-no-mapa').addEventListener('click', function() {
       document.getElementById('modificar-datos-evento').style.display = 'block';
     });

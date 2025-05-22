@@ -24,7 +24,7 @@ def eventoSeleccionado():
     indice = int(request.form['eventoSeleccionado'])   
     alcance, origen, clasificacion, estaciones = pantalla.tomarSeleccionEvento(indice)
     for estacion in estaciones:
-        print("Nombre estacion: ", estacion) 
+        print("Nombre estacion: ", estacion)
     return render_template('detalle_evento.html', alcance=alcance, origen=origen, clasificacion=clasificacion, estaciones=estaciones)
 
 @app.route('/eventos/evento/rechazar', methods=['GET'])

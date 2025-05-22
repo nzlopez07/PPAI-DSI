@@ -81,6 +81,8 @@ class GestorRevisionEventoSismico:
         # Arma diccionario para clasificar por estacion todos los datos de los detalles muestra de cada muestra de cada serie
         self.buscarDatosSeriesPorEstacion()
 
+        # Llamada al CU18 para mostrar los sismogramas
+        self.llamarCU18()
         # Envia esos datos a la pantalla para mostrar
         self.pantallaRevision.mostrarDatosEventosSismicos(self.nombreAlcance, self.nombreOrigen,self.nombreClasificacion, self.datosEventoPorEstacion)
         print("Datos enviados a la pantalla")
@@ -126,19 +128,22 @@ class GestorRevisionEventoSismico:
             for muestra in serie.getMuestraSismica():
                 fechaHoraMuestra = muestra.getFechaHoraMuestra()
                 for detalle in muestra.getDetalleMuestraSismica():
-                    frecuencia = detalle.getFrecuenciaOnda()
-                    longitud = detalle.getLongitudOnda()
-                    velocidad = detalle.getVelocidadOnda()
+                    if (detalle.getDatos().esTuDenominacion("Longitud de onda")):
+                        longitud = detalle.getValor()
+                    elif (detalle.getDatos().esTuDenominacion("Frecuencia de onda")):
+                        frecuencia = detalle.getValor()
+                    elif (detalle.getDatos().esTuDenominacion("Velocidad de onda")):
+                        velocidad = detalle.getValor()
 
-                    # Guardar valores
-                    self.datosEventoPorEstacion[nombreEstacion].append({
+                # Guardar valores
+                self.datosEventoPorEstacion[nombreEstacion].append({
                         "fechaHoraMuestra": fechaHoraMuestra,
                         "frecuenciaOnda": frecuencia,
                         "longitudOnda":longitud,
                         "velocidadOnda":velocidad
-                    })
-        # Mostramos por consola los datos de cada serie temporal
-        """print("\nDatos por Estación Sismográfica:\n" + "="*40)
+                })
+        """# Mostramos por consola los datos de cada serie temporal
+        print("\nDatos por Estación Sismográfica:\n" + "="*40)
         for nombre_estacion, muestras in self.datosEventoPorEstacion.items():
             print(f"\nEstación: {nombre_estacion}\n" + "-"*40)
             for i, muestra in enumerate(muestras, start=1):
@@ -147,10 +152,10 @@ class GestorRevisionEventoSismico:
                 print(f"\tFrecuencia de Onda: {muestra['frecuenciaOnda']} Hz")
                 print(f"\tLongitud de Onda:   {muestra['longitudOnda']} m")
                 print(f"\tVelocidad de Onda:  {muestra['velocidadOnda']} m/s")
-            print("-"*40) """
+            print("-"*40)"""
 
-    def llamarCU18():
-        print("ESTO ES UN SISMOGRAMA")
+    def llamarCU18(self):
+        print("LLAMADA AL CU18 - GENERAR SISMOGRAMAS\n")
 
     def opRechazarEvento(self,accionSeleccionada):
         self.accionSeleccionada = accionSeleccionada
@@ -250,8 +255,6 @@ class GestorRevisionEventoSismico:
                 print("Datos inválidos")
     
     def confirmarEventoSismico(self):
-        self.iteracionesFuncionConfirmada += 1
-        print("ITERACION FUNCION CONFIRMADA: ", self.iteracionesFuncionConfirmada)
         # Buscar por estado y ambito el estado BloqueadoEnRevision
         for estado in estados_mock:
             if (estado.esAmbitoEventoSismico()) and (estado.esConfirmado()):
@@ -280,10 +283,6 @@ class GestorRevisionEventoSismico:
             print("Empleado responsable: ", cambioEstado.getResponsableInspeccion().getNombre())
             print("Fecha y hora FIN de cambio de estado: ", cambioEstado.getFechaHoraFin())
             iterador += 1
-        
-        if self.iteracionesFuncionConfirmada == 3:
-            for cambioEstado in self.eventoSismicoSeleccionado.cambioEstado:
-                print("Cambio de estado:", cambioEstado.getEstado().getNombreEstado())
         self.finCU()
         
     def opSolicitarRevisionExperto(self, accionSeleccionada):
