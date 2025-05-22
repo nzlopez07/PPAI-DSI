@@ -11,6 +11,7 @@ class PantallaRevisionEventoSismico:
         self.datosEventoPorEstacion = None
         self.accionSeleccionada = None
 
+
     def opcRegistrarResultadoRevisionManual(self):
         self.habilitarPantalla()
         return self.eventosAutoDetectadosYPendientesDeRevision

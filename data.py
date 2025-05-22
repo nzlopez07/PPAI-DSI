@@ -222,32 +222,16 @@ eventos_mock = [
         magnitud=None,
         origenGeneracion=origen_mock[1],
         alcanceSismo=alcances_mock[1],
-        estadoActual=estados_mock[1],
-        cambiosEstado=cambios_estado_mock_PteRev,
+        estadoActual=estados_mock[3],
+        cambiosEstado=cambios_estado_mock_Rechazado,
         serieTemporal=series_mock + series_mock_2,
         fechaHoraOcurrencia=datetime(2025, 5, 14, 10, 0),
         latitudEpicentro=-31.4167,
         latitudHipocentro=-35.6175,
         longitudEpicentro=-64.1833,
         longitudHipocentro=-64.1840,
-        valorMagnitud=5
-    ), 
-    EventoSismico(
-        clasificacion=clasificacion_mock[2],
-        magnitud=None,
-        origenGeneracion=origen_mock[2],
-        alcanceSismo=alcances_mock[2],
-        estadoActual=estados_mock[0],
-        cambiosEstado=cambios_estado_mock_AutoDet,
-        serieTemporal=series_mock,
-        fechaHoraOcurrencia=datetime(2025, 5, 14, 10, 0),
-        latitudEpicentro=-31.4167,
-        latitudHipocentro=-35.6175,
-        longitudEpicentro=-64.1833,
-        longitudHipocentro=-64.1840,
-        valorMagnitud=6
-    )
-]
+        valorMagnitud=1
+    )]
 
 #estaciones_mock = [
     #EstacionSismologica("ST001", None, None, 0.0, 0.0, "Estación Central - Córdoba", None),

@@ -30,8 +30,6 @@ class GestorRevisionEventoSismico:
         self.sesionActiva = Sesion(datetime.now(), usuario_mock)
         self.usuarioActivo = None
 
-        self.iteracionesFuncionConfirmada = 0
-
 
     #Métodos get y set si corresponden
     def getEventosSismicosAutoDetectados(self):
@@ -197,6 +195,7 @@ class GestorRevisionEventoSismico:
             print("Empleado responsable: ", cambioEstado.getResponsableInspeccion().getNombre())
             print("Fecha y hora FIN de cambio de estado: ", cambioEstado.getFechaHoraFin())
             iterador += 1
+        self.finCU()
 
     def cancelarRevisionEventoSismico(self):
         #Revertir el estado del evento sísmico seleccionado al anterior.
@@ -225,6 +224,8 @@ class GestorRevisionEventoSismico:
         else:
             print("No se encontró un cambio de estado anterior válido para revertir.")
             pass
+
+        self.finCU()
 
 
     def finCU(self):
@@ -320,3 +321,4 @@ class GestorRevisionEventoSismico:
             print("Empleado responsable: ", cambioEstado.getResponsableInspeccion().getNombre())
             print("Fecha y hora FIN de cambio de estado: ", cambioEstado.getFechaHoraFin())
             iterador += 1
+        self.finCU()
