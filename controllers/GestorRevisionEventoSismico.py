@@ -30,6 +30,8 @@ class GestorRevisionEventoSismico:
         self.sesionActiva = Sesion(datetime.now(), usuario_mock)
         self.usuarioActivo = None
 
+        self.iteracionesFuncionConfirmada = 0
+
 
     #Métodos get y set si corresponden
     def getEventosSismicosAutoDetectados(self):
@@ -183,18 +185,18 @@ class GestorRevisionEventoSismico:
         print("----ESTE ES DEL RECHAZADO----")
         print("Estado antes del cambio: ", self.eventoSismicoSeleccionado.estadoActual.getNombreEstado())
         self.eventoSismicoSeleccionado.setEstadoActual(self.estadoRechazado)
-        iterador = 0
-        for cambioEstado in self.eventoSismicoSeleccionado.cambioEstado:
-            print(f"Iteración:{iterador} ----------")
-            print("Cambio de estado:", cambioEstado.getEstado().getNombreEstado())
-            print("Empleado responsable: ", cambioEstado.getResponsableInspeccion().getNombre())
-            iterador += 1
         print("----------")
         print("Estado luego del cambio: ", self.eventoSismicoSeleccionado.estadoActual.getNombreEstado())
         self.eventoSismicoSeleccionado.rechazar(self.estadoRechazado, 
                                                           self.cambioEstadoActual, 
                                                           self.horaFechaFinCambioEstado, self.usuarioActivo)
-
+        iterador = 0
+        for cambioEstado in self.eventoSismicoSeleccionado.cambioEstado:
+            print(f"Iteración:{iterador} ----------")
+            print("Cambio de estado:", cambioEstado.getEstado().getNombreEstado())
+            print("Empleado responsable: ", cambioEstado.getResponsableInspeccion().getNombre())
+            print("Fecha y hora FIN de cambio de estado: ", cambioEstado.getFechaHoraFin())
+            iterador += 1
 
     def cancelarRevisionEventoSismico(self):
         #Revertir el estado del evento sísmico seleccionado al anterior.
@@ -247,6 +249,8 @@ class GestorRevisionEventoSismico:
                 print("Datos inválidos")
     
     def confirmarEventoSismico(self):
+        self.iteracionesFuncionConfirmada += 1
+        print("ITERACION FUNCION CONFIRMADA: ", self.iteracionesFuncionConfirmada)
         # Buscar por estado y ambito el estado BloqueadoEnRevision
         for estado in estados_mock:
             if (estado.esAmbitoEventoSismico()) and (estado.esConfirmado()):
@@ -262,17 +266,24 @@ class GestorRevisionEventoSismico:
         print("----ESTE ES DEL CONFIRMADO----")
         print("Estado antes del cambio: ", self.eventoSismicoSeleccionado.estadoActual.getNombreEstado())
         self.eventoSismicoSeleccionado.setEstadoActual(self.estadoConfirmado)
+        print("----------")  
+        print("Estado luego del cambio: ", self.eventoSismicoSeleccionado.estadoActual.getNombreEstado())
+        self.eventoSismicoSeleccionado.confirmar(self.estadoConfirmado, 
+                                                self.cambioEstadoActual, 
+                                                self.horaFechaFinCambioEstado, self.usuarioActivo)
         iterador = 0
+        print(len(self.eventoSismicoSeleccionado.cambioEstado))
         for cambioEstado in self.eventoSismicoSeleccionado.cambioEstado:
             print(f"Iteración:{iterador} ----------")
             print("Cambio de estado:", cambioEstado.getEstado().getNombreEstado())
             print("Empleado responsable: ", cambioEstado.getResponsableInspeccion().getNombre())
+            print("Fecha y hora FIN de cambio de estado: ", cambioEstado.getFechaHoraFin())
             iterador += 1
-        print("----------")  
-        print("Estado luego del cambio: ", self.eventoSismicoSeleccionado.estadoActual.getNombreEstado())
-        self.eventoSismicoSeleccionado.solicitarRevisionExperto(self.estadoConfirmado, 
-                                                self.cambioEstadoActual, 
-                                                self.horaFechaFinCambioEstado, self.usuarioActivo)
+        
+        if self.iteracionesFuncionConfirmada == 3:
+            for cambioEstado in self.eventoSismicoSeleccionado.cambioEstado:
+                print("Cambio de estado:", cambioEstado.getEstado().getNombreEstado())
+        self.finCU()
         
     def opSolicitarRevisionExperto(self, accionSeleccionada):
         self.accionSeleccionada = accionSeleccionada
@@ -298,14 +309,14 @@ class GestorRevisionEventoSismico:
         print("----ESTE ES DEL SOLICITADO REVISIÓN EXPERTO----")
         print("Estado antes del cambio: ", self.eventoSismicoSeleccionado.estadoActual.getNombreEstado())
         self.eventoSismicoSeleccionado.setEstadoActual(self.estadoRevisionExperto)
+        print("----------")  
+        self.eventoSismicoSeleccionado.solicitarRevisionExperto(self.estadoRevisionExperto, 
+                                                self.cambioEstadoActual, 
+                                                self.horaFechaFinCambioEstado, self.usuarioActivo)
         iterador = 0
         for cambioEstado in self.eventoSismicoSeleccionado.cambioEstado:
             print(f"Iteración:{iterador} ----------")
             print("Cambio de estado:", cambioEstado.getEstado().getNombreEstado())
             print("Empleado responsable: ", cambioEstado.getResponsableInspeccion().getNombre())
+            print("Fecha y hora FIN de cambio de estado: ", cambioEstado.getFechaHoraFin())
             iterador += 1
-        print("----------")  
-        print("Estado luego del cambio: ", self.eventoSismicoSeleccionado.estadoActual.getNombreEstado())
-        self.eventoSismicoSeleccionado.solicitarRevisionExperto(self.estadoConfirmado, 
-                                                self.cambioEstadoActual, 
-                                                self.horaFechaFinCambioEstado, self.usuarioActivo)
