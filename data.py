@@ -1,4 +1,5 @@
 from datetime import datetime
+import copy
 #from collections import defaultdict
 
 from entities.ClasificacionSismo import ClasificacionSismo
@@ -12,6 +13,7 @@ from entities.Sismografo import Sismografo
 from entities.EstacionSismologica import EstacionSismologica
 from entities.DetalleMuestraSismica import DetalleMuestraSismica
 from entities.MuestraSismica import MuestraSismica
+from entities.DetalleMuestraSismica import TipoDeDato
 from entities.Empleado import Empleado
 from entities.Usuario import Usuario
 
@@ -20,13 +22,22 @@ empleado_mock = Empleado("Gomez", "asd123@gmail.com", "Juan", "123456789")
 
 usuario_mock = Usuario("pwdSegura123", "JuanGomezUSER", empleado_mock)
 # Crear detalles individuales
-detalle_muestras_mock_0 = [
-    DetalleMuestraSismica(longOnda=12.5, velOnda=3.2, frecOnda=1.8),
-    DetalleMuestraSismica(longOnda=14.3, velOnda=2.9, frecOnda=2.0),
+
+mock_tipo_dato =[
+    TipoDeDato(denominacion="Longitud de onda", nombreUnidadMedida="km/ciclo", valorUmbral=1 ),
+    TipoDeDato(denominacion="Frecuencia de onda", nombreUnidadMedida="Hz", valorUmbral=15 ),
+    TipoDeDato(denominacion="Velocidad de onda", nombreUnidadMedida="km/seg", valorUmbral=10 )
 ]
-detalle_muestras_mock_1 =[
-    DetalleMuestraSismica(longOnda=11.8, velOnda=3.5, frecOnda=1.5),
-    DetalleMuestraSismica(longOnda=13.0, velOnda=3.0, frecOnda=1.7),
+
+detalle_muestras_mock_0 = [
+    DetalleMuestraSismica(valor=7, tipoDato=mock_tipo_dato[2]),
+    DetalleMuestraSismica(valor=0.7, tipoDato=mock_tipo_dato[0]),
+    DetalleMuestraSismica(valor=10, tipoDato=mock_tipo_dato[1])
+]
+detalle_muestras_mock_1 = [
+    DetalleMuestraSismica(valor=7.02, tipoDato=mock_tipo_dato[2]),
+    DetalleMuestraSismica(valor=0.69, tipoDato=mock_tipo_dato[0]),
+    DetalleMuestraSismica(valor=10.01, tipoDato=mock_tipo_dato[1])
 ]
 
 muestras_mock_0 = [
@@ -74,21 +85,23 @@ estados_mock = [
     Estado(ambito="EventoSismico", nombreEstado="AutoDetectado"), #0
     Estado(ambito="EventoSismico", nombreEstado="PendienteDeRevision"), #1
     Estado(ambito="EventoSismico", nombreEstado="BloqueadoEnRevision"), #2
-    Estado(ambito="EventoSismico", nombreEstado="Rechazado"), #3)
+    Estado(ambito="EventoSismico", nombreEstado="Rechazado"),
+    Estado(ambito="EventoSismico", nombreEstado="Confirmado"),
+    Estado(ambito="EventoSismico", nombreEstado="SolicitadoRevisionExperto")
 ]
 
 
 cambios_estado_mock_Rechazado = [
-    CambioEstado(fechaHoraInicio=datetime.now, estado=estados_mock[0], fechaHoraFin=datetime.now, responsable=usuario_mock.getEmpleado()),
-    CambioEstado(fechaHoraInicio=datetime.now,estado=estados_mock[1], fechaHoraFin=datetime.now, responsable=usuario_mock.getEmpleado()),
-    CambioEstado(fechaHoraInicio=datetime.now,estado=estados_mock[3], responsable=usuario_mock.getEmpleado()),
+    CambioEstado(fechaHoraInicio=(datetime.now()), estado=estados_mock[0], fechaHoraFin=datetime.now(), responsable=usuario_mock.getEmpleado()),
+    CambioEstado(fechaHoraInicio=datetime.now(),estado=estados_mock[1], fechaHoraFin=datetime.now(), responsable=usuario_mock.getEmpleado()),
+    CambioEstado(fechaHoraInicio=datetime.now(),estado=estados_mock[3], responsable=usuario_mock.getEmpleado()),
 ]
 cambios_estado_mock_PteRev = [
-    CambioEstado(fechaHoraInicio=datetime.now, estado=estados_mock[0], fechaHoraFin=datetime.now, responsable=usuario_mock.getEmpleado()),
-    CambioEstado(fechaHoraInicio=datetime.now,estado=estados_mock[1], responsable=usuario_mock.getEmpleado()),
+    CambioEstado(fechaHoraInicio=datetime.now(), estado=estados_mock[0], fechaHoraFin=datetime.now(), responsable=usuario_mock.getEmpleado()),
+    CambioEstado(fechaHoraInicio=datetime.now(),estado=estados_mock[1], responsable=usuario_mock.getEmpleado()),
 ]
 cambios_estado_mock_AutoDet = [
-    CambioEstado(fechaHoraInicio=datetime.now, estado=estados_mock[0], responsable=usuario_mock.getEmpleado()),
+    CambioEstado(fechaHoraInicio=datetime.now(), estado=estados_mock[0], responsable=usuario_mock.getEmpleado()),
 ]
 
 series_mock = [
@@ -186,27 +199,12 @@ series_mock_3 = [
 
 eventos_mock = [
     EventoSismico(
-        clasificacion=clasificacion_mock[0],
-        magnitud=None,
-        origenGeneracion=origen_mock[0],
-        alcanceSismo=alcances_mock[0],
-        estadoActual=estados_mock[0],
-        cambiosEstado=cambios_estado_mock_AutoDet,
-        serieTemporal=series_mock + series_mock_2 + series_mock_3,
-        fechaHoraOcurrencia=datetime(2025, 5, 20, 13, 0),
-        latitudEpicentro=-31.4167,
-        latitudHipocentro=-31.4175,
-        longitudEpicentro=-64.1833,
-        longitudHipocentro=-64.1840,
-        valorMagnitud=1
-    ),
-    EventoSismico(
         clasificacion=clasificacion_mock[1],
         magnitud=None,
         origenGeneracion=origen_mock[1],
         alcanceSismo=alcances_mock[1],
         estadoActual=estados_mock[1],
-        cambiosEstado=cambios_estado_mock_PteRev,
+        cambiosEstado=copy.deepcopy(cambios_estado_mock_PteRev),
         serieTemporal=series_mock + series_mock_2,
         fechaHoraOcurrencia=datetime(2025, 5, 14, 10, 0),
         latitudEpicentro=-31.4167,
@@ -221,7 +219,7 @@ eventos_mock = [
         origenGeneracion=origen_mock[2],
         alcanceSismo=alcances_mock[2],
         estadoActual=estados_mock[0],
-        cambiosEstado=cambios_estado_mock_AutoDet,
+        cambiosEstado=copy.deepcopy(cambios_estado_mock_AutoDet),
         serieTemporal=series_mock,
         fechaHoraOcurrencia=datetime(2025, 5, 14, 10, 0),
         latitudEpicentro=-31.4167,
@@ -229,28 +227,54 @@ eventos_mock = [
         longitudEpicentro=-64.1833,
         longitudHipocentro=-64.1840,
         valorMagnitud=3
-    )
-]
+    ),
+    EventoSismico(
+        clasificacion=clasificacion_mock[1],
+        magnitud=None,
+        origenGeneracion=origen_mock[1],
+        alcanceSismo=alcances_mock[1],
+        estadoActual=estados_mock[3],
+        cambiosEstado=copy.deepcopy(cambios_estado_mock_Rechazado),
+        serieTemporal=series_mock + series_mock_2,
+        fechaHoraOcurrencia=datetime(2025, 5, 14, 10, 0),
+        latitudEpicentro=-31.4167,
+        latitudHipocentro=-35.6175,
+        longitudEpicentro=-64.1833,
+        longitudHipocentro=-64.1840,
+        valorMagnitud=1
+    ),
+    EventoSismico(
+        clasificacion=clasificacion_mock[0],
+        magnitud=None,
+        origenGeneracion=origen_mock[0],
+        alcanceSismo=alcances_mock[0],
+        estadoActual=estados_mock[0],
+        cambiosEstado=copy.deepcopy(cambios_estado_mock_AutoDet),
+        serieTemporal=series_mock_3,
+        fechaHoraOcurrencia=datetime(2025, 6, 10, 14, 30),
+        latitudEpicentro=-34.6037,
+        latitudHipocentro=-34.6050,
+        longitudEpicentro=-58.3816,
+        longitudHipocentro=-58.3820,
+        valorMagnitud=2.5
+    ),
+    EventoSismico(
+        clasificacion=clasificacion_mock[2],
+        magnitud=None,
+        origenGeneracion=origen_mock[0],
+        alcanceSismo=alcances_mock[2],
+        estadoActual=estados_mock[0],
+        cambiosEstado=copy.deepcopy(cambios_estado_mock_AutoDet),
+        serieTemporal=series_mock_2 + series_mock_3,
+        fechaHoraOcurrencia=datetime(2025, 6, 8, 8, 15),
+        latitudEpicentro=-32.8908,
+        latitudHipocentro=-32.8920,
+        longitudEpicentro=-68.8272,
+        longitudHipocentro=-68.8280,
+        valorMagnitud=4.2
+    )]
 
-#estaciones_mock = [
-    #EstacionSismologica("ST001", None, None, 0.0, 0.0, "Estación Central - Córdoba", None),
-    #EstacionSismologica("ST002", None, None, 0.0, 0.0, "Estación Norte - Salta", None),
-    #EstacionSismologica("ST003", None, None, 0.0, 0.0, "Estación Sur - Neuquén", None),
-    #EstacionSismologica("ST004", None, None, 0.0, 0.0, "Estación Andina - Mendoza", None),
-    #EstacionSismologica("ST005", None, None, 0.0, 0.0, "Estación Costera - Mar del Plata", None)
-#]
-
-#sismografos_mock = [
-    #Sismografo(datetime(2025, 5, 14, 10, 0), "SISMO-001", "SN12345", estacionSismologica=estaciones_mock[0], seriesTemporales=series_mock),
-    #Sismografo(datetime(2024, 11, 2, 9, 30), "SISMO-002", "SN12346", estacionSismologica=estaciones_mock[1], seriesTemporales=series_mock),
-    #Sismografo(datetime(2023, 8, 20, 14, 15), "SISMO-003", "SN12347"),
-    #Sismografo(datetime(2022, 3, 5, 8, 45), "SISMO-004", "SN12348"),
-    #Sismografo(datetime(2021, 12, 1, 16, 0), "SISMO-005", "SN12349")
-#]
-
-# ...existing code...
-
-# Mock de varias estaciones y sismógrafos para pruebas en detalle_evento.html
+# Mock de varias estaciones y sismógrafos con datos completos
 estaciones_mock = [
     EstacionSismologica("ST001", None, None, -31.4167, -64.1833, "Estación Central - Córdoba", None),
     EstacionSismologica("ST002", None, None, -24.7821, -65.4232, "Estación Norte - Salta", None),

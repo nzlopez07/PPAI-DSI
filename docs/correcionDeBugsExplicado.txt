@@ -1,0 +1,41 @@
+Cuando se usaban varios eventos (por ejemplo, seleccionando y operando sobre 2 o más eventos diferentes), al confirmar, rechazar o derivar uno de ellos, aparecían estados "Confirmado", "Rechazado" o "Derivado" de más en el historial de otros eventos.
+
+¿Por qué pasaba esto?
+
+Los eventos compartían la misma lista de historial de cambios de estado (por referencia en Python).
+Así, cuando se agregaba un nuevo estado a un evento, en realidad se agregaba también a los otros eventos que usaban esa misma lista.
+Por eso, al operar sobre un evento, el historial de otros eventos también se veía alterado, mostrando estados que nunca debieron estar ahí.
+
+---
+
+Solución aplicada al bug de contaminación de cambios de estado entre eventos:
+
+1. **Historial independiente para cada evento:**
+   - Se modificó la creación de los mocks de eventos sísmicos para que cada uno tenga su propia copia de la lista de cambios de estado, usando `copy.deepcopy`.
+   - Así, los cambios de estado de un evento no afectan a ningún otro evento.
+
+2. **Tracking correcto del historial:**
+   - Ahora, cada vez que se confirma, rechaza o deriva un evento, se imprime en consola el historial completo de cambios de estado de ese evento, mostrando el flujo real por el que pasó.
+
+3. **Cancelación y transición de estados:**
+   - Al cancelar una revisión, el sistema cierra correctamente el estado "BloqueadoEnRevision" (asignando fecha de fin) y reabre el estado anterior, sin eliminar ningún cambio del historial.
+   - Así, el historial es fiel y auditable.
+
+**Resultado:**
+- Cada evento mantiene su historial de cambios de estado de forma independiente y correcta.
+- No hay más contaminación cruzada ni aparición de estados incorrectos en otros eventos.
+- El sistema es robusto, auditable y cumple con la lógica de negocio esperada.
+
+---
+
+Refactor en el Gestor para delegar el cambio de estado:
+
+- Antes, el Gestor (`GestorRevisionEventoSismico`) realizaba el cambio de estado directamente usando `setEstadoActual()` sobre el evento sísmico antes de llamar al método correspondiente (por ejemplo, `confirmar`, `rechazar`, etc.).
+- Esto mezclaba responsabilidades y podía generar inconsistencias si la lógica de transición cambiaba.
+
+**Cambio aplicado:**
+- Ahora, el Gestor solo llama al método correspondiente del evento (`evento.confirmar(...)`, `evento.rechazar(...)`, etc.) y es ese método el que se encarga de:
+  - Cerrar el cambio de estado anterior
+  - Crear y agregar el nuevo cambio de estado
+  - Actualizar el estado actual del evento
+- Así, toda la lógica de transición de estados queda encapsulada en la entidad `EventoSismico`, siguiendo el patrón de diseño correcto (Boundary-Control-Entity).

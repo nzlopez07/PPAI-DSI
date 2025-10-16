@@ -9,15 +9,27 @@ class CambioEstado:
 
     # Métodos GET
     def getFechaHoraInicio(self):
+        """
+        Mensaje auxiliar: getFechaHoraInicio()
+        """
         return self.fechaHoraInicio
 
     def getEstado(self):
+        """
+        Mensaje auxiliar: getEstado()
+        """
         return self.estado
 
     def getFechaHoraFin(self):
+        """
+        Mensaje auxiliar: getFechaHoraFin()
+        """
         return self.fechaHoraFin
     
     def getResponsableInspeccion(self):
+        """
+        Mensaje auxiliar: getResponsableInspeccion()
+        """
         return self.responsableInspeccion
 
     # Métodos SET
@@ -36,16 +48,13 @@ class CambioEstado:
     # Definición de otros métodos
 
     def esEstadoActual(self):
-        # Verificar que el objeto CambioEstado es del estado actual
-        aux = False
-        if self.fechaHoraFin == None:
-            aux = True
-        return aux
-        #return self.fechaHoraFin == None
+        """
+        Mensaje auxiliar: esEstadoActual()
+        """
+        return self.fechaHoraFin is None
     
     def esEstadoAutoDetectado(self):
-        # Verificar que el estado al que apunta el cambio de estado sea "AutoDetectado"
-        autoDetectado = False
-        if self.estado.getNombre() == "AutoDetectado":
-            autoDetectado = True
-        return autoDetectado
+        """
+        Mensaje auxiliar: esEstadoAutoDetectado()
+        """
+        return self.estado.getNombreEstado() == "AutoDetectado"

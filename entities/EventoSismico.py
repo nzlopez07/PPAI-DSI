@@ -3,7 +3,6 @@ from entities.CambioEstado import CambioEstado
 from entities.Estado import Estado
 from entities.SerieTemporal import SerieTemporal
 from entities.ClasificacionSismo import ClasificacionSismo
-from entities.MagnitudRichter import MagnitudRichter
 from entities.OrigenDeGeneracion import OrigenDeGeneracion
 
 
@@ -23,7 +22,7 @@ class EventoSismico:
 
         # atributos referenciales (son objetos)
         self.clasificacion: ClasificacionSismo = clasificacion
-        self.magnitud: MagnitudRichter = magnitud
+        self.magnitud = magnitud
         self.origenGeneracion: OrigenDeGeneracion = origenGeneracion
         self.alcanceSismo: AlcanceSismo = alcanceSismo
         self.estadoActual: Estado = estadoActual
@@ -94,46 +93,95 @@ class EventoSismico:
     def setSerieTemporal(self, serieTemporal):
         self.serieTemporal = serieTemporal
 
-    # Otros métodos
+
+    # --- Métodos de tracking y lógica de estados ---
     def estaAutoDetectado(self):
+        """
+        Mensaje 12 del diagrama de secuencia: estaAutoDetectado()
+        """
         return self.estadoActual.esAutoDetectado()
-    
+
     def estaPendienteDeRevision(self):
+        """
+        Mensaje 12 del diagrama de secuencia: estaPendienteDeRevision()
+        """
         return self.estadoActual.esPendienteDeRevision()
 
     def obtenerEstadoActual(self):
-        # Si el cambio de estado es el estado actual devuelve el cambio de estado
-        # Sino devuelve None (En caso de no encontrar nada)
+        """
+        Mensaje 14 del diagrama de secuencia: obtenerEstadoActual()
+        """
         for cambioEstado in self.cambioEstado:
             if cambioEstado.esEstadoActual():
                 return cambioEstado
 
-    # Método que corresponedría a la maquina de estados
     def bloquearEnRevision(self, estado: Estado, cambioEstado: CambioEstado, fechaHora, usuario):
+        """
+        Mensaje 17 del diagrama de secuencia: bloquearEnRevision()
+        """
         cambioEstado.setFechaHoraFin(fechaHora)
         cambioEstado.setResponsableInspeccion(usuario)
         nuevoCambioEstado = CambioEstado(fechaHora, estado, usuario)
         self.cambioEstado.append(nuevoCambioEstado)
+        self.setEstadoActual(estado)
+        print(f"[LOG] Evento bloqueado en revisión. Estado actual: {estado.getNombreEstado()}")
 
     def rechazar(self, estado: Estado, cambioEstado: CambioEstado, fechaHora, usuario):
+        """
+        Mensaje 19 del diagrama de secuencia: rechazar()
+        """
         cambioEstado.setFechaHoraFin(fechaHora)
         cambioEstado.setResponsableInspeccion(usuario)
         nuevoCambioEstado = CambioEstado(fechaHora, estado, usuario)
         self.cambioEstado.append(nuevoCambioEstado)
+        self.setEstadoActual(estado)
+        print(f"[LOG][EventoSismico] Evento rechazado. Estado actual: {estado.getNombreEstado()}")
+        print(f"[LOG][EventoSismico] Historial de cambios de estado:")
+        for idx, cambio in enumerate(self.cambioEstado):
+            print(f"  #{idx+1}: {cambio.getEstado().getNombreEstado()} | Inicio: {cambio.getFechaHoraInicio()} | Fin: {cambio.getFechaHoraFin()} | Responsable: {getattr(cambio.getResponsableInspeccion(), 'getNombre', lambda: str(cambio.getResponsableInspeccion()))()}")
 
-    # Nombres a chequear
+    def confirmar(self, estado: Estado, cambioEstado: CambioEstado, fechaHora, usuario):
+        """
+        Mensaje 15 del diagrama de secuencia: confirmar()
+        """
+        cambioEstado.setFechaHoraFin(fechaHora)
+        cambioEstado.setResponsableInspeccion(usuario)
+        nuevoCambioEstado = CambioEstado(fechaHora, estado, usuario)
+        self.cambioEstado.append(nuevoCambioEstado)
+        self.setEstadoActual(estado)
+        print(f"[LOG][EventoSismico] Evento confirmado. Estado actual: {estado.getNombreEstado()}")
+        print(f"[LOG][EventoSismico] Historial de cambios de estado:")
+        for idx, cambio in enumerate(self.cambioEstado):
+            print(f"  #{idx+1}: {cambio.getEstado().getNombreEstado()} | Inicio: {cambio.getFechaHoraInicio()} | Fin: {cambio.getFechaHoraFin()} | Responsable: {getattr(cambio.getResponsableInspeccion(), 'getNombre', lambda: str(cambio.getResponsableInspeccion()))()}")
+
+    def solicitarRevisionExperto(self, estado: Estado, cambioEstado: CambioEstado, fechaHora, usuario):
+        """
+        Mensaje 16 del diagrama de secuencia: solicitarRevisionExperto()
+        """
+        cambioEstado.setFechaHoraFin(fechaHora)
+        cambioEstado.setResponsableInspeccion(usuario)
+        nuevoCambioEstado = CambioEstado(fechaHora, estado, usuario)
+        self.cambioEstado.append(nuevoCambioEstado)
+        self.setEstadoActual(estado)
+        print(f"[LOG][EventoSismico] Evento solicitado a revisión de experto. Estado actual: {estado.getNombreEstado()}")
+        print(f"[LOG][EventoSismico] Historial de cambios de estado:")
+        for idx, cambio in enumerate(self.cambioEstado):
+            print(f"  #{idx+1}: {cambio.getEstado().getNombreEstado()} | Inicio: {cambio.getFechaHoraInicio()} | Fin: {cambio.getFechaHoraFin()} | Responsable: {getattr(cambio.getResponsableInspeccion(), 'getNombre', lambda: str(cambio.getResponsableInspeccion()))()}")
+
     def obtenerDatosEvento(self):
-        print("\n\nObtenemos datos del evento")
+        """
+        Mensaje 13 del diagrama de secuencia: obtenerDatosEvento()
+        """
         alcance = self.getAlcanceSismo().getNombre()
         origen = self.getOrigenGeneracion().getNombre()
         clasificacion = self.getClasificacion().getNombre()
-        print("Nombre origen: ", origen)
-        print("Nombre alcance: ", alcance)
-        print("Nombre clasificacion: ", clasificacion)
-        print("\n")
+        print(f"[LOG] Datos del evento: Origen={origen}, Alcance={alcance}, Clasificación={clasificacion}")
         return alcance, origen, clasificacion
-    
+
     def validarDatos(self):
+        """
+        Mensaje 20 del diagrama de secuencia: validarDatos()
+        """
         if(self.valorMagnitud == None) or (self.alcanceSismo == None) or (self.origenGeneracion == None):
             return False
         else:

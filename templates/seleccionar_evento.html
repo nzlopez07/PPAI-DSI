@@ -56,6 +56,18 @@
       max-width: 900px;
       margin: 0 auto;
     }
+
+    #btn-cancelar-fijo {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      z-index: 1050;
+      font-size: 1.3rem;
+      padding: 1rem 2.5rem;
+      border-radius: 2rem;
+      font-weight: bold;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+    }
   </style>
 </head>
 <body class="py-5">
@@ -64,6 +76,13 @@
     <div class="mb-4 border-bottom pb-3">
       <h2 class="page-title"> Seleccionar evento sísmico</h2>
     </div>
+
+    {% if not eventos %}
+      <script>
+        alert("No hay eventos para seleccionar.");
+        window.location.href = "/";
+      </script>
+    {% endif %}
 
     {% for evento in eventos %}
     <div class="card-evento mb-4">
@@ -79,6 +98,11 @@
     </div>
     {% endfor %}
   </div>
+
+  <!-- Botón Cancelar fijo y llamativo -->
+  <a href="/" id="btn-cancelar-fijo" class="btn btn-danger btn-lg">
+    Cancelar
+  </a>
 
 </body>
 </html>

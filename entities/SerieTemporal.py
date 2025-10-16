@@ -33,6 +33,9 @@ class SerieTemporal:
         self.__muestraSismica = muestraSismica
 
     def obtenerNombreEstacion(self, sismografos):
+        """
+        Mensaje auxiliar: obtenerNombreEstacion()
+        """
         for sismografo in sismografos:
             if sismografo.esTuSerie(self):
                 return sismografo.getEstacionSismologica().getNombre()

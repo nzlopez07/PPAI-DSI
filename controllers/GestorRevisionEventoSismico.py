@@ -18,7 +18,9 @@ class GestorRevisionEventoSismico:
         self.eventosSismicosAutoDetectados: list[EventoSismico] = [] # Colección de todos los eventos sísmicos con estado actual "AutoDetectado"
         self.eventoSismicoSeleccionado: EventoSismico = None
         self.estadoBloqueadoEnRevision: Estado = None
-        self.estadoRechazado: Estado = None 
+        self.estadoRechazado: Estado = None
+        self.estadoConfirmado: Estado = None
+        self.estadoRevisionExperto: Estado = None
         self.cambioEstadoActual: CambioEstado = None
         self.nombreAlcance = None
         self.nombreOrigen = None
@@ -55,7 +57,7 @@ class GestorRevisionEventoSismico:
         self.ordenarPorFechaYHora(self.eventosSismicosAutoDetectados)
         # Los manda
         self.pantallaRevision.mostrarYSolicitarSeleccionEvento(self.eventosSismicosAutoDetectados)
-        #return self.eventosSismicosAutoDetectados
+
 
     def ordenarPorFechaYHora(self, eventosSismicos:list[EventoSismico]):
         n = len(eventosSismicos)
@@ -67,53 +69,43 @@ class GestorRevisionEventoSismico:
     
     # Seleccionar un evento
     def tomarSeleccionEvento(self, evento):
-        # Asigna el evento sismico seleccionado al gestor
+        """
+        Mensaje 7 del diagrama de secuencia: tomarSeleccionEvento(evento)
+        """
         self.eventoSismicoSeleccionado = evento
-
-        # Cambio de estado del evento sismico
         self.bloquearEventoSismico()
-
-        # Busca nombre de origen, alcance y clasifiacion
         self.buscarDatosEventoSismico()
-
-        # Arma diccionario para clasificar por estacion todos los datos de los detalles muestra de cada muestra de cada serie
         self.buscarDatosSeriesPorEstacion()
-
-        # Envia esos datos a la pantalla para mostrar
-        self.pantallaRevision.mostrarDatosEventosSismicos(self.nombreAlcance, self.nombreOrigen,self.nombreClasificacion, self.datosEventoPorEstacion)
-
-            
+        self.llamarCU18()
+        self.pantallaRevision.mostrarDatosEventosSismicos(self.nombreAlcance, self.nombreOrigen, self.nombreClasificacion, self.datosEventoPorEstacion)
+        
     def bloquearEventoSismico(self):
-        # Buscar por estado y ambito el estado BloqueadoEnRevision
+        """
+        Mensaje 8 del diagrama de secuencia: bloquearEventoSismico()
+        """
         for estado in estados_mock:
             if (estado.esAmbitoEventoSismico()) and (estado.esBloqueadoEnRevision()):
                 self.estadoBloqueadoEnRevision = estado
                 break
-        # Buscar el cambio de estado actual
         self.cambioEstadoActual = self.eventoSismicoSeleccionado.obtenerEstadoActual()
-
-        #Calcular fecha y hora actual
         self.horaFechaFinCambioEstado = self.calcularFechaHoraActual()
-
-        #Realizar el cambio de estado
-        print("Estado antes del cambio: ", self.eventoSismicoSeleccionado.estadoActual.getNombreEstado())
-        self.eventoSismicoSeleccionado.setEstadoActual(self.estadoBloqueadoEnRevision)
-        for cambioEstado in self.eventoSismicoSeleccionado.cambioEstado:
-            print("Cambio de estado:", cambioEstado.getEstado().getNombreEstado())
-        print("-----")  
-        print("Estado luego del cambio: ", self.eventoSismicoSeleccionado.estadoActual.getNombreEstado())
+        # Logging limpio
+        print(f"[LOG] Bloqueando evento sísmico: {self.eventoSismicoSeleccionado}")
         self.eventoSismicoSeleccionado.bloquearEnRevision(self.estadoBloqueadoEnRevision, 
                                                           self.cambioEstadoActual, 
                                                           self.horaFechaFinCambioEstado, self.usuarioActivo)
-        for cambioEstado in self.eventoSismicoSeleccionado.cambioEstado:
-            print("Cambio de estado:", cambioEstado.getEstado().getNombreEstado())
-        print("-----")   
     
     def buscarDatosEventoSismico(self):
+        """
+        Mensaje 9 del diagrama de secuencia: buscarDatosEventoSismico()
+        """
         self.nombreAlcance, self.nombreOrigen, self.nombreClasificacion = self.eventoSismicoSeleccionado.obtenerDatosEvento()
 
 
     def buscarDatosSeriesPorEstacion(self):
+        """
+        Mensaje 10 del diagrama de secuencia: buscarDatosSeriesPorEstacion()
+        """
         # Se crea un diccionario que arma una lista por clave
         self.datosEventoPorEstacion = defaultdict(list)
         for serie in self.eventoSismicoSeleccionado.getSerieTemporal():
@@ -121,19 +113,22 @@ class GestorRevisionEventoSismico:
             for muestra in serie.getMuestraSismica():
                 fechaHoraMuestra = muestra.getFechaHoraMuestra()
                 for detalle in muestra.getDetalleMuestraSismica():
-                    frecuencia = detalle.getFrecuenciaOnda()
-                    longitud = detalle.getLongitudOnda()
-                    velocidad = detalle.getVelocidadOnda()
+                    if (detalle.getDatos().esTuDenominacion("Longitud de onda")):
+                        longitud = detalle.getValor()
+                    elif (detalle.getDatos().esTuDenominacion("Frecuencia de onda")):
+                        frecuencia = detalle.getValor()
+                    elif (detalle.getDatos().esTuDenominacion("Velocidad de onda")):
+                        velocidad = detalle.getValor()
 
-                    # Guardar valores
-                    self.datosEventoPorEstacion[nombreEstacion].append({
+                # Guardar valores
+                self.datosEventoPorEstacion[nombreEstacion].append({
                         "fechaHoraMuestra": fechaHoraMuestra,
                         "frecuenciaOnda": frecuencia,
                         "longitudOnda":longitud,
                         "velocidadOnda":velocidad
-                    })
-        # Mostramos por consola los datos de cada serie temporal
-        """print("\nDatos por Estación Sismográfica:\n" + "="*40)
+                })
+        """# Mostramos por consola los datos de cada serie temporal
+        print("\nDatos por Estación Sismográfica:\n" + "="*40)
         for nombre_estacion, muestras in self.datosEventoPorEstacion.items():
             print(f"\nEstación: {nombre_estacion}\n" + "-"*40)
             for i, muestra in enumerate(muestras, start=1):
@@ -142,17 +137,19 @@ class GestorRevisionEventoSismico:
                 print(f"\tFrecuencia de Onda: {muestra['frecuenciaOnda']} Hz")
                 print(f"\tLongitud de Onda:   {muestra['longitudOnda']} m")
                 print(f"\tVelocidad de Onda:  {muestra['velocidadOnda']} m/s")
-            print("-"*40) """
+            print("-"*40)"""
 
-    def llamarCU18():
-        print("ESTO ES UN SISMOGRAMA")
+    def llamarCU18(self):
+        """
+        Mensaje 11 del diagrama de secuencia: llamarCU18()
+        """
+        # Logging limpio
+        print("[LOG] Llamada al CU18 - Generar sismogramas")
 
-    def opRechazarEvento(self):
-        print(self.eventoSismicoSeleccionado.getMagnitud())
-        self.accionSeleccionada = "Rechazar evento"
+    def opRechazarEvento(self,accionSeleccionada):
+        self.accionSeleccionada = accionSeleccionada
         if(self.validarAccionSeleccionada(self.accionSeleccionada)):
             if(self.eventoSismicoSeleccionado.validarDatos()):
-                print("Datos válidos")
                 self.rechazarEventoSismico()
             else:
                 print("Datos inválidos")
@@ -165,6 +162,9 @@ class GestorRevisionEventoSismico:
         self.usuarioActivo = self.sesionActiva.getUsuarioActivo().getEmpleado()
 
     def rechazarEventoSismico(self):
+        """
+        Mensaje 18 del diagrama de secuencia: rechazarEventoSismico()
+        """
         # Buscar por estado y ambito el estado BloqueadoEnRevision
         for estado in estados_mock:
             if (estado.esAmbitoEventoSismico()) and (estado.esRechazado()):
@@ -177,14 +177,117 @@ class GestorRevisionEventoSismico:
         self.horaFechaFinCambioEstado = self.calcularFechaHoraActual()
 
         #Realizar el cambio de estado
-        print("ESTE ES DEL RECHAZADO")
-        print("Estado antes del cambio: ", self.eventoSismicoSeleccionado.estadoActual.getNombreEstado())
-        self.eventoSismicoSeleccionado.setEstadoActual(self.estadoRechazado)
-        for cambioEstado in self.eventoSismicoSeleccionado.cambioEstado:
-            print("Cambio de estado:", cambioEstado.getEstado().getNombreEstado())
-            print("Empleado responsable: ", cambioEstado.getResponsableInspeccion().getNombre())
-        print("-----")  
-        print("Estado luego del cambio: ", self.eventoSismicoSeleccionado.estadoActual.getNombreEstado())
+        print(f"[LOG] Rechazando evento sísmico: {self.eventoSismicoSeleccionado}")
         self.eventoSismicoSeleccionado.rechazar(self.estadoRechazado, 
-                                                          self.cambioEstadoActual, 
-                                                          self.horaFechaFinCambioEstado, self.usuarioActivo)
+                                                self.cambioEstadoActual, 
+                                                self.horaFechaFinCambioEstado, self.usuarioActivo)
+        self.finCU()
+
+    def cancelarRevisionEventoSismico(self):
+        """
+        Mensaje 21 del diagrama de secuencia: cancelarRevisionEventoSismico()
+        """
+        #Revertir el estado del evento sísmico seleccionado al anterior.
+        if not self.eventoSismicoSeleccionado:
+            print("No hay evento sísmico seleccionado.")
+            return
+        
+        cambio_actual = self.eventoSismicoSeleccionado.obtenerEstadoActual()
+        
+        # Cerrar el cambio actual (BloqueadoEnRevision) con fecha/hora de fin
+        if cambio_actual.getEstado().esBloqueadoEnRevision():
+            cambio_actual.setFechaHoraFin(self.calcularFechaHoraActual())
+            print(f"[LOG] Cambio actual cerrado: {cambio_actual.getEstado().getNombreEstado()} a las {cambio_actual.getFechaHoraFin()}")
+
+        # Buscar el último estado que NO sea BloqueadoEnRevision (hacia atrás en el historial)
+        cambio_anterior_valido = None
+        # Logging limpio
+        print("[LOG] Cambios de estado previos (para cancelar revisión):")
+        for cambio in reversed(self.eventoSismicoSeleccionado.getCambioEstado()):
+            print(f"[LOG]   - Cambio de estado: {cambio.getEstado().getNombreEstado()}, FechaFin: {cambio.getFechaHoraFin()}")
+            estado = cambio.getEstado()
+            if not estado.esBloqueadoEnRevision() and cambio.getFechaHoraFin() is not None:
+                cambio_anterior_valido = cambio
+                break
+        if cambio_anterior_valido:
+            self.eventoSismicoSeleccionado.setEstadoActual(cambio_anterior_valido.getEstado())
+            cambio_anterior_valido.setFechaHoraFin(None)
+            print(f"[LOG] Estado revertido a: {cambio_anterior_valido.getEstado().getNombreEstado()}")
+        else:
+            print("[LOG] No se encontró un cambio de estado anterior válido para revertir.")
+        self.finCU()
+
+
+    def finCU(self):
+        # Fin del caso de uso
+        print("Fin del caso de uso")
+        self.eventoSismicoSeleccionado = None
+        self.estadoBloqueadoEnRevision = None
+        self.estadoRechazado = None 
+        self.cambioEstadoActual = None
+        self.nombreAlcance = None
+        self.nombreOrigen = None
+        self.nombreClasificacion = None
+        self.datosEventoPorEstacion = None
+        self.pantallaRevision.finCU()
+
+    def opConfirmarEvento(self, accionSeleccionada):
+        self.accionSeleccionada = accionSeleccionada
+        if(self.validarAccionSeleccionada(self.accionSeleccionada)):
+            if(self.eventoSismicoSeleccionado.validarDatos()):
+                self.confirmarEventoSismico()
+            else:
+                print("Datos inválidos")
+    
+    def confirmarEventoSismico(self):
+        """
+        Mensaje 15 del diagrama de secuencia: confirmarEventoSismico()
+        """
+        # Buscar por estado y ambito el estado BloqueadoEnRevision
+        for estado in estados_mock:
+            if (estado.esAmbitoEventoSismico()) and (estado.esConfirmado()):
+                self.estadoConfirmado = estado
+                break
+        # Buscar el cambio de estado actual
+        self.cambioEstadoActual = self.eventoSismicoSeleccionado.obtenerEstadoActual()
+
+        #Calcular fecha y hora actual
+        self.horaFechaFinCambioEstado = self.calcularFechaHoraActual()
+
+        #Realizar el cambio de estado
+        print(f"[LOG] Confirmando evento sísmico: {self.eventoSismicoSeleccionado}")
+        self.eventoSismicoSeleccionado.confirmar(self.estadoConfirmado, 
+                                                self.cambioEstadoActual, 
+                                                self.horaFechaFinCambioEstado, self.usuarioActivo)
+        self.finCU()
+        
+    def opSolicitarRevisionExperto(self, accionSeleccionada):
+        self.accionSeleccionada = accionSeleccionada
+        if(self.validarAccionSeleccionada(self.accionSeleccionada)):
+            if(self.eventoSismicoSeleccionado.validarDatos()):
+                self.solicitarRevisionExperto()
+            else:
+                print("Datos inválidos")
+
+    def solicitarRevisionExperto(self):
+        """
+        Mensaje 16 del diagrama de secuencia: solicitarRevisionExperto()
+        """
+        # Buscar por estado y ambito el estado BloqueadoEnRevision
+        for estado in estados_mock:
+            if (estado.esAmbitoEventoSismico()) and (estado.esSolicitadoRevisionExperto()):
+                self.estadoRevisionExperto = estado
+                break
+        # Buscar el cambio de estado actual
+        self.cambioEstadoActual = self.eventoSismicoSeleccionado.obtenerEstadoActual()
+
+        #Calcular fecha y hora actual
+        self.horaFechaFinCambioEstado = self.calcularFechaHoraActual()
+
+        #Realizar el cambio de estado
+        print(f"[LOG] Solicitando revisión a experto para evento sísmico: {self.eventoSismicoSeleccionado}")
+        self.eventoSismicoSeleccionado.solicitarRevisionExperto(self.estadoRevisionExperto, 
+                                                self.cambioEstadoActual, 
+                                                self.horaFechaFinCambioEstado, self.usuarioActivo)
+        self.finCU()
+        

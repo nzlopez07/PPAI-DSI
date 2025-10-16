@@ -19,21 +19,49 @@ class Estado:
 
     # Definición de otros métodos
     def esAutoDetectado(self):
+        """
+        Mensaje auxiliar: esAutoDetectado()
+        """
         return self.nombreEstado == "AutoDetectado"
-   
-    
+
     def esBloqueadoEnRevision(self):
-        # Verificar que el estado sea "BloqueadoEnRevision"
+        """
+        Mensaje auxiliar: esBloqueadoEnRevision()
+        """
         return self.nombreEstado == "BloqueadoEnRevision"
-    
+
     def esPendienteDeRevision(self):
+        """
+        Mensaje auxiliar: esPendienteDeRevision()
+        """
         return self.nombreEstado == "PendienteDeRevision"
-            
+
     def esAmbitoEventoSismico(self):
+        """
+        Mensaje auxiliar: esAmbitoEventoSismico()
+        """
         return self.ambito == "EventoSismico"
-    
+
     def esAmbitoSerieTemporal(self):
+        """
+        Mensaje auxiliar: esAmbitoSerieTemporal()
+        """
         return self.ambito == "SerieTemporal"
-    
+
     def esRechazado(self):
+        """
+        Mensaje auxiliar: esRechazado()
+        """
         return self.nombreEstado == "Rechazado"
+
+    def esConfirmado(self):
+        """
+        Mensaje auxiliar: esConfirmado()
+        """
+        return self.nombreEstado == "Confirmado"
+
+    def esSolicitadoRevisionExperto(self):
+        """
+        Mensaje auxiliar: esSolicitadoRevisionExperto()
+        """
+        return self.nombreEstado == "SolicitadoRevisionExperto"
