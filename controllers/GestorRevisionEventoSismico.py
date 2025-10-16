@@ -266,6 +266,8 @@ class GestorRevisionEventoSismico:
         #Calcular fecha y hora actual
         self.horaFechaFinCambioEstado = self.calcularFechaHoraActual()
 
+        ##El cambio de estado lo tiene que hacer el Evento sísmico directamente, no el Gestor !!!!!!!!!!!!!!!
+
         #Realizar el cambio de estado
         print("----ESTE ES DEL CONFIRMADO----")
         print("Estado antes del cambio: ", self.eventoSismicoSeleccionado.estadoActual.getNombreEstado())
