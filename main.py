@@ -1,11 +1,15 @@
 from flask import Flask, render_template, request, redirect
 from interface.PantallaRevisionEventoSismico import PantallaRevisionEventoSismico
-#Iniciar Gestor
-#gestor = Gestor()
-
+from database.config import SessionLocal, init_db
 
 app = Flask(__name__)
-pantalla = PantallaRevisionEventoSismico()
+
+# Asegurar que las tablas existen (no borra datos existentes)
+init_db()
+
+# Crear sesión de BD y pantalla
+db_session = SessionLocal()
+pantalla = PantallaRevisionEventoSismico(db_session)
 
 
 # Ruta de inicio
@@ -93,7 +97,10 @@ def tomarSeleccionModificar():
 
 
 if __name__ == "__main__":
-    # Llamar al método para buscar eventos auto detectados
-    app.run(debug=True)
-    eventos = pantalla.opcionRegistrarRevisionManual()
-    print (eventos)
+    try:
+        # Llamar al método para buscar eventos auto detectados
+        app.run(debug=True)
+    finally:
+        # Cerrar la sesión de BD al terminar
+        db_session.close()
+        print("[LOG] Sesión de BD cerrada")

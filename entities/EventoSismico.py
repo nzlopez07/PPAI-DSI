@@ -4,6 +4,7 @@ from entities.Estado import Estado
 from entities.SerieTemporal import SerieTemporal
 from entities.ClasificacionSismo import ClasificacionSismo
 from entities.OrigenDeGeneracion import OrigenDeGeneracion
+from datetime import datetime
 
 
 class EventoSismico:
@@ -135,6 +136,8 @@ class EventoSismico:
         nuevoCambioEstado = CambioEstado(fechaHora, estado, usuario)
         self.cambioEstado.append(nuevoCambioEstado)
         self.setEstadoActual(estado)
+        # Marcar fin del evento (estado terminal)
+        self.setFechaHoraFin(fechaHora)
         print(f"[LOG][EventoSismico] Evento rechazado. Estado actual: {estado.getNombreEstado()}")
         print(f"[LOG][EventoSismico] Historial de cambios de estado:")
         for idx, cambio in enumerate(self.cambioEstado):
@@ -149,6 +152,8 @@ class EventoSismico:
         nuevoCambioEstado = CambioEstado(fechaHora, estado, usuario)
         self.cambioEstado.append(nuevoCambioEstado)
         self.setEstadoActual(estado)
+        # Marcar fin del evento (estado terminal)
+        self.setFechaHoraFin(fechaHora)
         print(f"[LOG][EventoSismico] Evento confirmado. Estado actual: {estado.getNombreEstado()}")
         print(f"[LOG][EventoSismico] Historial de cambios de estado:")
         for idx, cambio in enumerate(self.cambioEstado):
@@ -186,3 +191,83 @@ class EventoSismico:
             return False
         else:
             return True
+
+    # ======================================================
+    # Métodos del patrón State - Transiciones delegadas
+    # ======================================================
+
+    def _transicionar_a(self, nuevo_estado):
+        """
+        Método interno que realiza la transición de estado.
+        - Cierra el CambioEstado actual (setea fechaHoraFin)
+        - Crea un nuevo CambioEstado con el nuevo estado
+        - Actualiza estadoActual
+        
+        Args:
+            nuevo_estado (Estado): Instancia del nuevo estado concreto
+        """
+        # Usar una única marca de tiempo para cerrar y abrir el cambio
+        ahora = datetime.now()
+
+        # Obtener el cambio de estado actual y cerrarlo
+        cambio_actual = self.obtenerEstadoActual()
+        if cambio_actual:
+            cambio_actual.setFechaHoraFin(ahora)
+
+        # Crear nuevo cambio de estado
+        nuevo_cambio = CambioEstado(
+            fechaHoraInicio=ahora,
+            estado=nuevo_estado,
+            responsable=None  # Se puede setear después si es necesario
+        )
+
+        # Agregar a la lista de cambios y actualizar estado actual
+        self.cambioEstado.append(nuevo_cambio)
+        self.setEstadoActual(nuevo_estado)
+
+        # Si el nuevo estado es terminal (Confirmado o Rechazado), cerrar el evento
+        try:
+            if nuevo_estado.esConfirmado() or nuevo_estado.esRechazado():
+                self.setFechaHoraFin(ahora)
+        except AttributeError:
+            # En caso de que el estado no implemente helpers, usar nombre de clase
+            if nuevo_estado.__class__.__name__ in ("Confirmado", "Rechazado"):
+                self.setFechaHoraFin(ahora)
+
+        print(f"[LOG][EventoSismico] Transición completada a estado: {nuevo_estado.getNombreEstado()}")
+
+    def bloquearEventoEnRevision(self):
+        """
+        Método de dominio: delega al estado actual la transición a BloqueadoEnRevision.
+        Lanzará excepción si la transición no está permitida desde el estado actual.
+        """
+        self.estadoActual.bloquear(self)
+
+    def confirmarEvento(self):
+        """
+        Método de dominio: delega al estado actual la transición a Confirmado.
+        Lanzará excepción si la transición no está permitida desde el estado actual.
+        """
+        self.estadoActual.confirmar(self)
+
+    def rechazarEvento(self):
+        """
+        Método de dominio: delega al estado actual la transición a Rechazado.
+        Lanzará excepción si la transición no está permitida desde el estado actual.
+        """
+        self.estadoActual.rechazar(self)
+
+    def solicitarRevisionExpertoEvento(self):
+        """
+        Método de dominio: delega al estado actual la transición a SolicitadoRevisionExperto.
+        Lanzará excepción si la transición no está permitida desde el estado actual.
+        """
+        self.estadoActual.solicitarRevisionExperto(self)
+
+    def cancelarRevision(self):
+        """
+        Método de dominio: delega al estado actual la transición a PendienteDeRevision.
+        Usado cuando un analista cancela la revisión de un evento bloqueado.
+        Lanzará excepción si la transición no está permitida desde el estado actual.
+        """
+        self.estadoActual.volverAPendiente(self)

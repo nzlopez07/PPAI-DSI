@@ -1,8 +1,10 @@
 from controllers.GestorRevisionEventoSismico import GestorRevisionEventoSismico
+from sqlalchemy.orm import Session
 
 class PantallaRevisionEventoSismico:
-    def __init__(self):
-        self.gestorRevision:GestorRevisionEventoSismico = None
+    def __init__(self, db_session: Session):
+        self.db_session = db_session
+        self.gestorRevision: GestorRevisionEventoSismico = None
         self.eventosAutoDetectadosYPendientesDeRevision = None
         self.eventoSeleccionado = None
         self.nombreOrigen = None
@@ -24,7 +26,7 @@ class PantallaRevisionEventoSismico:
         """
         Mensaje 2 del diagrama de secuencia: habilitarPantalla()
         """
-        self.gestorRevision = GestorRevisionEventoSismico(self)
+        self.gestorRevision = GestorRevisionEventoSismico(self, self.db_session)
         self.gestorRevision.opcRegistrarResultadoRevisionManual()
     
     def mostrarYSolicitarSeleccionEvento(self, eventos):
