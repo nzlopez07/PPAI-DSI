@@ -116,62 +116,6 @@ class EventoSismico:
             if cambioEstado.esEstadoActual():
                 return cambioEstado
 
-    def bloquearEnRevision(self, estado: Estado, cambioEstado: CambioEstado, fechaHora, usuario):
-        """
-        Mensaje 17 del diagrama de secuencia: bloquearEnRevision()
-        """
-        cambioEstado.setFechaHoraFin(fechaHora)
-        cambioEstado.setResponsableInspeccion(usuario)
-        nuevoCambioEstado = CambioEstado(fechaHora, estado, usuario)
-        self.cambioEstado.append(nuevoCambioEstado)
-        self.setEstadoActual(estado)
-        print(f"[LOG] Evento bloqueado en revisión. Estado actual: {estado.getNombreEstado()}")
-
-    def rechazar(self, estado: Estado, cambioEstado: CambioEstado, fechaHora, usuario):
-        """
-        Mensaje 19 del diagrama de secuencia: rechazar()
-        """
-        cambioEstado.setFechaHoraFin(fechaHora)
-        cambioEstado.setResponsableInspeccion(usuario)
-        nuevoCambioEstado = CambioEstado(fechaHora, estado, usuario)
-        self.cambioEstado.append(nuevoCambioEstado)
-        self.setEstadoActual(estado)
-        # Marcar fin del evento (estado terminal)
-        self.setFechaHoraFin(fechaHora)
-        print(f"[LOG][EventoSismico] Evento rechazado. Estado actual: {estado.getNombreEstado()}")
-        print(f"[LOG][EventoSismico] Historial de cambios de estado:")
-        for idx, cambio in enumerate(self.cambioEstado):
-            print(f"  #{idx+1}: {cambio.getEstado().getNombreEstado()} | Inicio: {cambio.getFechaHoraInicio()} | Fin: {cambio.getFechaHoraFin()} | Responsable: {getattr(cambio.getResponsableInspeccion(), 'getNombre', lambda: str(cambio.getResponsableInspeccion()))()}")
-
-    def confirmar(self, estado: Estado, cambioEstado: CambioEstado, fechaHora, usuario):
-        """
-        Mensaje 15 del diagrama de secuencia: confirmar()
-        """
-        cambioEstado.setFechaHoraFin(fechaHora)
-        cambioEstado.setResponsableInspeccion(usuario)
-        nuevoCambioEstado = CambioEstado(fechaHora, estado, usuario)
-        self.cambioEstado.append(nuevoCambioEstado)
-        self.setEstadoActual(estado)
-        # Marcar fin del evento (estado terminal)
-        self.setFechaHoraFin(fechaHora)
-        print(f"[LOG][EventoSismico] Evento confirmado. Estado actual: {estado.getNombreEstado()}")
-        print(f"[LOG][EventoSismico] Historial de cambios de estado:")
-        for idx, cambio in enumerate(self.cambioEstado):
-            print(f"  #{idx+1}: {cambio.getEstado().getNombreEstado()} | Inicio: {cambio.getFechaHoraInicio()} | Fin: {cambio.getFechaHoraFin()} | Responsable: {getattr(cambio.getResponsableInspeccion(), 'getNombre', lambda: str(cambio.getResponsableInspeccion()))()}")
-
-    def solicitarRevisionExperto(self, estado: Estado, cambioEstado: CambioEstado, fechaHora, usuario):
-        """
-        Mensaje 16 del diagrama de secuencia: solicitarRevisionExperto()
-        """
-        cambioEstado.setFechaHoraFin(fechaHora)
-        cambioEstado.setResponsableInspeccion(usuario)
-        nuevoCambioEstado = CambioEstado(fechaHora, estado, usuario)
-        self.cambioEstado.append(nuevoCambioEstado)
-        self.setEstadoActual(estado)
-        print(f"[LOG][EventoSismico] Evento solicitado a revisión de experto. Estado actual: {estado.getNombreEstado()}")
-        print(f"[LOG][EventoSismico] Historial de cambios de estado:")
-        for idx, cambio in enumerate(self.cambioEstado):
-            print(f"  #{idx+1}: {cambio.getEstado().getNombreEstado()} | Inicio: {cambio.getFechaHoraInicio()} | Fin: {cambio.getFechaHoraFin()} | Responsable: {getattr(cambio.getResponsableInspeccion(), 'getNombre', lambda: str(cambio.getResponsableInspeccion()))()}")
 
     def obtenerDatosEvento(self):
         """

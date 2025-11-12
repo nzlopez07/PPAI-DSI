@@ -17,14 +17,12 @@ class Estado:
         """Constructor sin parámetros. Subclases definen nombreEstado y ambito como atributos de clase."""
         pass
 
-    # Métodos GET (compatibilidad con código existente)
     def getAmbito(self):
         return self.ambito
 
     def getNombreEstado(self):
         return self.nombreEstado
 
-    # Métodos SET (mantenidos por compatibilidad, pero no deberían usarse en el patrón State puro)
     def setAmbito(self, ambito):
         self.ambito = ambito
 
@@ -89,7 +87,7 @@ class Estado:
 
 
 # ===========================
-# Subclases concretas de Estado
+# Clases concretas de Estado
 # ===========================
 
 class AutoDetectado(Estado):
