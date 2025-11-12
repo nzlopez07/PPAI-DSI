@@ -4,6 +4,7 @@ Estado base abstracto con subclases concretas para cada estado posible.
 Mantiene compatibilidad con código existente mediante métodos esX() y getNombreEstado().
 """
 
+
 class Estado:
     """
     Clase base abstracta para el patrón State.
@@ -63,8 +64,9 @@ class Estado:
         """Mensaje auxiliar: esAmbitoSerieTemporal()"""
         return self.ambito == "SerieTemporal"
 
+
     # Métodos de transición (por defecto no permitidas, override en subclases según reglas de negocio)
-    def bloquear(self, evento):
+    def bloquear(self, evento, fecha_hora_cambio_estado, cambio_estados, responsable):
         """Transición a BloqueadoEnRevision"""
         raise ValueError(f"Transición 'bloquear' no permitida desde estado {self.nombreEstado}")
 
@@ -85,6 +87,7 @@ class Estado:
         raise ValueError(f"Transición 'volverAPendiente' no permitida desde estado {self.nombreEstado}")
 
 
+
 # ===========================
 # Subclases concretas de Estado
 # ===========================
@@ -97,10 +100,17 @@ class AutoDetectado(Estado):
     def esAutoDetectado(self):
         return True
 
-    def bloquear(self, evento):
+    def bloquear(self, evento, fecha_hora_cambio_estado, cambios_estado, responsable):
         """AutoDetectado -> BloqueadoEnRevision (cuando un analista selecciona el evento)"""
         from entities.Estado import BloqueadoEnRevision
-        evento._transicionar_a(BloqueadoEnRevision())
+        from entities.CambioEstado import CambioEstado
+        for cambio_estado in cambios_estado:
+            if cambio_estado.esEstadoActual():
+                cambio_estado.setFechaHoraFin(fecha_hora_cambio_estado)
+        nuevo_estado = BloqueadoEnRevision()
+        nuevo_cambio = CambioEstado(fecha_hora_cambio_estado, nuevo_estado, responsable)  
+        evento.agregarCambioEstado(nuevo_cambio)
+        evento.setEstadoActual(nuevo_estado)
 
 
 class PendienteDeRevision(Estado):
@@ -111,10 +121,18 @@ class PendienteDeRevision(Estado):
     def esPendienteDeRevision(self):
         return True
 
-    def bloquear(self, evento):
+    def bloquear(self, evento, fecha_hora_cambio_estado, cambios_estado, responsable):
         """PendienteDeRevision -> BloqueadoEnRevision (cuando un analista selecciona el evento)"""
         from entities.Estado import BloqueadoEnRevision
-        evento._transicionar_a(BloqueadoEnRevision())
+        from entities.CambioEstado import CambioEstado
+        for cambio_estado in cambios_estado:
+            if cambio_estado.esEstadoActual():
+                cambio_estado.setFechaHoraFin(fecha_hora_cambio_estado)
+        nuevo_estado = BloqueadoEnRevision()
+        nuevo_cambio = CambioEstado(fecha_hora_cambio_estado, nuevo_estado, responsable)  
+        evento.agregarCambioEstado(nuevo_cambio)
+        evento.setEstadoActual(nuevo_estado)
+
 
 
 class BloqueadoEnRevision(Estado):
@@ -125,34 +143,65 @@ class BloqueadoEnRevision(Estado):
     def esBloqueadoEnRevision(self):
         return True
 
-    def confirmar(self, evento):
+    def confirmar(self, evento, fecha_hora_cambio_estado, cambios_estado, responsable):
         """BloqueadoEnRevision -> Confirmado"""
         from entities.Estado import Confirmado
-        evento._transicionar_a(Confirmado())
+        from entities.CambioEstado import CambioEstado
+        for cambio_estado in cambios_estado:
+            if cambio_estado.esEstadoActual():
+                cambio_estado.setFechaHoraFin(fecha_hora_cambio_estado)
+        nuevo_estado = Confirmado()
+        nuevo_cambio = CambioEstado(fecha_hora_cambio_estado, nuevo_estado, responsable)  
+        evento.agregarCambioEstado(nuevo_cambio)
+        evento.setEstadoActual(nuevo_estado)
 
-    def rechazar(self, evento):
+
+    def rechazar(self, evento, fecha_hora_cambio_estado, cambios_estado, responsable):
         """BloqueadoEnRevision -> Rechazado"""
         from entities.Estado import Rechazado
-        evento._transicionar_a(Rechazado())
+        from entities.CambioEstado import CambioEstado
+        for cambio_estado in cambios_estado:
+            if cambio_estado.esEstadoActual():
+                cambio_estado.setFechaHoraFin(fecha_hora_cambio_estado)
+        nuevo_estado = Rechazado()
+        nuevo_cambio = CambioEstado(fecha_hora_cambio_estado, nuevo_estado, responsable)  
+        evento.agregarCambioEstado(nuevo_cambio)
+        evento.setEstadoActual(nuevo_estado)
 
-    def solicitarRevisionExperto(self, evento):
+
+    def solicitarRevisionExperto(self, evento, fecha_hora_cambio_estado, cambios_estado, responsable):
         """BloqueadoEnRevision -> SolicitadoRevisionExperto"""
         from entities.Estado import SolicitadoRevisionExperto
-        evento._transicionar_a(SolicitadoRevisionExperto())
+        from entities.CambioEstado import CambioEstado
+        for cambio_estado in cambios_estado:
+            if cambio_estado.esEstadoActual():
+                cambio_estado.setFechaHoraFin(fecha_hora_cambio_estado)
+        nuevo_estado = SolicitadoRevisionExperto()
+        nuevo_cambio = CambioEstado(fecha_hora_cambio_estado, nuevo_estado, responsable)  
+        evento.agregarCambioEstado(nuevo_cambio)
+        evento.setEstadoActual(nuevo_estado)
 
-    def volverAPendiente(self, evento):
+
+    def volverAPendiente(self, evento, cambios_estado):
         """BloqueadoEnRevision -> Estado anterior (usa la instancia del historial previo si existe)."""
         # Buscar el cambio de estado anterior al bloqueo (el penúltimo cambio)
         cambios = evento.getCambioEstado()
-        if len(cambios) >= 2:
-            # El último cambio es el bloqueo actual; el anterior contiene el estado previo
-            cambio_anterior = cambios[-2]
-            estado_previo = cambio_anterior.getEstado()
-            evento._transicionar_a(estado_previo)
-        else:
-            # Si no hay historial suficiente, volver a AutoDetectado por defecto
-            from entities.Estado import AutoDetectado
-            evento._transicionar_a(AutoDetectado())
+        # Buscar el cambio actualmente activo y eliminarlo del historial
+        for cambio_estado in list(cambios_estado):
+            if cambio_estado.esEstadoActual() and cambio_estado.getFechaHoraFin() is None:
+                cambios_estado.remove(cambio_estado)
+                break
+
+        # Ahora el último elemento del historial (si existe) representa el cambio
+        # anterior del que queremos recuperar la instancia de Estado.
+        if len(cambios_estado) == 0:
+            raise ValueError("No existe un cambio de estado previo al que volver")
+
+        ultimo_cambio = cambios_estado[-1]
+        ultimo_cambio.setFechaHoraFin(None)
+        ultimo_cambio.setResponsableInspeccion(None)
+        # Asegurarse de pasar la instancia Estado, no el objeto CambioEstado entero
+        evento.setEstadoActual(ultimo_cambio.getEstado())
 
 
 class Confirmado(Estado):

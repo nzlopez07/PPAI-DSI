@@ -57,6 +57,30 @@ def instance_to_nombre_estado(estado_instance) -> str:
     return estado_instance.__class__.__name__
 
 
+def _ensure_estado_instance(maybe_estado):
+    """Normaliza un valor que representa un Estado y retorna una instancia de Estado.
+
+    Acepta:
+    - una instancia de Estado -> se retorna tal cual
+    - una instancia de CambioEstado -> se retorna cambio.getEstado()
+    - una cadena con el nombre de la clase -> se crea la instancia correspondiente
+    """
+    # Caso: ya es instancia de Estado (tiene getNombreEstado)
+    if hasattr(maybe_estado, 'getNombreEstado'):
+        return maybe_estado
+
+    # Caso: es un CambioEstado accidentalmente pasado
+    if isinstance(maybe_estado, CambioEstado):
+        return maybe_estado.getEstado()
+
+    # Caso: es un nombre de clase
+    if isinstance(maybe_estado, str):
+        return nombre_estado_to_instance(maybe_estado)
+
+    # No sabemos cómo normalizarlo
+    raise ValueError(f"No se pudo normalizar el estado: {type(maybe_estado)} -> {maybe_estado}")
+
+
 # ============================================================================
 # REPOSITORIO DE EVENTOS SÍSMICOS
 # ============================================================================
@@ -276,6 +300,9 @@ class EventoSismicoRepository:
         origen_id = self._get_or_create_origen(evento.origenGeneracion)
         
         # Crear el modelo de evento
+        # Normalizar estadoActual a una instancia de Estado si vino mal formado
+        estado_actual_inst = _ensure_estado_instance(evento.estadoActual)
+
         evento_model = EventoSismicoModel(
             fecha_hora_ocurrencia=evento.fechaHoraOcurrencia,
             fecha_hora_fin=evento.fechaHoraFin,
@@ -284,7 +311,7 @@ class EventoSismicoRepository:
             latitud_hipocentro=evento.latitudHipocentro,
             longitud_hipocentro=evento.longitudHipocentro,
             valor_magnitud=evento.valorMagnitud,
-            estado_actual_nombre=instance_to_nombre_estado(evento.estadoActual),
+            estado_actual_nombre=instance_to_nombre_estado(estado_actual_inst),
             alcance_sismo_id=alcance_id,
             clasificacion_id=clasificacion_id,
             magnitud_id=magnitud_id,
@@ -301,11 +328,17 @@ class EventoSismicoRepository:
                 ).first()
                 if empleado_model:
                     responsable_id = empleado_model.id
-            
+            # Normalizar el estado almacenado en el CambioEstado por seguridad
+            try:
+                estado_for_model = _ensure_estado_instance(cambio.estado)
+            except ValueError:
+                # Si no se puede normalizar, fallar con claridad
+                raise
+
             cambio_model = CambioEstadoModel(
                 fecha_hora_inicio=cambio.fechaHoraInicio,
                 fecha_hora_fin=cambio.fechaHoraFin,
-                estado_nombre=instance_to_nombre_estado(cambio.estado),
+                estado_nombre=instance_to_nombre_estado(estado_for_model),
                 responsable_inspeccion_id=responsable_id
             )
             evento_model.cambios_estado.append(cambio_model)
@@ -324,7 +357,9 @@ class EventoSismicoRepository:
         evento_model.latitud_hipocentro = evento.latitudHipocentro
         evento_model.longitud_hipocentro = evento.longitudHipocentro
         evento_model.valor_magnitud = evento.valorMagnitud
-        evento_model.estado_actual_nombre = instance_to_nombre_estado(evento.estadoActual)
+        # Normalizar estadoActual antes de obtener su nombre de clase
+        estado_actual_inst = _ensure_estado_instance(evento.estadoActual)
+        evento_model.estado_actual_nombre = instance_to_nombre_estado(estado_actual_inst)
         
         # Actualizar referencias a catálogos
         evento_model.alcance_sismo_id = self._get_or_create_alcance(evento.alcanceSismo)
@@ -346,11 +381,13 @@ class EventoSismicoRepository:
                 ).first()
                 if empleado_model:
                     responsable_id = empleado_model.id
-            
+            # Normalizar estado del cambio
+            estado_for_model = _ensure_estado_instance(cambio.estado)
+
             cambio_model = CambioEstadoModel(
                 fecha_hora_inicio=cambio.fechaHoraInicio,
                 fecha_hora_fin=cambio.fechaHoraFin,
-                estado_nombre=instance_to_nombre_estado(cambio.estado),
+                estado_nombre=instance_to_nombre_estado(estado_for_model),
                 evento_sismico_id=evento_model.id,
                 responsable_inspeccion_id=responsable_id
             )

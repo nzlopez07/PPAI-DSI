@@ -196,73 +196,37 @@ class EventoSismico:
     # Métodos del patrón State - Transiciones delegadas
     # ======================================================
 
-    def _transicionar_a(self, nuevo_estado):
-        """
-        Método interno que realiza la transición de estado.
-        - Cierra el CambioEstado actual (setea fechaHoraFin)
-        - Crea un nuevo CambioEstado con el nuevo estado
-        - Actualiza estadoActual
-        
-        Args:
-            nuevo_estado (Estado): Instancia del nuevo estado concreto
-        """
-        # Usar una única marca de tiempo para cerrar y abrir el cambio
-        ahora = datetime.now()
+    def agregarCambioEstado(self, cambioNuevo):
+        self.cambioEstado.append(cambioNuevo)
 
-        # Obtener el cambio de estado actual y cerrarlo
-        cambio_actual = self.obtenerEstadoActual()
-        if cambio_actual:
-            cambio_actual.setFechaHoraFin(ahora)
 
-        # Crear nuevo cambio de estado
-        nuevo_cambio = CambioEstado(
-            fechaHoraInicio=ahora,
-            estado=nuevo_estado,
-            responsable=None  # Se puede setear después si es necesario
-        )
-
-        # Agregar a la lista de cambios y actualizar estado actual
-        self.cambioEstado.append(nuevo_cambio)
-        self.setEstadoActual(nuevo_estado)
-
-        # Si el nuevo estado es terminal (Confirmado o Rechazado), cerrar el evento
-        try:
-            if nuevo_estado.esConfirmado() or nuevo_estado.esRechazado():
-                self.setFechaHoraFin(ahora)
-        except AttributeError:
-            # En caso de que el estado no implemente helpers, usar nombre de clase
-            if nuevo_estado.__class__.__name__ in ("Confirmado", "Rechazado"):
-                self.setFechaHoraFin(ahora)
-
-        print(f"[LOG][EventoSismico] Transición completada a estado: {nuevo_estado.getNombreEstado()}")
-
-    def bloquearEventoEnRevision(self):
+    def bloquearEventoEnRevision(self, fecha_hora_cambio_estado, responsable):
         """
         Método de dominio: delega al estado actual la transición a BloqueadoEnRevision.
         Lanzará excepción si la transición no está permitida desde el estado actual.
         """
-        self.estadoActual.bloquear(self)
+        self.estadoActual.bloquear(self, fecha_hora_cambio_estado, self.cambioEstado, responsable)
 
-    def confirmarEvento(self):
+    def confirmarEvento(self, fecha_hora_cambio_estado, responsable):
         """
         Método de dominio: delega al estado actual la transición a Confirmado.
         Lanzará excepción si la transición no está permitida desde el estado actual.
         """
-        self.estadoActual.confirmar(self)
+        self.estadoActual.confirmar(self, fecha_hora_cambio_estado, self.cambioEstado,responsable)
 
-    def rechazarEvento(self):
+    def rechazarEvento(self, fecha_hora_cambio_estado, responsable):
         """
         Método de dominio: delega al estado actual la transición a Rechazado.
         Lanzará excepción si la transición no está permitida desde el estado actual.
         """
-        self.estadoActual.rechazar(self)
+        self.estadoActual.rechazar(self, fecha_hora_cambio_estado, self.cambioEstado, responsable)
 
-    def solicitarRevisionExpertoEvento(self):
+    def solicitarRevisionExpertoEvento(self, fecha_hora_cambio_estado, responsable):
         """
         Método de dominio: delega al estado actual la transición a SolicitadoRevisionExperto.
         Lanzará excepción si la transición no está permitida desde el estado actual.
         """
-        self.estadoActual.solicitarRevisionExperto(self)
+        self.estadoActual.solicitarRevisionExperto(self, fecha_hora_cambio_estado, self.cambioEstado, responsable)
 
     def cancelarRevision(self):
         """
@@ -270,4 +234,4 @@ class EventoSismico:
         Usado cuando un analista cancela la revisión de un evento bloqueado.
         Lanzará excepción si la transición no está permitida desde el estado actual.
         """
-        self.estadoActual.volverAPendiente(self)
+        self.estadoActual.volverAPendiente(self, self.cambioEstado)

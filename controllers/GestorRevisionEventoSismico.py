@@ -52,6 +52,8 @@ class GestorRevisionEventoSismico:
         """
         self.eventosSismicosAutoDetectados = []
         
+        ## Trackeo de duda: Cómo modelar una query a la BD?
+
         # Buscar eventos autodetectados desde la BD
         eventos_auto = self.evento_repo.get_by_estado("AutoDetectado")
         self.eventosSismicosAutoDetectados.extend(eventos_auto)
@@ -97,12 +99,9 @@ class GestorRevisionEventoSismico:
         
         # El evento maneja la transición internamente
         try:
-            self.eventoSismicoSeleccionado.bloquearEventoEnRevision()
-            
-            # Actualizar responsable en el cambio de estado actual
-            cambio_actual = self.eventoSismicoSeleccionado.obtenerEstadoActual()
-            if cambio_actual and self.usuarioActivo:
-                cambio_actual.setResponsableInspeccion(self.usuarioActivo)
+            print(f"[LOG]: Evento seleccionado: ID {self.eventoSismicoSeleccionado._db_id}")
+            fecha_hora_cambio_estado = self.calcularFechaHoraActual()
+            self.eventoSismicoSeleccionado.bloquearEventoEnRevision(fecha_hora_cambio_estado, self.usuarioActivo)
             
             # Persistir cambios en la BD
             self.evento_repo.save(self.eventoSismicoSeleccionado)
@@ -178,13 +177,9 @@ class GestorRevisionEventoSismico:
         print(f"[LOG] Rechazando evento sísmico usando patrón State")
         
         try:
-            self.eventoSismicoSeleccionado.rechazarEvento()
-            
-            # Actualizar responsable en el cambio de estado actual
-            cambio_actual = self.eventoSismicoSeleccionado.obtenerEstadoActual()
-            if cambio_actual and self.usuarioActivo:
-                cambio_actual.setResponsableInspeccion(self.usuarioActivo)
-            
+            fecha_hora_actual = self.calcularFechaHoraActual()
+            self.eventoSismicoSeleccionado.rechazarEvento(fecha_hora_actual, self.usuarioActivo)
+                
             # Persistir cambios en la BD
             self.evento_repo.save(self.eventoSismicoSeleccionado)
             self.db.commit()
@@ -219,12 +214,12 @@ class GestorRevisionEventoSismico:
         
         try:
             # El evento maneja la transición internamente
+
             self.eventoSismicoSeleccionado.cancelarRevision()
             
             # Persistir cambios en la BD
             self.evento_repo.save(self.eventoSismicoSeleccionado)
             self.db.commit()
-            print(f"[LOG] Revisión cancelada y persistida en BD. Estado actual: {self.eventoSismicoSeleccionado.getEstadoActual().getNombreEstado()}")
             
         except ValueError as e:
             self.db.rollback()
@@ -265,7 +260,8 @@ class GestorRevisionEventoSismico:
         print(f"[LOG] Confirmando evento sísmico usando patrón State")
         
         try:
-            self.eventoSismicoSeleccionado.confirmarEvento()
+            fecha_actual = self.calcularFechaHoraActual()
+            self.eventoSismicoSeleccionado.confirmarEvento(fecha_actual, self.usuarioActivo)
             
             # Actualizar responsable en el cambio de estado actual
             cambio_actual = self.eventoSismicoSeleccionado.obtenerEstadoActual()
@@ -309,7 +305,8 @@ class GestorRevisionEventoSismico:
         print(f"[LOG] Solicitando revisión a experto usando patrón State")
         
         try:
-            self.eventoSismicoSeleccionado.solicitarRevisionExpertoEvento()
+            fecha_hora_actual = self.calcularFechaHoraActual()
+            self.eventoSismicoSeleccionado.solicitarRevisionExpertoEvento(fecha_hora_actual, self.usuarioActivo)
             
             # Actualizar responsable en el cambio de estado actual
             cambio_actual = self.eventoSismicoSeleccionado.obtenerEstadoActual()

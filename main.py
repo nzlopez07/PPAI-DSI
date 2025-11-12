@@ -99,7 +99,7 @@ def tomarSeleccionModificar():
 if __name__ == "__main__":
     try:
         # Llamar al método para buscar eventos auto detectados
-        app.run(debug=True)
+        app.run(debug=False)
     finally:
         # Cerrar la sesión de BD al terminar
         db_session.close()

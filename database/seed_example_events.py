@@ -23,6 +23,7 @@ from database.models import (
     DetalleMuestraSismicaModel,
     EstacionSismologicaModel
 )
+from database.models import TipoDeDatoModel
 from database.repositories import EventoSismicoRepository
 
 # Domain entities
@@ -43,6 +44,23 @@ TIPOS_DATOS = [
     TipoDeDato("Frecuencia de onda", "Hz", 15.0),
     TipoDeDato("Longitud de onda", "km/ciclo", 1.0),
 ]
+
+
+def ensure_tipos_dato(db):
+    """Inserta los tipos de dato del dominio en la tabla `tipos_de_dato` si no existen."""
+    for tipo in TIPOS_DATOS:
+        denominacion = tipo.getDenominacion()
+        existente = db.query(TipoDeDatoModel).filter(
+            TipoDeDatoModel.denominacion == denominacion
+        ).first()
+        if not existente:
+            modelo = TipoDeDatoModel(
+                denominacion=denominacion,
+                nombre_unidad_medida=tipo.getNombreUnidadMedida(),
+                valor_umbral=tipo.getValorUmbral()
+            )
+            db.add(modelo)
+    db.commit()
 
 # Catalog value pools (must match init_db inserted names to avoid duplicates)
 ALCANCES = [
@@ -103,12 +121,12 @@ def build_event(base_time: datetime) -> EventoSismico:
     return evento
 
 
-def ensure_min_sismografos(db, target: int = 5):
+def ensure_min_sismografos(db, target: int = 10):
     """Create minimal stations + sismografos if none exist."""
     estaciones = db.query(EstacionSismologicaModel).count()
     if estaciones == 0:
         # Create stations
-        for i in range(3):
+        for i in range(5):
             st = EstacionSismologicaModel(
                 codigo_estacion=f"EST{i+1:02}",
                 nombre=f"Estacion {i+1}",
@@ -142,7 +160,10 @@ def seed(events: int, series_per_event: int, samples_per_series: int):
     db = SessionLocal()
     repo = EventoSismicoRepository(db)
     try:
-        ensure_min_sismografos(db)
+        # Asegurar que existan tipos de dato en la BD
+        ensure_tipos_dato(db)
+
+        ensure_min_sismografos(db, target=max(5, events//3))
         sismografos = db.query(SismografoModel).all()
         sismografo_cycle = list(sismografos)
 
