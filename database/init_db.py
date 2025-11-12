@@ -18,6 +18,7 @@ from database.models import (
     AlcanceSismoModel, ClasificacionSismoModel, MagnitudRichterModel,
     OrigenDeGeneracionModel, EmpleadoModel, UsuarioModel
 )
+from database.models import EstadoModel
 
 
 def create_tables():
@@ -90,6 +91,34 @@ def load_catalogs(db):
     
     db.commit()
     print("✅ Catálogos cargados exitosamente")
+
+    # Insertar/actualizar estados canónicos a partir de las subclases en entities.Estado
+    print("\n📚 Cargando estados canónicos desde entidades de dominio...")
+    import inspect
+    import entities.Estado as estado_module
+
+    # Buscar clases definidas en el módulo que heredan de Estado (excluyendo la clase base)
+    estado_classes = [
+        cls for name, cls in inspect.getmembers(estado_module, inspect.isclass)
+        if issubclass(cls, estado_module.Estado) and cls is not estado_module.Estado
+    ]
+
+    for cls in estado_classes:
+        # Nombre canónico en el código: preferir el atributo nombreEstado si existe
+        nombre = getattr(cls, 'nombreEstado', cls.__name__)
+        # Descripción: usar la docstring de la clase (strip) si existe
+        desc = (cls.__doc__ or '').strip()
+
+        existente = db.query(EstadoModel).filter(EstadoModel.nombre == nombre).first()
+        if not existente:
+            db.add(EstadoModel(nombre=nombre, descripcion=desc))
+        else:
+            # Actualizar descripción si difiere y docstring no está vacía
+            if desc and (existente.descripcion or '').strip() != desc:
+                existente.descripcion = desc
+
+    db.commit()
+    print("✅ Estados canónicos sincronizados desde entidades de dominio")
 
 
 def load_test_users(db):

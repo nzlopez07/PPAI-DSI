@@ -75,6 +75,25 @@ class TipoDeDatoModel(Base):
 
 
 # ============================================================================
+# TABLA DE ESTADOS (Nuevo)
+# ============================================================================
+class EstadoModel(Base):
+    """Tabla: estados - Catálogo de estados del dominio (AutoDetectado, PendienteDeRevision, ...)
+
+    Esta tabla permite normalizar los estados en BD y añadir metadatos por estado.
+    """
+    __tablename__ = "estados"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    nombre = Column(String(100), nullable=False, unique=True)
+    descripcion = Column(Text, nullable=True)
+
+    # Relaciones inversas (opcional)
+    eventos_actuales = relationship("EventoSismicoModel", back_populates="estado_actual", foreign_keys='EventoSismicoModel.estado_actual_id')
+    cambios = relationship("CambioEstadoModel", back_populates="estado", foreign_keys='CambioEstadoModel.estado_id')
+
+
+# ============================================================================
 # TABLAS DE USUARIOS Y SESIONES
 # ============================================================================
 
@@ -177,8 +196,10 @@ class EventoSismicoModel(Base):
     longitud_hipocentro = Column(Float, nullable=False)
     valor_magnitud = Column(Float, nullable=False)
     
-    # Nombre de la clase del estado actual (para reconstrucción)
-    estado_actual_nombre = Column(String(100), nullable=False)
+    # FK a tabla estados (fuente de verdad tras migración)
+    estado_actual_id = Column(Integer, ForeignKey("estados.id"), nullable=False)
+    # Relación hacia EstadoModel (usada tras migración)
+    estado_actual = relationship("EstadoModel", back_populates="eventos_actuales", foreign_keys=[estado_actual_id])
     
     # Foreign Keys
     clasificacion_id = Column(Integer, ForeignKey("clasificaciones_sismo.id"), nullable=False)
@@ -217,13 +238,14 @@ class CambioEstadoModel(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     fecha_hora_inicio = Column(DateTime, nullable=False)
     fecha_hora_fin = Column(DateTime, nullable=True)
-    estado_nombre = Column(String(100), nullable=False)  # Nombre de la clase Estado concreta
+    estado_id = Column(Integer, ForeignKey("estados.id"), nullable=False)
     evento_sismico_id = Column(Integer, ForeignKey("eventos_sismicos.id"), nullable=False)
     responsable_inspeccion_id = Column(Integer, ForeignKey("empleados.id"), nullable=True)
     
     # Relaciones
     evento_sismico = relationship("EventoSismicoModel", back_populates="cambios_estado")
     responsable_inspeccion = relationship("EmpleadoModel")
+    estado = relationship("EstadoModel", back_populates="cambios", foreign_keys=[estado_id])
 
 
 # ============================================================================

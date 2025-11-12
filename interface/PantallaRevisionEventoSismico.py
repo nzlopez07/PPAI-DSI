@@ -52,7 +52,7 @@ class PantallaRevisionEventoSismico:
         self.nombreAlcance = nombreAlcance
         self.nombreClasificacion = nombreClasificacion
         self.datosEventoPorEstacion = datosEventoPorEstacion
-        print(f"[LOG] Mostrando datos del evento en pantalla: Origen={nombreOrigen}, Alcance={nombreAlcance}, Clasificación={nombreClasificacion}")
+        print(f"LOG: Mostrando datos del evento en pantalla: Origen={nombreOrigen}, Alcance={nombreAlcance}, Clasificación={nombreClasificacion}")
         return self.nombreAlcance, self.nombreOrigen, self.nombreClasificacion, self.datosEventoPorEstacion
 
     def opRechazarEvento(self):
@@ -94,7 +94,7 @@ class PantallaRevisionEventoSismico:
         """
         Mensaje 22 del diagrama de secuencia: finCU()
         """
-        print("[LOG] Fin de caso de uso PANTALLA")
+        print("LOG: Fin de caso de uso PANTALLA")
         self.eventosAutoDetectadosYPendientesDeRevision = None
         self.eventoSeleccionado = None
         self.nombreOrigen = None

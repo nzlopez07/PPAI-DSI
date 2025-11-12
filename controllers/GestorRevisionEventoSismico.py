@@ -16,7 +16,7 @@ class GestorRevisionEventoSismico:
         self.evento_repo = EventoSismicoRepository(db_session)
         self.usuario_repo = UsuarioRepository(db_session)
         self.horaFechaFinCambioEstado = None
-        self.eventosSismicosAutoDetectados: list[EventoSismico] = [] # Colección de todos los eventos sísmicos con estado actual "AutoDetectado"
+        self.eventosSismicosAutoDetectados: list[EventoSismico] = []  # Colección de todos los eventos sísmicos con estado actual "AutoDetectado"
         self.eventoSismicoSeleccionado: EventoSismico = None
         self.estadoBloqueadoEnRevision = None  # Ya no necesita type hint Estado
         self.estadoRechazado = None
@@ -27,12 +27,12 @@ class GestorRevisionEventoSismico:
         self.nombreOrigen = None
         self.nombreClasificacion = None
         self.datosEventoPorEstacion = None
-        self.accionSeleccionada = None 
+        self.accionSeleccionada = None
         self.sesionActiva = None  # Se inicializará después con el usuario de BD
         self.usuarioActivo = None
 
 
-    #Métodos get y set si corresponden
+    # Métodos get y set si corresponden
     def getEventosSismicosAutoDetectados(self):
         return self.eventosSismicosAutoDetectados
 
@@ -42,42 +42,40 @@ class GestorRevisionEventoSismico:
         return self.buscarEventosAutoDetectados()
 
     def calcularFechaHoraActual(self):
-    # Método para calcular fecha y hora en el momento    
+        # Método para calcular fecha y hora en el momento
         return datetime.now()
-    
+
     # Buscar eventos autodetectados o pendientes de revision para mostrar al inicio
     def buscarEventosAutoDetectados(self):
         """
         Busca eventos en estado AutoDetectado o PendienteDeRevision desde la BD.
         """
         self.eventosSismicosAutoDetectados = []
-        
-        ## Trackeo de duda: Cómo modelar una query a la BD?
 
         # Buscar eventos autodetectados desde la BD
         eventos_auto = self.evento_repo.get_by_estado("AutoDetectado")
         self.eventosSismicosAutoDetectados.extend(eventos_auto)
-        
+
         # Buscar eventos pendientes de revisión desde la BD
         eventos_pendientes = self.evento_repo.get_by_estado("PendienteDeRevision")
         self.eventosSismicosAutoDetectados.extend(eventos_pendientes)
-        
-        print(f"[LOG] Eventos encontrados desde BD: {len(self.eventosSismicosAutoDetectados)}")
-        
+
+        print(f"LOG: Eventos encontrados desde BD: {len(self.eventosSismicosAutoDetectados)}")
+
         # Ordena los eventos sísmicos a mostrar
         self.ordenarPorFechaYHora(self.eventosSismicosAutoDetectados)
         # Los manda
         self.pantallaRevision.mostrarYSolicitarSeleccionEvento(self.eventosSismicosAutoDetectados)
 
 
-    def ordenarPorFechaYHora(self, eventosSismicos:list[EventoSismico]):
+    def ordenarPorFechaYHora(self, eventosSismicos: list[EventoSismico]):
         n = len(eventosSismicos)
-        
+
         for i in range(n - 1):
             for j in range(i + 1, n):
                 if (eventosSismicos[i].getFechaHoraOcurrencia()) > (eventosSismicos[j].getFechaHoraOcurrencia()):
                     eventosSismicos[i], eventosSismicos[j] = eventosSismicos[j], eventosSismicos[i]
-    
+
     # Seleccionar un evento
     def tomarSeleccionEvento(self, evento):
         """
@@ -88,33 +86,35 @@ class GestorRevisionEventoSismico:
         self.buscarDatosEventoSismico()
         self.buscarDatosSeriesPorEstacion()
         self.llamarCU18()
-        self.pantallaRevision.mostrarDatosEventosSismicos(self.nombreAlcance, self.nombreOrigen, self.nombreClasificacion, self.datosEventoPorEstacion)
-        
+        self.pantallaRevision.mostrarDatosEventosSismicos(
+            self.nombreAlcance, self.nombreOrigen, self.nombreClasificacion, self.datosEventoPorEstacion
+        )
+
     def bloquearEventoSismico(self):
         """
         Mensaje 8 del diagrama de secuencia: bloquearEventoSismico()
         Ahora usa el patrón State: delega la transición al evento.
         """
-        print(f"[LOG] Bloqueando evento sísmico usando patrón State")
-        
+        print(f"LOG: Bloqueando evento sísmico usando patrón State")
+
         # El evento maneja la transición internamente
         try:
-            print(f"[LOG]: Evento seleccionado: ID {self.eventoSismicoSeleccionado._db_id}")
+            print(f"LOG: Evento seleccionado: ID {self.eventoSismicoSeleccionado._db_id}")
             fecha_hora_cambio_estado = self.calcularFechaHoraActual()
             self.eventoSismicoSeleccionado.bloquearEventoEnRevision(fecha_hora_cambio_estado, self.usuarioActivo)
-            
+
             # Persistir cambios en la BD
             self.evento_repo.save(self.eventoSismicoSeleccionado)
             self.db.commit()
-            print(f"[LOG] Evento bloqueado y persistido en BD")
-                
+            print(f"LOG: Evento bloqueado y persistido en BD")
+
         except ValueError as e:
             self.db.rollback()
-            print(f"[ERROR] No se pudo bloquear el evento: {e}")
+            print(f"ERROR: No se pudo bloquear el evento: {e}")
         except Exception as e:
             self.db.rollback()
-            print(f"[ERROR] Error al persistir evento bloqueado: {e}")
-    
+            print(f"ERROR: Error al persistir evento bloqueado: {e}")
+
     def buscarDatosEventoSismico(self):
         """
         Mensaje 9 del diagrama de secuencia: buscarDatosEventoSismico()
@@ -131,25 +131,27 @@ class GestorRevisionEventoSismico:
             self.eventoSismicoSeleccionado._db_id
         )
         total_items = sum(len(v) for v in self.datosEventoPorEstacion.values())
-        print(f"[LOG] Datos por estación cargados: {len(self.datosEventoPorEstacion)} estaciones, {total_items} muestras")
+        print(
+            f"LOG: Datos por estación cargados: {len(self.datosEventoPorEstacion)} estaciones, {total_items} muestras"
+        )
 
 
     def llamarCU18(self):
         """
         Mensaje 11 del diagrama de secuencia: llamarCU18()
         """
-        print("[LOG] Llamada al CU18 - Generar sismogramas")
+        print("LOG: Llamada al CU18 - Generar sismogramas")
 
-    def opRechazarEvento(self,accionSeleccionada):
+    def opRechazarEvento(self, accionSeleccionada):
         self.accionSeleccionada = accionSeleccionada
-        if(self.validarAccionSeleccionada(self.accionSeleccionada)):
-            if(self.eventoSismicoSeleccionado.validarDatos()):
+        if (self.validarAccionSeleccionada(self.accionSeleccionada)):
+            if self.eventoSismicoSeleccionado.validarDatos():
                 self.rechazarEventoSismico()
             else:
                 print("Datos inválidos")
 
     def validarAccionSeleccionada(self, opcion):
-        if (opcion in ["Rechazar evento", "Confirmar evento", "Solicitar Revision a experto"]):
+        if opcion in ["Rechazar evento", "Confirmar evento", "Solicitar Revision a experto"]:
             return True
 
     def obtenerUsuarioLogueado(self):
@@ -163,9 +165,9 @@ class GestorRevisionEventoSismico:
             if usuario:
                 self.sesionActiva = Sesion(datetime.now(), usuario)
                 self.usuarioActivo = usuario.getEmpleado()
-                print(f"[LOG] Usuario activo: {self.usuarioActivo.getNombre()} {self.usuarioActivo.getApellido()}")
+                print(f"LOG: Usuario activo: {self.usuarioActivo.getNombre()} {self.usuarioActivo.getApellido()}")
             else:
-                print("[ERROR] No se encontró usuario de prueba en la BD")
+                print("ERROR: No se encontró usuario de prueba en la BD")
         else:
             self.usuarioActivo = self.sesionActiva.getUsuarioActivo().getEmpleado()
 
@@ -174,31 +176,39 @@ class GestorRevisionEventoSismico:
         Mensaje 18 del diagrama de secuencia: rechazarEventoSismico()
         Ahora usa el patrón State: delega la transición al evento.
         """
-        print(f"[LOG] Rechazando evento sísmico usando patrón State")
-        
+        print(f"LOG: Rechazando evento sísmico usando patrón State")
+
         try:
             fecha_hora_actual = self.calcularFechaHoraActual()
             self.eventoSismicoSeleccionado.rechazarEvento(fecha_hora_actual, self.usuarioActivo)
-                
+
             # Persistir cambios en la BD
             self.evento_repo.save(self.eventoSismicoSeleccionado)
             self.db.commit()
-            print(f"[LOG] Evento rechazado y persistido en BD")
-            
+            print(f"LOG: Evento rechazado y persistido en BD")
+
             # Log del historial
-            print(f"[LOG] Evento rechazado. Estado actual: {self.eventoSismicoSeleccionado.getEstadoActual().getNombreEstado()}")
-            print(f"[LOG] Historial de cambios de estado:")
+            print(
+                f"LOG: Evento rechazado. Estado actual: {self.eventoSismicoSeleccionado.getEstadoActual().getNombreEstado()}"
+            )
+            print(f"LOG: Historial de cambios de estado:")
             for idx, cambio in enumerate(self.eventoSismicoSeleccionado.getCambioEstado()):
-                responsable_nombre = getattr(cambio.getResponsableInspeccion(), 'getNombre', lambda: str(cambio.getResponsableInspeccion()))() if cambio.getResponsableInspeccion() else "N/A"
-                print(f"  #{idx+1}: {cambio.getEstado().getNombreEstado()} | Inicio: {cambio.getFechaHoraInicio()} | Fin: {cambio.getFechaHoraFin()} | Responsable: {responsable_nombre}")
-                
+                responsable_nombre = (
+                    getattr(cambio.getResponsableInspeccion(), "getNombre", lambda: str(cambio.getResponsableInspeccion()))()
+                    if cambio.getResponsableInspeccion()
+                    else "N/A"
+                )
+                print(
+                    f"  #{idx+1}: {cambio.getEstado().getNombreEstado()} | Inicio: {cambio.getFechaHoraInicio()} | Fin: {cambio.getFechaHoraFin()} | Responsable: {responsable_nombre}"
+                )
+
         except ValueError as e:
             self.db.rollback()
-            print(f"[ERROR] No se pudo rechazar el evento: {e}")
+            print(f"ERROR: No se pudo rechazar el evento: {e}")
         except Exception as e:
             self.db.rollback()
-            print(f"[ERROR] Error al persistir evento rechazado: {e}")
-            
+            print(f"ERROR: Error al persistir evento rechazado: {e}")
+
         self.finCU()
 
     def cancelarRevisionEventoSismico(self):
@@ -207,27 +217,27 @@ class GestorRevisionEventoSismico:
         Ahora usa el patrón State: delega la transición al evento.
         """
         if not self.eventoSismicoSeleccionado:
-            print("[LOG] No hay evento sísmico seleccionado.")
+            print("LOG: No hay evento sísmico seleccionado.")
             return
-        
-        print(f"[LOG] Cancelando revisión usando patrón State")
-        
+
+        print(f"LOG: Cancelando revisión usando patrón State")
+
         try:
             # El evento maneja la transición internamente
 
             self.eventoSismicoSeleccionado.cancelarRevision()
-            
+
             # Persistir cambios en la BD
             self.evento_repo.save(self.eventoSismicoSeleccionado)
             self.db.commit()
-            
+
         except ValueError as e:
             self.db.rollback()
-            print(f"[ERROR] No se pudo cancelar la revisión: {e}")
+            print(f"ERROR: No se pudo cancelar la revisión: {e}")
         except Exception as e:
             self.db.rollback()
-            print(f"[ERROR] Error al persistir cancelación: {e}")
-            
+            print(f"ERROR: Error al persistir cancelación: {e}")
+
         self.finCU()
 
 
@@ -236,7 +246,7 @@ class GestorRevisionEventoSismico:
         print("Fin del caso de uso")
         self.eventoSismicoSeleccionado = None
         self.estadoBloqueadoEnRevision = None
-        self.estadoRechazado = None 
+        self.estadoRechazado = None
         self.cambioEstadoActual = None
         self.nombreAlcance = None
         self.nombreOrigen = None
@@ -246,53 +256,56 @@ class GestorRevisionEventoSismico:
 
     def opConfirmarEvento(self, accionSeleccionada):
         self.accionSeleccionada = accionSeleccionada
-        if(self.validarAccionSeleccionada(self.accionSeleccionada)):
-            if(self.eventoSismicoSeleccionado.validarDatos()):
+        if (self.validarAccionSeleccionada(self.accionSeleccionada)):
+            if self.eventoSismicoSeleccionado.validarDatos():
                 self.confirmarEventoSismico()
             else:
                 print("Datos inválidos")
-    
+
     def confirmarEventoSismico(self):
         """
         Mensaje 15 del diagrama de secuencia: confirmarEventoSismico()
         Ahora usa el patrón State: delega la transición al evento.
         """
-        print(f"[LOG] Confirmando evento sísmico usando patrón State")
-        
+        print(f"LOG: Confirmando evento sísmico usando patrón State")
+
         try:
             fecha_actual = self.calcularFechaHoraActual()
             self.eventoSismicoSeleccionado.confirmarEvento(fecha_actual, self.usuarioActivo)
-            
-            # Actualizar responsable en el cambio de estado actual
-            cambio_actual = self.eventoSismicoSeleccionado.obtenerEstadoActual()
-            if cambio_actual and self.usuarioActivo:
-                cambio_actual.setResponsableInspeccion(self.usuarioActivo)
-            
+
             # Persistir cambios en la BD
             self.evento_repo.save(self.eventoSismicoSeleccionado)
             self.db.commit()
-            print(f"[LOG] Evento confirmado y persistido en BD")
-            
+            print(f"LOG: Evento confirmado y persistido en BD")
+
             # Log del historial
-            print(f"[LOG] Evento confirmado. Estado actual: {self.eventoSismicoSeleccionado.getEstadoActual().getNombreEstado()}")
-            print(f"[LOG] Historial de cambios de estado:")
+            print(
+                f"LOG: Evento confirmado. Estado actual: {self.eventoSismicoSeleccionado.getEstadoActual().getNombreEstado()}"
+            )
+            print(f"LOG: Historial de cambios de estado:")
             for idx, cambio in enumerate(self.eventoSismicoSeleccionado.getCambioEstado()):
-                responsable_nombre = getattr(cambio.getResponsableInspeccion(), 'getNombre', lambda: str(cambio.getResponsableInspeccion()))() if cambio.getResponsableInspeccion() else "N/A"
-                print(f"  #{idx+1}: {cambio.getEstado().getNombreEstado()} | Inicio: {cambio.getFechaHoraInicio()} | Fin: {cambio.getFechaHoraFin()} | Responsable: {responsable_nombre}")
-                
+                responsable_nombre = (
+                    getattr(cambio.getResponsableInspeccion(), "getNombre", lambda: str(cambio.getResponsableInspeccion()))()
+                    if cambio.getResponsableInspeccion()
+                    else "N/A"
+                )
+                print(
+                    f"  #{idx+1}: {cambio.getEstado().getNombreEstado()} | Inicio: {cambio.getFechaHoraInicio()} | Fin: {cambio.getFechaHoraFin()} | Responsable: {responsable_nombre}"
+                )
+
         except ValueError as e:
             self.db.rollback()
-            print(f"[ERROR] No se pudo confirmar el evento: {e}")
+            print(f"ERROR: No se pudo confirmar el evento: {e}")
         except Exception as e:
             self.db.rollback()
-            print(f"[ERROR] Error al persistir evento confirmado: {e}")
-            
+            print(f"ERROR: Error al persistir evento confirmado: {e}")
+
         self.finCU()
-        
+
     def opSolicitarRevisionExperto(self, accionSeleccionada):
         self.accionSeleccionada = accionSeleccionada
-        if(self.validarAccionSeleccionada(self.accionSeleccionada)):
-            if(self.eventoSismicoSeleccionado.validarDatos()):
+        if (self.validarAccionSeleccionada(self.accionSeleccionada)):
+            if self.eventoSismicoSeleccionado.validarDatos():
                 self.solicitarRevisionExperto()
             else:
                 print("Datos inválidos")
@@ -302,35 +315,38 @@ class GestorRevisionEventoSismico:
         Mensaje 16 del diagrama de secuencia: solicitarRevisionExperto()
         Ahora usa el patrón State: delega la transición al evento.
         """
-        print(f"[LOG] Solicitando revisión a experto usando patrón State")
-        
+        print(f"LOG: Solicitando revisión a experto usando patrón State")
+
         try:
             fecha_hora_actual = self.calcularFechaHoraActual()
             self.eventoSismicoSeleccionado.solicitarRevisionExpertoEvento(fecha_hora_actual, self.usuarioActivo)
-            
-            # Actualizar responsable en el cambio de estado actual
-            cambio_actual = self.eventoSismicoSeleccionado.obtenerEstadoActual()
-            if cambio_actual and self.usuarioActivo:
-                cambio_actual.setResponsableInspeccion(self.usuarioActivo)
-            
+
             # Persistir cambios en la BD
             self.evento_repo.save(self.eventoSismicoSeleccionado)
             self.db.commit()
-            print(f"[LOG] Revisión a experto solicitada y persistida en BD")
-            
+            print(f"LOG: Revisión a experto solicitada y persistida en BD")
+
             # Log del historial
-            print(f"[LOG] Revisión solicitada a experto. Estado actual: {self.eventoSismicoSeleccionado.getEstadoActual().getNombreEstado()}")
-            print(f"[LOG] Historial de cambios de estado:")
+            print(
+                f"LOG: Revisión solicitada a experto. Estado actual: {self.eventoSismicoSeleccionado.getEstadoActual().getNombreEstado()}"
+            )
+            print(f"LOG: Historial de cambios de estado:")
             for idx, cambio in enumerate(self.eventoSismicoSeleccionado.getCambioEstado()):
-                responsable_nombre = getattr(cambio.getResponsableInspeccion(), 'getNombre', lambda: str(cambio.getResponsableInspeccion()))() if cambio.getResponsableInspeccion() else "N/A"
-                print(f"  #{idx+1}: {cambio.getEstado().getNombreEstado()} | Inicio: {cambio.getFechaHoraInicio()} | Fin: {cambio.getFechaHoraFin()} | Responsable: {responsable_nombre}")
-                
+                responsable_nombre = (
+                    getattr(cambio.getResponsableInspeccion(), "getNombre", lambda: str(cambio.getResponsableInspeccion()))()
+                    if cambio.getResponsableInspeccion()
+                    else "N/A"
+                )
+                print(
+                    f"  #{idx+1}: {cambio.getEstado().getNombreEstado()} | Inicio: {cambio.getFechaHoraInicio()} | Fin: {cambio.getFechaHoraFin()} | Responsable: {responsable_nombre}"
+                )
+
         except ValueError as e:
             self.db.rollback()
-            print(f"[ERROR] No se pudo solicitar revisión a experto: {e}")
+            print(f"ERROR: No se pudo solicitar revisión a experto: {e}")
         except Exception as e:
             self.db.rollback()
-            print(f"[ERROR] Error al persistir solicitud de revisión: {e}")
-            
+            print(f"ERROR: Error al persistir solicitud de revisión: {e}")
+
         self.finCU()
         
