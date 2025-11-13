@@ -1,9 +1,3 @@
-"""
-Modelos ORM de SQLAlchemy para el sistema de eventos sísmicos.
-
-Este módulo define el mapeo objeto-relacional respetando el diagrama de clases
-y las relaciones ya implementadas en las entidades del dominio.
-"""
 from sqlalchemy import (
     Column, Integer, String, Float, DateTime, ForeignKey, Boolean, Text
 )
@@ -75,7 +69,7 @@ class TipoDeDatoModel(Base):
 
 
 # ============================================================================
-# TABLA DE ESTADOS (Nuevo)
+# TABLA DE ESTADOS
 # ============================================================================
 class EstadoModel(Base):
     """Tabla: estados - Catálogo de estados del dominio (AutoDetectado, PendienteDeRevision, ...)
@@ -88,7 +82,7 @@ class EstadoModel(Base):
     nombre = Column(String(100), nullable=False, unique=True)
     descripcion = Column(Text, nullable=True)
 
-    # Relaciones inversas (opcional)
+    # Relaciones inversas
     eventos_actuales = relationship("EventoSismicoModel", back_populates="estado_actual", foreign_keys='EventoSismicoModel.estado_actual_id')
     cambios = relationship("CambioEstadoModel", back_populates="estado", foreign_keys='CambioEstadoModel.estado_id')
 
@@ -182,8 +176,6 @@ class EventoSismicoModel(Base):
     """
     Tabla: eventos_sismicos - Eventos sísmicos registrados.
     
-    Nota: El estadoActual se almacena como string del nombre de la clase concreta
-    para poder reconstruir el objeto Estado correcto al hidratar desde BD.
     """
     __tablename__ = "eventos_sismicos"
     
@@ -231,8 +223,7 @@ class CambioEstadoModel(Base):
     """
     Tabla: cambios_estado - Historial de cambios de estado de eventos.
     
-    Almacena el nombre de la clase Estado concreta y el responsable que realizó el cambio.
-    """
+     Almacena  el responsable que realizó el cambio."""
     __tablename__ = "cambios_estado"
     
     id = Column(Integer, primary_key=True, autoincrement=True)

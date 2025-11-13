@@ -275,7 +275,7 @@ class EventoSismicoRepository:
             cambio._db_id = cambio_model.id
             cambios_estado.append(cambio)
         
-        # Por ahora series temporales vacías (TODO: implementar si es necesario)
+        # Por ahora series temporales vacías
         series_temporales = []
         
         # Crear el objeto de dominio EventoSismico
