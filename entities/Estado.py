@@ -68,19 +68,19 @@ class Estado:
         """Transición a BloqueadoEnRevision"""
         raise ValueError(f"Transición 'bloquear' no permitida desde estado {self.nombreEstado}")
 
-    def confirmar(self, evento):
+    def confirmar(self, evento, fecha_hora_cambio_estado, cambio_estados, responsable):
         """Transición a Confirmado"""
         raise ValueError(f"Transición 'confirmar' no permitida desde estado {self.nombreEstado}")
 
-    def rechazar(self, evento):
+    def rechazar(self, evento, fecha_hora_cambio_estado, cambio_estados, responsable):
         """Transición a Rechazado"""
         raise ValueError(f"Transición 'rechazar' no permitida desde estado {self.nombreEstado}")
 
-    def solicitarRevisionExperto(self, evento):
+    def solicitarRevisionExperto(self, evento, fecha_hora_cambio_estado, cambio_estados, responsable):
         """Transición a SolicitadoRevisionExperto"""
         raise ValueError(f"Transición 'solicitarRevisionExperto' no permitida desde estado {self.nombreEstado}")
 
-    def volverAPendiente(self, evento):
+    def volverAPendiente(self, evento, fecha_hora_cambio_estado, cambio_estados, responsable):
         """Transición a PendienteDeRevision (usado al cancelar)"""
         raise ValueError(f"Transición 'volverAPendiente' no permitida desde estado {self.nombreEstado}")
 
